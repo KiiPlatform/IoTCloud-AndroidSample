@@ -86,11 +86,6 @@ public class MainActivity extends AppCompatActivity {
             // Add the newly created View to the ViewPager
             container.addView(view);
 
-//            // Retrieve a TextView from the inflated View, and update it's text
-//            TextView title = (TextView) view.findViewById(R.id.item_title);
-//            title.setText(String.valueOf(position + 1));
-
-            // Return the View
             return view;
         }
 
