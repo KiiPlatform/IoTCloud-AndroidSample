@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -60,15 +60,35 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
+            int layoutId = 0;
+            switch (position) {
+                case 0:
+                    layoutId = R.layout.onboard_view;
+                    break;
+                case 1:
+                    layoutId = R.layout.commands_view;
+                    break;
+                case 2:
+                    layoutId = R.layout.triggers_view;
+                    break;
+                case 3:
+                    layoutId = R.layout.states_view;
+                    break;
+                case 4:
+                    layoutId = R.layout.info_view;
+                    break;
+                default:
+                    throw new RuntimeException("Unknown flow");
+            }
             // Inflate a new layout from our resources
-            View view = MainActivity.this.getLayoutInflater().inflate(R.layout.pager_item,
+            View view = MainActivity.this.getLayoutInflater().inflate(layoutId,
                     container, false);
             // Add the newly created View to the ViewPager
             container.addView(view);
 
-            // Retrieve a TextView from the inflated View, and update it's text
-            TextView title = (TextView) view.findViewById(R.id.item_title);
-            title.setText(String.valueOf(position + 1));
+//            // Retrieve a TextView from the inflated View, and update it's text
+//            TextView title = (TextView) view.findViewById(R.id.item_title);
+//            title.setText(String.valueOf(position + 1));
 
             // Return the View
             return view;
