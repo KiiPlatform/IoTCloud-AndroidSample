@@ -1,6 +1,5 @@
 package com.kii.iotcloudsample;
 
-import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -43,7 +42,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Item " + (position + 1);
+            switch(position) {
+                case 0:
+                    return "Onboard";
+                case 1:
+                    return "Commands";
+                case 2:
+                    return "Triggers";
+                case 3:
+                    return "States";
+                case 4:
+                    return "Info";
+                default:
+                    throw new RuntimeException("Unxepected flow.");
+            }
         }
 
         @Override
