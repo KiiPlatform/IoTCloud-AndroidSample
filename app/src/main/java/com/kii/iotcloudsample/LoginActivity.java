@@ -3,9 +3,7 @@ package com.kii.iotcloudsample;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -30,19 +28,11 @@ import android.widget.Toast;
 
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
-import com.kii.cloud.storage.callback.KiiUserCallBack;
 import com.kii.cloud.storage.exception.app.AppException;
-import com.kii.cloud.storage.exception.app.BadRequestException;
-import com.kii.cloud.storage.exception.app.ConflictException;
-import com.kii.cloud.storage.exception.app.ForbiddenException;
-import com.kii.cloud.storage.exception.app.NotFoundException;
-import com.kii.cloud.storage.exception.app.UnauthorizedException;
-import com.kii.cloud.storage.exception.app.UndefinedException;
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.IoTCloudAPIBuilder;
 import com.kii.iotcloud.Owner;
 import com.kii.iotcloud.TypedID;
-import com.kii.iotcloudsample.fragments.AppSingletonFragment;
+import com.kii.iotcloudsample.smart_light_demo.ApiBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -262,13 +252,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         protected Exception doInBackground(Void... params) {
             try {
                 KiiUser.logIn(mEmail, mPassword);
-                KiiUser currentUser = Kii.user();
-                Owner owner =new Owner(new TypedID(TypedID.Types.USER, currentUser.getID()), currentUser.getAccessToken());
-                IoTCloudAPI api = IoTCloudAPIBuilder.newBuilder(getApplicationContext(),
-                        AppConstants.APPID, AppConstants.APPKEY, AppConstants.APPSITE,owner).build();
-                AppSingletonFragment asf =
-                        AppSingletonFragment.getInstance(getSupportFragmentManager());
-                asf.setApi(api);
                 return null;
             } catch (IOException e) {
                 return e;

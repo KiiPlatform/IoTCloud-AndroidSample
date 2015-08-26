@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
+import com.kii.iotcloudsample.MainActivity;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.R;
 
@@ -28,8 +29,6 @@ public class OnboardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private IoTCloudAPI api;
-
     public static OnboardFragment newOnboardFragment() {
         OnboardFragment fragment = new OnboardFragment();
         return new OnboardFragment();
@@ -38,26 +37,16 @@ public class OnboardFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", api);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null)
-            api = savedInstanceState.getParcelable("IoTCloudAPI");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle b = this.getArguments();
-        if (b != null)
-            this.api = b.getParcelable("IoTCloudAPI");
-        if (this.api == null) {
-            AppSingletonFragment asf = AppSingletonFragment.getInstance(getFragmentManager());
-            this.api = asf.getApi();
-        }
     }
 
     @Override
@@ -75,17 +64,18 @@ public class OnboardFragment extends Fragment {
                 final String thingID = editTextThingID.getText().toString();
                 final String thingPassword = editTextThingPassword.getText().toString();
                 final boolean isVendorId = aSwitch.isChecked();
+
+                IoTCloudAPI api = ((MainActivity)getActivity()).getApi();
                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                 wp.onBoard(thingID, thingPassword, isVendorId).then(new DoneCallback<Target>() {
                     @Override
                     public void onDone(Target result) {
-                        AppSingletonFragment asf = AppSingletonFragment.getInstance(getFragmentManager());
-                        asf.setTarget(result);
                         Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
                     }
                 }, new FailCallback<Throwable>() {
                     @Override
                     public void onFail(Throwable result) {
+                        result.printStackTrace();
                         Toast.makeText(getContext(), "On board failed: !" + result.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
