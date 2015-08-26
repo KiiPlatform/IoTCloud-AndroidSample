@@ -26,7 +26,7 @@ public class TriggersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.triggers_view, container);
+        View view = inflater.inflate(R.layout.triggers_view, null);
         return view;
     }
 

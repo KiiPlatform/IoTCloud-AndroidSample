@@ -27,7 +27,7 @@ public class OnboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.onboard_view, container);
+        View view = inflater.inflate(R.layout.onboard_view, null);
         return view;
     }
 

@@ -27,7 +27,7 @@ public class CommandsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.commands_view, container);
+        View view = inflater.inflate(R.layout.commands_view, null);
         return view;
     }
 
