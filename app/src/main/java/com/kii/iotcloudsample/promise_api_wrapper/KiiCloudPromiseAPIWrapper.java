@@ -1,4 +1,4 @@
-package com.kii.iotcloudsample;
+package com.kii.iotcloudsample.promise_api_wrapper;
 
 import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;

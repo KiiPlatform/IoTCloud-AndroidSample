@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
-import com.kii.iotcloudsample.IoTCloudPromiseAPIWrapper;
+import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.R;
 
 import org.jdeferred.DoneCallback;

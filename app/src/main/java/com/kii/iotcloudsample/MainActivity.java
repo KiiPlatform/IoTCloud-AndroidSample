@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
+import com.kii.iotcloudsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.view.SlidingTabLayout;
 import com.kii.iotcloudsample.fragments.CommandsFragment;
 import com.kii.iotcloudsample.fragments.InfoFragment;
