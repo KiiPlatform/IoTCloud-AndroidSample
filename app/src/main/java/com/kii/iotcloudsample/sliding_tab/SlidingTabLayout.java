@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kii.iotcloudsample.view;
+package com.kii.iotcloudsample.sliding_tab;
 
 import android.content.Context;
 import android.graphics.Typeface;
