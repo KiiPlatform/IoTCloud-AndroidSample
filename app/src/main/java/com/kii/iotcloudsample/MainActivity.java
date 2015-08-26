@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.kii.iotcloudsample.view.SlidingTabLayout;
-import com.kii.iotcloudsample.view.fragments.CommandsFragment;
-import com.kii.iotcloudsample.view.fragments.InfoFragment;
-import com.kii.iotcloudsample.view.fragments.OnboardFragment;
-import com.kii.iotcloudsample.view.fragments.StatesFragment;
-import com.kii.iotcloudsample.view.fragments.TriggersFragment;
+import com.kii.iotcloudsample.fragments.CommandsFragment;
+import com.kii.iotcloudsample.fragments.InfoFragment;
+import com.kii.iotcloudsample.fragments.OnboardFragment;
+import com.kii.iotcloudsample.fragments.StatesFragment;
+import com.kii.iotcloudsample.fragments.TriggersFragment;
 
 public class MainActivity extends AppCompatActivity {
 
