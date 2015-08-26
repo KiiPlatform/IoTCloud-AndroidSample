@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloud.Target;
 import com.kii.iotcloudsample.R;
 
 import org.jdeferred.DoneCallback;
@@ -73,9 +74,9 @@ public class OnboardFragment extends Fragment {
                 final String thingID = editTextThingID.getText().toString();
                 final String thingPassword = editTextThingPassword.getText().toString();
                 final boolean isVendorId = aSwitch.isChecked();
-                onboard(thingID, thingPassword, isVendorId).then(new DoneCallback<Void>() {
+                onboard(thingID, thingPassword, isVendorId).then(new DoneCallback<Target>() {
                     @Override
-                    public void onDone(Void result) {
+                    public void onDone(Target result) {
 
                     }
                 }, new FailCallback<Throwable>() {
@@ -89,17 +90,16 @@ public class OnboardFragment extends Fragment {
         return view;
     }
 
-    private Promise<Void, Throwable, Void> onboard(final String thingID, final String thingPassword, final boolean isVendorThingID) {
+    private Promise<Target, Throwable, Void> onboard(final String thingID, final String thingPassword, final boolean isVendorThingID) {
         AndroidDeferredManager adm = new AndroidDeferredManager();
-        return adm.when(new DeferredAsyncTask<Void, Void, Void>() {
+        return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
-            protected Void doInBackgroundSafe(Void... voids) throws Exception {
+            protected Target doInBackgroundSafe(Void... voids) throws Exception {
                 if (!isVendorThingID) {
-                    OnboardFragment.this.api.onBoard(thingID, thingPassword);
+                    return OnboardFragment.this.api.onBoard(thingID, thingPassword);
                 } else {
-                    OnboardFragment.this.api.onBoard(thingID, thingPassword, null, null);
+                    return OnboardFragment.this.api.onBoard(thingID, thingPassword, null, null);
                 }
-                return null;
             }
         });
     }
