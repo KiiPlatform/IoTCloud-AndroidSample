@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.kii.iotcloudsample.fragments.AppSingletonFragment;
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
 import com.kii.iotcloudsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.view.SlidingTabLayout;
@@ -38,7 +39,17 @@ public class MainActivity extends AppCompatActivity {
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         slidingTabLayout.setViewPager(viewPager);
 
+        login();
+    }
+
+    private void login() {
+        AppSingletonFragment asf = AppSingletonFragment.getInstance(getSupportFragmentManager());
+        if (asf.getApi() != null) {
+            return;
+        }
+
         KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper();
+
         final ProgressDialogFragment pdf = new ProgressDialogFragment();
         getSupportFragmentManager().beginTransaction().add(pdf, ProgressDialogFragment.TAG);
 

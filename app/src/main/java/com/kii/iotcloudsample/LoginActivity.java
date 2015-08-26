@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
 import com.kii.cloud.storage.callback.KiiUserCallBack;
 import com.kii.cloud.storage.exception.app.AppException;
@@ -36,6 +38,11 @@ import com.kii.cloud.storage.exception.app.ForbiddenException;
 import com.kii.cloud.storage.exception.app.NotFoundException;
 import com.kii.cloud.storage.exception.app.UnauthorizedException;
 import com.kii.cloud.storage.exception.app.UndefinedException;
+import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloud.IoTCloudAPIBuilder;
+import com.kii.iotcloud.Owner;
+import com.kii.iotcloud.TypedID;
+import com.kii.iotcloudsample.fragments.AppSingletonFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +51,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -255,6 +262,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Exception doInBackground(Void... params) {
             try {
                 KiiUser.logIn(mEmail, mPassword);
+                KiiUser currentUser = Kii.user();
+                Owner owner =new Owner(new TypedID(TypedID.Types.USER, currentUser.getID()), currentUser.getAccessToken());
+                IoTCloudAPI api = IoTCloudAPIBuilder.newBuilder(getApplicationContext(),
+                        AppConstants.APPID, AppConstants.APPKEY, AppConstants.APPSITE,owner).build();
+                AppSingletonFragment asf =
+                        AppSingletonFragment.getInstance(getSupportFragmentManager());
+                asf.setApi(api);
                 return null;
             } catch (IOException e) {
                 return e;
