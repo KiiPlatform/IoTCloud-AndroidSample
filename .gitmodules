@@ -1,0 +1,3 @@
+[submodule "IoTCloud-AndroidSDK"]
+	path = IoTCloud-AndroidSDK
+	url = git@github.com:KiiPlatform/IoTCloud-AndroidSDK.git
