@@ -9,16 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
+import com.kii.iotcloudsample.IoTCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.R;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
-import org.jdeferred.Promise;
-import org.jdeferred.android.AndroidDeferredManager;
-import org.jdeferred.android.DeferredAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,11 +29,9 @@ public class OnboardFragment extends Fragment {
     }
 
     private IoTCloudAPI api;
-    public static OnboardFragment newOnboardFragment(IoTCloudAPI api) {
+
+    public static OnboardFragment newOnboardFragment() {
         OnboardFragment fragment = new OnboardFragment();
-        Bundle b = new Bundle();
-        b.putParcelable("IoTCloudAPI", api);
-        fragment.setArguments(b);
         return new OnboardFragment();
     }
 
@@ -57,6 +54,10 @@ public class OnboardFragment extends Fragment {
         Bundle b = this.getArguments();
         if (b != null)
             this.api = b.getParcelable("IoTCloudAPI");
+        if (this.api == null) {
+            AppSingletonFragment asf = AppSingletonFragment.getInstance(getFragmentManager());
+            this.api = asf.getApi();
+        }
     }
 
     @Override
@@ -74,34 +75,23 @@ public class OnboardFragment extends Fragment {
                 final String thingID = editTextThingID.getText().toString();
                 final String thingPassword = editTextThingPassword.getText().toString();
                 final boolean isVendorId = aSwitch.isChecked();
-                onboard(thingID, thingPassword, isVendorId).then(new DoneCallback<Target>() {
+                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                wp.onBoard(thingID, thingPassword, isVendorId).then(new DoneCallback<Target>() {
                     @Override
                     public void onDone(Target result) {
-
+                        AppSingletonFragment asf = AppSingletonFragment.getInstance(getFragmentManager());
+                        asf.setTarget(result);
+                        Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
                     }
                 }, new FailCallback<Throwable>() {
                     @Override
                     public void onFail(Throwable result) {
-
+                        Toast.makeText(getContext(), "On board failed: !" + result.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         });
         return view;
-    }
-
-    private Promise<Target, Throwable, Void> onboard(final String thingID, final String thingPassword, final boolean isVendorThingID) {
-        AndroidDeferredManager adm = new AndroidDeferredManager();
-        return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
-            @Override
-            protected Target doInBackgroundSafe(Void... voids) throws Exception {
-                if (!isVendorThingID) {
-                    return OnboardFragment.this.api.onBoard(thingID, thingPassword);
-                } else {
-                    return OnboardFragment.this.api.onBoard(thingID, thingPassword, null, null);
-                }
-            }
-        });
     }
 
 }

@@ -1,5 +1,6 @@
 package com.kii.iotcloudsample;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -7,13 +8,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
+import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
 import com.kii.iotcloudsample.view.SlidingTabLayout;
 import com.kii.iotcloudsample.fragments.CommandsFragment;
 import com.kii.iotcloudsample.fragments.InfoFragment;
 import com.kii.iotcloudsample.fragments.OnboardFragment;
 import com.kii.iotcloudsample.fragments.StatesFragment;
 import com.kii.iotcloudsample.fragments.TriggersFragment;
+
+import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +36,26 @@ public class MainActivity extends AppCompatActivity {
 
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         slidingTabLayout.setViewPager(viewPager);
+
+        KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper();
+        final ProgressDialogFragment pdf = new ProgressDialogFragment();
+        getSupportFragmentManager().beginTransaction().add(pdf, ProgressDialogFragment.TAG);
+
+        wp.loginWithCredentials().then(new DoneCallback<Void>() {
+            @Override
+            public void onDone(Void result) {
+                pdf.dismiss();
+                Toast.makeText(getApplicationContext(), "Login succeeded", Toast.LENGTH_LONG).show();
+            }
+        }, new FailCallback<Throwable>() {
+            @Override
+            public void onFail(Throwable result) {
+                // Launch Login Screen.
+                Intent i = new Intent();
+                i.setClass(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     class MyAdapter extends FragmentPagerAdapter {
