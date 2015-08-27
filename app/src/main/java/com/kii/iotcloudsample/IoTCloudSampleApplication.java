@@ -19,13 +19,39 @@ public class IoTCloudSampleApplication extends Application {
         try {
             InputStream is = am.open("settings.properties");
             properties.load(is);
-            AppConstants.APPID = properties.getProperty("appId");
-            AppConstants.APPKEY = properties.getProperty("appKey");
-            AppConstants.APPHOST = properties.getProperty("appHost");
+            appId = properties.getProperty("appId");
+            appKey = properties.getProperty("appKey");
+            String appHost = properties.getProperty("appHost");
+            ioTappBaseUrl = "https://" + appHost;
+            appBaseUrl = ioTappBaseUrl + "/api";
         } catch (IOException e) {
-            // Just Use Default.
+            appId = AppConstants.APPID;
+            appKey = AppConstants.APPKEY;
+            appBaseUrl = AppConstants.APPSITEURL;
+            ioTappBaseUrl = AppConstants.APPSITEURL_IOT;
         }
-        Kii.initialize(this, AppConstants.APPID, AppConstants.APPKEY, AppConstants.APPSITEURL);
+        Kii.initialize(this, appId, appKey, appBaseUrl);
+    }
+
+    private String appId;
+    private String appKey;
+    private String appBaseUrl;
+    private String ioTappBaseUrl;
+
+    public String getAppId() {
+        return this.appId;
+    }
+
+    public String getAppKey() {
+        return this.appKey;
+    }
+
+    public String getAppBaseUrl() {
+        return this.appBaseUrl;
+    }
+
+    public String getIoTappBaseUrlAppBaseUrl() {
+        return this.ioTappBaseUrl;
     }
 
 }
