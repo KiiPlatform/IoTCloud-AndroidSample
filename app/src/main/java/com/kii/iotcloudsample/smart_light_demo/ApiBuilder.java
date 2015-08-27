@@ -12,7 +12,7 @@ public class ApiBuilder {
 
     public static IoTCloudAPI buildApi(Context context, Owner owner) {
         IoTCloudAPIBuilder builder = IoTCloudAPIBuilder.newBuilder(context, AppConstants.APPID,
-                AppConstants.APPKEY, AppConstants.APPSITEURL, owner);
+                AppConstants.APPKEY, AppConstants.APPSITEURL_IOT, owner);
         SchemaBuilder schemaBuilder = SchemaBuilder.newSchemaBuilder("SmartLight-Demo",
                 "Smart-Light-Demo", 1, LightState.class);
         schemaBuilder.addActionClass(TurnPower.class, TurnPowerResult.class);
