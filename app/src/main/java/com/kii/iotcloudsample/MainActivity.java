@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.kii.cloud.storage.Kii;
+import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Owner;
 import com.kii.iotcloud.TypedID;
@@ -85,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            Owner owner = new Owner(new TypedID(TypedID.Types.USER, Kii.user().getID()), Kii
+        if (requestCode == 0 && KiiUser.getCurrentUser() != null) {
+            Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
             api = ApiBuilder.buildApi(getApplicationContext(), owner);
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag

@@ -26,13 +26,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
 import com.kii.cloud.storage.exception.app.AppException;
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Owner;
-import com.kii.iotcloud.TypedID;
-import com.kii.iotcloudsample.smart_light_demo.ApiBuilder;
+import com.kii.cloud.storage.exception.app.BadRequestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +43,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private UserRegisterTask mRegistrationTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -83,6 +80,14 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             }
         });
 
+        Button mEmailSignUpButton = (Button) findViewById(R.id.email_sign_up_button);
+        mEmailSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSignup();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -93,11 +98,11 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign in the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
@@ -114,7 +119,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
+        if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -139,9 +144,51 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             mAuthTask.execute((Void) null);
         }
     }
+    private void attemptSignup() {
+        if (mRegistrationTask != null) {
+            return;
+        }
+
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            mRegistrationTask = new UserRegisterTask(email, password);
+            mRegistrationTask.execute((Void) null);
+        }
+    }
 
     private boolean isPasswordValid(String password) {
-        return password.length() >= 4;
+        return password != null && password.length() >= 4;
     }
 
     /**
@@ -211,7 +258,6 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
     }
 
     private interface ProfileQuery {
@@ -235,7 +281,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous login task used to authenticate
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Exception> {
@@ -277,5 +323,50 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             showProgress(false);
         }
     }
+    /**
+     * Represents an asynchronous registration task used to authenticate
+     * the user.
+     */
+    public class UserRegisterTask extends AsyncTask<Void, Void, Exception> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        UserRegisterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Exception doInBackground(Void... params) {
+            try {
+                KiiUser newUser = KiiUser.builderWithEmail(mEmail).build();
+                newUser.register(mPassword);
+                return null;
+            } catch (IOException e) {
+                return e;
+            } catch (AppException e) {
+                return e;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Exception e) {
+            mRegistrationTask = null;
+            showProgress(false);
+            if (e == null) {
+                finish();
+            } else {
+                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mRegistrationTask = null;
+            showProgress(false);
+        }
+    }
+
 }
 
