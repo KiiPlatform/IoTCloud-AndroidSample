@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.kii.cloud.storage.KiiUser;
-import com.kii.iotcloudsample.LoginActivity;
+import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloudsample.IoTCloudSampleApplication;
 import com.kii.iotcloudsample.MainActivity;
 import com.kii.iotcloudsample.R;
 
@@ -42,6 +44,16 @@ public class InfoFragment extends Fragment {
                 startActivityForResult(i, 0);
             }
         });
+        IoTCloudAPI api = IoTCloudSampleApplication.getInstance().getAPI();
+        TextView textOwner = (TextView)view.findViewById(R.id.textOwner);
+        if (api.getOwner() != null) {
+            textOwner.setText(api.getOwner().getID().getID());
+        }
+        TextView textTarget = (TextView)view.findViewById(R.id.textTarget);
+        if (IoTCloudSampleApplication.getInstance().getCurrentTarget() != null) {
+            textTarget.setText(IoTCloudSampleApplication.getInstance().getCurrentTarget().getID().getID());
+        }
+
         return view;
     }
 
