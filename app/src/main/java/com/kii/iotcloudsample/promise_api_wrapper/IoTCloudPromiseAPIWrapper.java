@@ -27,7 +27,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
-                return api.onBoard(thingID, thingPassword);
+                return api.onboard(thingID, thingPassword);
             }
         });
     }
@@ -35,7 +35,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
-                return api.onBoard(venderThingID, thingPassword, thingType, null);
+                return api.onboard(venderThingID, thingPassword, thingType, null);
             }
         });
     }
