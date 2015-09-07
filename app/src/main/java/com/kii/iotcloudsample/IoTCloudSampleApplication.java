@@ -46,8 +46,6 @@ public class IoTCloudSampleApplication extends Application {
     private String appKey;
     private String appBaseUrl;
     private String ioTappBaseUrl;
-    private IoTCloudAPI api;
-    private Target currentTarget;
 
     public String getAppId() {
         return this.appId;
@@ -63,20 +61,6 @@ public class IoTCloudSampleApplication extends Application {
 
     public String getIoTappBaseUrlAppBaseUrl() {
         return this.ioTappBaseUrl;
-    }
-
-    public Target getCurrentTarget() {
-        return this.currentTarget;
-    }
-    public void setCurrentTarget(Target target) {
-        this.currentTarget = target;
-    }
-
-    public IoTCloudAPI getAPI() {
-        return this.api;
-    }
-    public void setAPI(IoTCloudAPI api) {
-        this.api = api;
     }
 
 }

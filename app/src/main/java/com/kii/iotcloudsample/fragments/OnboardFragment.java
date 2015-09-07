@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
-import com.kii.iotcloudsample.IoTCloudSampleApplication;
-import com.kii.iotcloudsample.MainActivity;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.R;
 
@@ -30,18 +28,24 @@ public class OnboardFragment extends Fragment {
     private View mOnboardWithIDFormView;
     private View mOnboardWithVenderIDFormView;
 
+    private IoTCloudAPI api;
+
     public OnboardFragment() {
         // Required empty public constructor
     }
 
-    public static OnboardFragment newOnboardFragment() {
+    public static OnboardFragment newOnboardFragment(IoTCloudAPI api) {
         OnboardFragment fragment = new OnboardFragment();
-        return new OnboardFragment();
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("IoTCloudAPI", api);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
     }
 
     @Override
@@ -50,13 +54,15 @@ public class OnboardFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+        }
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+        }
         View view = inflater.inflate(R.layout.onboard_view, null);
         mOnboardWithIDFormView = view.findViewById(R.id.onboard_with_id_form);
         mOnboardWithVenderIDFormView = view.findViewById(R.id.onboard_with_vender_id_form);
@@ -76,12 +82,10 @@ public class OnboardFragment extends Fragment {
                     final String venderThingID = editTextVenderThingID.getText().toString();
                     final String thingPassword = editTextVenderThingPassword.getText().toString();
                     final String thingType = editTextThingType.getText().toString();
-                    IoTCloudAPI api = IoTCloudSampleApplication.getInstance().getAPI();
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                     wp.onBoard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
                         @Override
                         public void onDone(Target result) {
-                            IoTCloudSampleApplication.getInstance().setCurrentTarget(result);
                             Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
                         }
                     }, new FailCallback<Throwable>() {
@@ -94,12 +98,10 @@ public class OnboardFragment extends Fragment {
                 } else {
                     final String thingID = editTextThingID.getText().toString();
                     final String thingPassword = editTextThingPassword.getText().toString();
-                    IoTCloudAPI api = IoTCloudSampleApplication.getInstance().getAPI();
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                     wp.onBoard(thingID, thingPassword).then(new DoneCallback<Target>() {
                         @Override
                         public void onDone(Target result) {
-                            IoTCloudSampleApplication.getInstance().setCurrentTarget(result);
                             Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
                         }
                     }, new FailCallback<Throwable>() {

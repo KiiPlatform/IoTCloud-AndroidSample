@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloudsample.IoTCloudSampleApplication;
 import com.kii.iotcloudsample.MainActivity;
 import com.kii.iotcloudsample.R;
 
@@ -21,18 +20,35 @@ import com.kii.iotcloudsample.R;
  */
 public class InfoFragment extends Fragment {
 
+    private IoTCloudAPI api;
 
     public InfoFragment() {
         // Required empty public constructor
     }
+    public static InfoFragment newInfoFragment(IoTCloudAPI api) {
+        InfoFragment fragment = new InfoFragment();
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("IoTCloudAPI", api);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
 
-    public static InfoFragment newInfoFragment() {
-        return new InfoFragment();
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+        }
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+        }
         View view = inflater.inflate(R.layout.info_view, null);
         Button logoutButton = (Button)view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -44,16 +60,14 @@ public class InfoFragment extends Fragment {
                 startActivityForResult(i, 0);
             }
         });
-        IoTCloudAPI api = IoTCloudSampleApplication.getInstance().getAPI();
         TextView textOwner = (TextView)view.findViewById(R.id.textOwner);
-        if (api.getOwner() != null) {
-            textOwner.setText(api.getOwner().getID().getID());
+        if (this.api.getOwner() != null) {
+            textOwner.setText(this.api.getOwner().getID().getID());
         }
         TextView textTarget = (TextView)view.findViewById(R.id.textTarget);
-        if (IoTCloudSampleApplication.getInstance().getCurrentTarget() != null) {
-            textTarget.setText(IoTCloudSampleApplication.getInstance().getCurrentTarget().getID().getID());
+        if (this.api.getTarget() != null) {
+            textTarget.setText(this.api.getTarget().getID().getID());
         }
-
         return view;
     }
 

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
+import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Owner;
 import com.kii.iotcloud.TypedID;
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
@@ -29,6 +30,8 @@ import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
 
 public class MainActivity extends AppCompatActivity {
+
+    private IoTCloudAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 pdf.dismiss();
                 Owner owner = new Owner(new TypedID(TypedID.Types.USER, Kii.user().getID()), Kii
                         .user().getAccessToken());
-                IoTCloudSampleApplication.getInstance().setAPI(ApiBuilder.buildApi(getApplicationContext(), owner));
+                api = ApiBuilder.buildApi(getApplicationContext(), owner);
                 Toast.makeText(getApplicationContext(), "Login succeeded", Toast.LENGTH_LONG).show();
             }
         }, new FailCallback<Throwable>() {
@@ -86,13 +89,23 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0 && KiiUser.getCurrentUser() != null) {
             Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
-            IoTCloudSampleApplication.getInstance().setAPI(ApiBuilder.buildApi(getApplicationContext(), owner));
+            api = ApiBuilder.buildApi(getApplicationContext(), owner);
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag
                     (ProgressDialogFragment.TAG);
             if (pdf != null) {
                 pdf.dismiss();
             }
         }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
     }
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -128,15 +141,15 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
                         switch (position) {
                 case 0:
-                    return OnboardFragment.newOnboardFragment();
+                    return OnboardFragment.newOnboardFragment(api);
                 case 1:
-                    return CommandsFragment.newCommandsFragment();
+                    return CommandsFragment.newCommandsFragment(api);
                 case 2:
-                    return TriggersFragment.newTriggersFragment();
+                    return TriggersFragment.newTriggersFragment(api);
                 case 3:
-                    return StatesFragment.newStatesFragment();
+                    return StatesFragment.newStatesFragment(api);
                 case 4:
-                    return InfoFragment.newInfoFragment();
+                    return InfoFragment.newInfoFragment(api);
                 default:
                     throw new RuntimeException("Unknown flow");
             }
