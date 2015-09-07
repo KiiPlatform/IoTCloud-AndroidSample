@@ -1,3 +1,13 @@
+## How to build
+
+```
+git clone git@github.com:KiiPlatform/IoTCloud-AndroidSample.git
+cd IoTCloud-AndroidSample
+git submodule init
+git submodule update
+```
+Then you can open the project with Android Studio.
+
 ## App Configuration (without changing code.)
 - create properties file in app/src/main/assets/settings.properties.
 ```ini
