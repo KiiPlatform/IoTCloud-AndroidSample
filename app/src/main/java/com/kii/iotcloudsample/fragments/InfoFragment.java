@@ -54,7 +54,7 @@ public class InfoFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KiiUser.logOut();
+                IoTCloudAPI.removeAllStoredInstances();
                 Intent i = new Intent();
                 i.setClass(getContext().getApplicationContext(), MainActivity.class);
                 startActivityForResult(i, 0);
@@ -70,6 +70,4 @@ public class InfoFragment extends Fragment {
         }
         return view;
     }
-
-
 }

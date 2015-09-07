@@ -20,16 +20,6 @@ public class KiiCloudPromiseAPIWrapper {
         this.adm = manager;
     }
 
-    public Promise<Void, Throwable, Void> loginWithCredentials() {
-        return adm.when(new DeferredAsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackgroundSafe(Void... voids) throws Exception {
-                KiiUser.loginWithStoredCredentials();
-                return null;
-            }
-        });
-    }
-
     public Promise <Void, Throwable, Void> login(final String identifier, final String password) {
         return adm.when(new DeferredAsyncTask<Void, Void, Void>() {
             @Override

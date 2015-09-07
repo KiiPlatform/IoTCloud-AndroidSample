@@ -13,7 +13,7 @@ import com.kii.iotcloudsample.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TriggersFragment extends Fragment {
+public class TriggersFragment extends Fragment implements PagerFragment {
 
     private IoTCloudAPI api;
 
@@ -34,7 +34,9 @@ public class TriggersFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putParcelable("IoTCloudAPI", this.api);
     }
-
+    @Override
+    public void onVisible(boolean visible) {
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

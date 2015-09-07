@@ -13,7 +13,7 @@ import com.kii.iotcloudsample.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StatesFragment extends Fragment {
+public class StatesFragment extends Fragment implements PagerFragment {
 
     private IoTCloudAPI api;
 
@@ -48,6 +48,7 @@ public class StatesFragment extends Fragment {
         View view = inflater.inflate(R.layout.states_view, null);
         return view;
     }
-
-
+    @Override
+    public void onVisible(boolean visible) {
+    }
 }

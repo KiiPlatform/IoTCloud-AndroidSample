@@ -23,7 +23,7 @@ import org.jdeferred.FailCallback;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OnboardFragment extends Fragment {
+public class OnboardFragment extends Fragment implements PagerFragment {
 
     private View mOnboardWithIDFormView;
     private View mOnboardWithVenderIDFormView;
@@ -120,9 +120,12 @@ public class OnboardFragment extends Fragment {
                 showVenderThingForm(isChecked);
             }
         });
+
         return view;
     }
-
+    @Override
+    public void onVisible(boolean visible) {
+    }
     private void showVenderThingForm(boolean useVenderThingID) {
         mOnboardWithVenderIDFormView.setVisibility(useVenderThingID ? View.VISIBLE : View.GONE);
         mOnboardWithIDFormView.setVisibility(!useVenderThingID ? View.VISIBLE : View.GONE);
