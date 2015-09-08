@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloudsample.R;
@@ -46,6 +47,9 @@ public class StatesFragment extends Fragment implements PagerFragment {
             this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
         }
         View view = inflater.inflate(R.layout.states_view, null);
+        String caption = ((TextView)view.findViewById(R.id.textState)).getText().toString();
+        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getID().getID() : "---");
+        ((TextView)view.findViewById(R.id.textState)).setText(caption);
         return view;
     }
     @Override

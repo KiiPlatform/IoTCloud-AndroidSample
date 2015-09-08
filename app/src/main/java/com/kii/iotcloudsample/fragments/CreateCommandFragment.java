@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class CreateCommandFragment extends Fragment {
 
-    public static final String TAG = "CreateCommandFragment";
+    public static final String TAG = CreateCommandFragment.class.getSimpleName();
 
     private IoTCloudAPI api;
     private Switch switchPower;

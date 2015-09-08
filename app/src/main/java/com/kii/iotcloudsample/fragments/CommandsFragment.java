@@ -112,6 +112,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
     public void onVisible(boolean visible) {
         if (visible) {
             this.btnNewCommand.setEnabled(this.api.onboarded());
+            this.btnRefreshCommands.setEnabled(this.api.onboarded());
         }
     }
     private void loadCommandList() {
