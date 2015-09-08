@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +25,10 @@ import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ImageViewHolder;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 
+import org.jdeferred.AlwaysCallback;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.jdeferred.Promise;
 
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
     private IoTCloudAPI api;
     private CommandArrayAdapter adapter;
     private ListView lstCommands;
+    private ProgressBar progressLoading;
     private Button btnNewCommand;
     private Button btnRefreshCommands;
 
@@ -94,6 +98,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
         this.adapter = new CommandArrayAdapter(getContext());
         this.loadCommandList();
         this.lstCommands.setAdapter(this.adapter);
+        this.progressLoading = (ProgressBar) view.findViewById(R.id.progressLoading);
 
         return view;
     }
@@ -111,6 +116,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
     }
     private void loadCommandList() {
         IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+        this.showLoading(true);
         wp.listCommands().then(new DoneCallback<List<Command>>() {
             @Override
             public void onDone(List<Command> commands) {
@@ -123,7 +129,23 @@ public class CommandsFragment extends Fragment implements PagerFragment {
             public void onFail(Throwable result) {
                 Toast.makeText(getContext(), "Unable to list commands: !" + result.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }).always(new AlwaysCallback<List<Command>, Throwable>() {
+            @Override
+            public void onAlways(Promise.State state, List<Command> resolved, Throwable rejected) {
+                showLoading(false);
+            }
         });
+    }
+    private void showLoading(boolean loading) {
+        if (this.progressLoading != null && this.lstCommands != null) {
+            if (loading) {
+                this.progressLoading.setVisibility(View.VISIBLE);
+                this.lstCommands.setVisibility(View.GONE);
+            } else {
+                this.progressLoading.setVisibility(View.GONE);
+                this.lstCommands.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private class CommandArrayAdapter extends ArrayAdapter<Command> {

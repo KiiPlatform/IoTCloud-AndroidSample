@@ -178,6 +178,4 @@ public class CreateCommandFragment extends Fragment {
         });
         return view;
     }
-
-
 }
