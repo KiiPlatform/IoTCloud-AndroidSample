@@ -25,7 +25,7 @@ public class InfoFragment extends Fragment {
     public InfoFragment() {
         // Required empty public constructor
     }
-    public static InfoFragment newInfoFragment(IoTCloudAPI api) {
+    public static InfoFragment newFragment(IoTCloudAPI api) {
         InfoFragment fragment = new InfoFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);

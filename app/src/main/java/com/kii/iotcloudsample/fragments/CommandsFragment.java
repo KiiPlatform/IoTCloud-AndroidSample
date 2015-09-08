@@ -48,7 +48,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static CommandsFragment newCommandsFragment(IoTCloudAPI api) {
+    public static CommandsFragment newFragment(IoTCloudAPI api) {
         CommandsFragment fragment = new CommandsFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);

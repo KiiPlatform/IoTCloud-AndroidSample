@@ -46,7 +46,7 @@ public class TriggersFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static TriggersFragment newTriggersFragment(IoTCloudAPI api) {
+    public static TriggersFragment newFragment(IoTCloudAPI api) {
         TriggersFragment fragment = new TriggersFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);

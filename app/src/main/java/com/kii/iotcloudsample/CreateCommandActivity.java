@@ -18,7 +18,7 @@ public class CreateCommandActivity extends AppCompatActivity {
         Intent i = getIntent();
         this.api = (IoTCloudAPI)i.getParcelableExtra("IoTCloudAPI");
 
-        CreateCommandFragment fragment = CreateCommandFragment.newCommandsFragment(this.api);
+        CreateCommandFragment fragment = CreateCommandFragment.newFragment(this.api);
         getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, "fragment").commit();
     }
     @Override

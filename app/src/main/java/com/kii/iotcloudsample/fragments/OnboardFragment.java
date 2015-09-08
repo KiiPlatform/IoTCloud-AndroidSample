@@ -34,7 +34,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static OnboardFragment newOnboardFragment(IoTCloudAPI api) {
+    public static OnboardFragment newFragment(IoTCloudAPI api) {
         OnboardFragment fragment = new OnboardFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);

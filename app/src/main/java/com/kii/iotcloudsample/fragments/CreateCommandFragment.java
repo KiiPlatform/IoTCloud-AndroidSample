@@ -50,7 +50,7 @@ public class CreateCommandFragment extends Fragment {
     private SeekBar seekColorTemperature;
     private Button btnSendCommand;
 
-    public static CreateCommandFragment newCommandsFragment(IoTCloudAPI api) {
+    public static CreateCommandFragment newFragment(IoTCloudAPI api) {
         CreateCommandFragment fragment = new CreateCommandFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);

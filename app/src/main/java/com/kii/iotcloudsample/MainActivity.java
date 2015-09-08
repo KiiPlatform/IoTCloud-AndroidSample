@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
@@ -22,7 +21,6 @@ import com.kii.iotcloud.TypedID;
 import com.kii.iotcloud.exception.StoredIoTCloudAPIInstanceNotFoundException;
 import com.kii.iotcloudsample.fragments.PagerFragment;
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
-import com.kii.iotcloudsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.sliding_tab.SlidingTabLayout;
 import com.kii.iotcloudsample.fragments.CommandsFragment;
 import com.kii.iotcloudsample.fragments.InfoFragment;
@@ -30,9 +28,6 @@ import com.kii.iotcloudsample.fragments.OnboardFragment;
 import com.kii.iotcloudsample.fragments.StatesFragment;
 import com.kii.iotcloudsample.fragments.TriggersFragment;
 import com.kii.iotcloudsample.smart_light_demo.ApiBuilder;
-
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -134,15 +129,15 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
                         switch (position) {
                 case 0:
-                    return OnboardFragment.newOnboardFragment(api);
+                    return OnboardFragment.newFragment(api);
                 case 1:
-                    return CommandsFragment.newCommandsFragment(api);
+                    return CommandsFragment.newFragment(api);
                 case 2:
-                    return TriggersFragment.newTriggersFragment(api);
+                    return TriggersFragment.newFragment(api);
                 case 3:
-                    return StatesFragment.newStatesFragment(api);
+                    return StatesFragment.newFragment(api);
                 case 4:
-                    return InfoFragment.newInfoFragment(api);
+                    return InfoFragment.newFragment(api);
                 default:
                     throw new RuntimeException("Unknown flow");
             }

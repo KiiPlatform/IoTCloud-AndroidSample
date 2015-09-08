@@ -22,7 +22,7 @@ public class StatesFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static StatesFragment newStatesFragment(IoTCloudAPI api) {
+    public static StatesFragment newFragment(IoTCloudAPI api) {
         StatesFragment fragment = new StatesFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);
