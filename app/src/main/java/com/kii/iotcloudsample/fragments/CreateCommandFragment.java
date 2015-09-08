@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import com.kii.iotcloud.command.Command;
 import com.kii.iotcloudsample.AppConstants;
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
+import com.kii.iotcloudsample.smart_light_demo.SetBrightness;
 import com.kii.iotcloudsample.smart_light_demo.SetColor;
 import com.kii.iotcloudsample.smart_light_demo.SetColorTemperature;
 import com.kii.iotcloudsample.smart_light_demo.TurnPower;
@@ -37,16 +40,18 @@ public class CreateCommandFragment extends Fragment {
     public static final String TAG = CreateCommandFragment.class.getSimpleName();
 
     private IoTCloudAPI api;
+    private CheckBox chkPower;
     private Switch switchPower;
-    private TextView txtBrightness;
+    private CheckBox chkBrightness;
     private SeekBar seekBrightness;
+    private CheckBox chkColor;
     private TextView txtR;
     private SeekBar seekR;
     private TextView txtG;
     private SeekBar seekG;
     private TextView txtB;
     private SeekBar seekB;
-    private TextView txtColorTemperature;
+    private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
     private Button btnSendCommand;
 
@@ -79,19 +84,44 @@ public class CreateCommandFragment extends Fragment {
             this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
         }
         View view = inflater.inflate(R.layout.create_command_view, null);
+        this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);
+        this.chkPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                switchPower.setEnabled(isChecked);
+            }
+        });
         this.switchPower = (Switch)view.findViewById(R.id.switchPower);
-        this.txtBrightness = (TextView)view.findViewById(R.id.textBrightness);
+        this.chkBrightness = (CheckBox)view.findViewById(R.id.checkboxBrightness);
+        this.chkBrightness.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                seekBrightness.setEnabled(isChecked);
+            }
+        });
         this.seekBrightness = (SeekBar)view.findViewById(R.id.seekBarBrightness);
         this.seekBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtBrightness.setText("Brightness: " + progress);
+                chkBrightness.setText("Brightness: " + progress);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        this.chkColor = (CheckBox)view.findViewById(R.id.checkboxColor);
+        this.chkColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                txtR.setEnabled(isChecked);
+                seekR.setEnabled(isChecked);
+                txtG.setEnabled(isChecked);
+                seekG.setEnabled(isChecked);
+                txtB.setEnabled(isChecked);
+                seekB.setEnabled(isChecked);
             }
         });
         this.txtR = (TextView)view.findViewById(R.id.textR);
@@ -136,12 +166,18 @@ public class CreateCommandFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        this.txtColorTemperature = (TextView)view.findViewById(R.id.textColorTemperature);
+        this.chkColorTemperature = (CheckBox)view.findViewById(R.id.checkboxColorTemperature);
+        this.chkColorTemperature.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                seekColorTemperature.setEnabled(isChecked);
+            }
+        });
         this.seekColorTemperature = (SeekBar)view.findViewById(R.id.seekBarColorTemperature);
         this.seekColorTemperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtColorTemperature.setText("Color temperature: " + progress);
+                chkColorTemperature.setText("Color temperature: " + progress);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -156,9 +192,22 @@ public class CreateCommandFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 List<Action> actions = new ArrayList<Action>();
-                actions.add(new TurnPower(switchPower.isChecked()));
-                actions.add(new SetColorTemperature(seekColorTemperature.getProgress()));
-                actions.add(new SetColor(seekR.getProgress(), seekG.getProgress(), seekB.getProgress()));
+                if (chkPower.isChecked()) {
+                    actions.add(new TurnPower(switchPower.isChecked()));
+                }
+                if (chkBrightness.isChecked()) {
+                    actions.add(new SetBrightness(seekBrightness.getProgress()));
+                }
+                if (chkColor.isChecked()) {
+                    actions.add(new SetColorTemperature(seekColorTemperature.getProgress()));
+                }
+                if (chkColorTemperature.isChecked()) {
+                    actions.add(new SetColor(seekR.getProgress(), seekG.getProgress(), seekB.getProgress()));
+                }
+                if (actions.size() == 0) {
+                    Toast.makeText(getContext(), "Requires at least one action", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                 wp.postNewCommand(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions).then(new DoneCallback<Command>() {
                     @Override
