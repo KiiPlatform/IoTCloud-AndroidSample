@@ -2,9 +2,9 @@ package com.kii.iotcloudsample.promise_api_wrapper;
 
 import android.util.Pair;
 
-import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
+import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.Command;
 import com.kii.iotcloud.trigger.Trigger;
 
@@ -58,6 +58,14 @@ public class IoTCloudPromiseAPIWrapper {
                     paginationKey = result.second;
                 } while (paginationKey != null);
                 return commands;
+            }
+        });
+    }
+    public Promise<Command, Throwable, Void> postNewCommand(final String schemaName, final int schemaVersion, final List<Action> actions) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Command>() {
+            @Override
+            protected Command doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewCommand(schemaName, schemaVersion, actions);
             }
         });
     }

@@ -91,7 +91,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                     }, new FailCallback<Throwable>() {
                         @Override
                         public void onFail(Throwable result) {
-                            result.printStackTrace();
                             Toast.makeText(getContext(), "On board failed: !" + result.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
@@ -107,7 +106,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                     }, new FailCallback<Throwable>() {
                         @Override
                         public void onFail(Throwable result) {
-                            result.printStackTrace();
                             Toast.makeText(getContext(), "On board failed: !" + result.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });

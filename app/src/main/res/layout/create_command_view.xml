@@ -134,7 +134,7 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/seekBar"
+        android:id="@+id/seekBarColorTemperature"
         android:layout_below="@+id/textColorTemperature"
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
@@ -145,7 +145,7 @@
         android:layout_height="wrap_content"
         android:text="Send Command"
         android:id="@+id/buttonSendCommand"
-        android:layout_below="@+id/seekBar"
+        android:layout_below="@+id/seekBarColorTemperature"
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
         />

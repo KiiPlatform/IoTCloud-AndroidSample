@@ -1,6 +1,7 @@
 package com.kii.iotcloudsample.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -78,7 +79,8 @@ public class CommandsFragment extends Fragment implements PagerFragment {
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateCommandActivity.class);
-                getActivity().startActivity(i);
+                i.putExtra("IoTCloudAPI", api);
+                startActivityForResult(i, 0);
             }
         });
         this.btnRefreshCommands = (Button) view.findViewById(R.id.buttonRefreshCommands);
@@ -95,6 +97,11 @@ public class CommandsFragment extends Fragment implements PagerFragment {
 
         return view;
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            this.loadCommandList();
+        }
+    }
 
     @Override
     public void onVisible(boolean visible) {
@@ -107,12 +114,13 @@ public class CommandsFragment extends Fragment implements PagerFragment {
         wp.listCommands().then(new DoneCallback<List<Command>>() {
             @Override
             public void onDone(List<Command> commands) {
+                adapter.clear();
                 adapter.addAll(commands);
+                adapter.notifyDataSetChanged();
             }
         }, new FailCallback<Throwable>() {
             @Override
             public void onFail(Throwable result) {
-                result.printStackTrace();
                 Toast.makeText(getContext(), "Unable to list commands: !" + result.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

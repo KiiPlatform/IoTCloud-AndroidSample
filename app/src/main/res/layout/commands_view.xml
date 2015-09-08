@@ -3,49 +3,53 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textCommands"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Commands in the Thing: ${thingID}"
-        android:id="@+id/textCommands"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"/>
 
     <Button
+        android:id="@+id/buttonNewCommand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Command"
-        android:id="@+id/buttonNewCommand"
         android:layout_below="@id/textCommands"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         />
     <Button
+        android:id="@+id/buttonRefreshCommands"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Refresh"
-        android:id="@+id/buttonRefreshCommands"
         android:layout_alignBottom="@+id/buttonNewCommand"
         android:layout_toRightOf="@+id/buttonNewCommand"
         android:layout_toEndOf="@+id/buttonNewCommand" />
 
-    <ScrollView
+    <ListView
+        android:id="@+id/listViewCommands"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonNewCommand"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="10dp">
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listViewCommands"
-            >
-        </ListView>
-    </ScrollView>
+        android:layout_margin="10dp"
+        >
+    </ListView>
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/buttonNewCommand"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_margin="10dp">-->
+    <!--</ScrollView>-->
 
 
 </RelativeLayout>
