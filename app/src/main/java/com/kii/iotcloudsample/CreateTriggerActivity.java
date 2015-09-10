@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloudsample.fragments.CreateCommandFragment;
 import com.kii.iotcloudsample.fragments.CreateTriggerFragment;
 
 public class CreateTriggerActivity extends AppCompatActivity {
@@ -19,8 +18,8 @@ public class CreateTriggerActivity extends AppCompatActivity {
         Intent i = getIntent();
         this.api = (IoTCloudAPI)i.getParcelableExtra("IoTCloudAPI");
 
-//        CreateTriggerFragment fragment = CreateTriggerFragment.(this.api);
-//        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, "fragment").commit();
+        CreateTriggerFragment fragment = CreateTriggerFragment.newFragment(this.api);
+        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, "CreateTriggerFragment").commit();
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {

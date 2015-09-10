@@ -1,45 +1,45 @@
 package com.kii.iotcloudsample.fragments;
 
-
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.command.Command;
-import com.kii.iotcloudsample.AppConstants;
 import com.kii.iotcloudsample.R;
-import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
-import com.kii.iotcloudsample.smart_light_demo.SetBrightness;
-import com.kii.iotcloudsample.smart_light_demo.SetColor;
-import com.kii.iotcloudsample.smart_light_demo.SetColorTemperature;
-import com.kii.iotcloudsample.smart_light_demo.TurnPower;
 
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
+import org.codepond.wizardroid.WizardStep;
+import org.codepond.wizardroid.persistence.ContextVariable;
 
-import java.util.ArrayList;
-import java.util.List;
+public class CreateTriggerCommandFragment extends WizardStep {
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CreateCommandFragment extends Fragment {
+    public static final String TAG = CreateTriggerCommandFragment.class.getSimpleName();
 
-    public static final String TAG = CreateCommandFragment.class.getSimpleName();
+    @ContextVariable
+    private boolean turnPowerEnabled;
+    @ContextVariable
+    private boolean setBrightnessEnabled;
+    @ContextVariable
+    private boolean setColorEnabled;
+    @ContextVariable
+    private boolean setColorTemperatureEnabled;
+    @ContextVariable
+    private boolean power;
+    @ContextVariable
+    private int brightness;
+    @ContextVariable
+    private int colorR;
+    @ContextVariable
+    private int colorG;
+    @ContextVariable
+    private int colorB;
+    @ContextVariable
+    private int colorTemperature;
 
-    private IoTCloudAPI api;
     private CheckBox chkPower;
     private Switch switchPower;
     private CheckBox chkBrightness;
@@ -53,42 +53,20 @@ public class CreateCommandFragment extends Fragment {
     private SeekBar seekB;
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
-    private Button btnSendCommand;
 
-    public static CreateCommandFragment newFragment(IoTCloudAPI api) {
-        CreateCommandFragment fragment = new CreateCommandFragment();
-        Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
-        fragment.setArguments(arguments);
-        return fragment;
-    }
-
-    public CreateCommandFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+    public CreateTriggerCommandFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
-        }
-        View view = inflater.inflate(R.layout.create_command_view, null);
+        View view = inflater.inflate(R.layout.create_trigger_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);
         this.chkPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 switchPower.setEnabled(isChecked);
+                validateRequiredField();
             }
         });
         this.switchPower = (Switch)view.findViewById(R.id.switchPower);
@@ -97,6 +75,7 @@ public class CreateCommandFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 seekBrightness.setEnabled(isChecked);
+                validateRequiredField();
             }
         });
         this.seekBrightness = (SeekBar)view.findViewById(R.id.seekBarBrightness);
@@ -122,6 +101,7 @@ public class CreateCommandFragment extends Fragment {
                 seekG.setEnabled(isChecked);
                 txtB.setEnabled(isChecked);
                 seekB.setEnabled(isChecked);
+                validateRequiredField();
             }
         });
         this.txtR = (TextView)view.findViewById(R.id.textR);
@@ -171,6 +151,7 @@ public class CreateCommandFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 seekColorTemperature.setEnabled(isChecked);
+                validateRequiredField();
             }
         });
         this.seekColorTemperature = (SeekBar)view.findViewById(R.id.seekBarColorTemperature);
@@ -186,45 +167,56 @@ public class CreateCommandFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
-        this.btnSendCommand = (Button)view.findViewById(R.id.buttonSendCommand);
-        this.btnSendCommand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<Action> actions = new ArrayList<Action>();
-                if (chkPower.isChecked()) {
-                    actions.add(new TurnPower(switchPower.isChecked()));
-                }
-                if (chkBrightness.isChecked()) {
-                    actions.add(new SetBrightness(seekBrightness.getProgress()));
-                }
-                if (chkColor.isChecked()) {
-                    actions.add(new SetColor(seekR.getProgress(), seekG.getProgress(), seekB.getProgress()));
-                }
-                if (chkColorTemperature.isChecked()) {
-                    actions.add(new SetColorTemperature(seekColorTemperature.getProgress()));
-                }
-                if (actions.size() == 0) {
-                    Toast.makeText(getContext(), "Requires at least one action", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                wp.postNewCommand(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions).then(new DoneCallback<Command>() {
-                    @Override
-                    public void onDone(Command result) {
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                }, new FailCallback<Throwable>() {
-                    @Override
-                    public void onFail(Throwable result) {
-                        Toast.makeText(getContext(), "Failed to create new command: !" + result.getMessage(), Toast.LENGTH_LONG).show();
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
-                    }
-                });
-            }
-        });
+        this.validateRequiredField();
+        this.loadDataFields();
         return view;
+    }
+    @Override
+    public void onExit(int exitCode) {
+        switch (exitCode) {
+            case WizardStep.EXIT_NEXT:
+                this.saveDataFields();
+                break;
+            case WizardStep.EXIT_PREVIOUS:
+                break;
+        }
+    }
+    private void validateRequiredField() {
+        if (!this.chkPower.isChecked() &&
+            !this.chkBrightness.isChecked() &&
+            !this.chkColor.isChecked() &&
+            !this.chkColorTemperature.isChecked()) {
+            this.notifyIncomplete();
+        } else {
+            this.notifyCompleted();
+        }
+    }
+    private void loadDataFields() {
+        this.switchPower.setChecked(this.power);
+        this.seekBrightness.setProgress(this.brightness);
+        this.seekR.setProgress(this.colorR);
+        this.seekG.setProgress(this.colorG);
+        this.seekB.setProgress(this.colorB);
+        this.seekColorTemperature.setProgress(this.colorTemperature);
+    }
+    private void saveDataFields() {
+        this.turnPowerEnabled = this.chkPower.isChecked();
+        if (chkPower.isChecked()) {
+            this.power = this.switchPower.isChecked();
+        }
+        this.setBrightnessEnabled = this.chkBrightness.isChecked();
+        if (chkBrightness.isChecked()) {
+            this.brightness = this.seekBrightness.getProgress();
+        }
+        this.setColorEnabled = this.chkColor.isChecked();
+        if (this.chkColor.isChecked()) {
+            this.colorR = this.seekR.getProgress();
+            this.colorG = this.seekG.getProgress();
+            this.colorB = this.seekB.getProgress();
+        }
+        this.setColorTemperatureEnabled = this.chkColorTemperature.isChecked();
+        if (this.chkColorTemperature.isChecked()) {
+            this.colorTemperature = this.seekColorTemperature.getProgress();
+        }
     }
 }
