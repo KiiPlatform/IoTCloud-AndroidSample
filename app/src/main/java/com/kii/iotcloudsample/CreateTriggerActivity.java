@@ -31,4 +31,7 @@ public class CreateTriggerActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
     }
+    public IoTCloudAPI getApi() {
+        return this.api;
+    }
 }

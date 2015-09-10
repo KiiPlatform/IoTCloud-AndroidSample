@@ -1,11 +1,13 @@
 package com.kii.iotcloudsample.promise_api_wrapper;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.Command;
+import com.kii.iotcloud.trigger.Predicate;
 import com.kii.iotcloud.trigger.Trigger;
 
 import org.jdeferred.Promise;
@@ -69,6 +71,7 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+
     public Promise<List<Trigger>, Throwable, Void> listTriggers() {
         return adm.when(new DeferredAsyncTask<Void, Void, List<Trigger>>() {
             @Override
@@ -81,6 +84,19 @@ public class IoTCloudPromiseAPIWrapper {
                     paginationKey = result.second;
                 } while (paginationKey != null);
                 return triggers;
+            }
+        });
+    }
+
+    public Promise<Trigger, Throwable, Void> postNewTrigger(
+            final String schemaName,
+            final int schemaVersion,
+            final List<Action> actions,
+            final Predicate predicate) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewTrigger(schemaName, schemaVersion, actions, predicate);
             }
         });
     }

@@ -16,6 +16,10 @@ public class Range extends Clause {
     public String getSummary() {
         return "";
     }
+    @Override
+    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        return null;
+    }
     public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
     }
 
@@ -28,14 +32,18 @@ public class Range extends Clause {
         }
         @Override
         public ClauseType getType() {
-            return ClauseType.RANGE;
+            return ClauseType.GREATER_THAN;
         }
         @Override
         public String getSummary() {
             if (this.clause == null) {
-                return "Greater Than";
+                return this.getType().getCaption();
             }
             return this.clause.getField() + " > " + this.clause.getLowerLimit();
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return this.clause;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -50,14 +58,18 @@ public class Range extends Clause {
         }
         @Override
         public ClauseType getType() {
-            return ClauseType.RANGE;
+            return ClauseType.GREATER_THAN_EQUALS;
         }
         @Override
         public String getSummary() {
             if (this.clause == null) {
-                return "Greater Than Equals";
+                return this.getType().getCaption();
             }
             return this.clause.getField() + " >= " + this.clause.getLowerLimit();
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return this.clause;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -72,14 +84,18 @@ public class Range extends Clause {
         }
         @Override
         public ClauseType getType() {
-            return ClauseType.RANGE;
+            return ClauseType.LESS_THAN;
         }
         @Override
         public String getSummary() {
             if (this.clause == null) {
-                return "Less Than";
+                return this.getType().getCaption();
             }
             return this.clause.getField() + " < " + this.clause.getUpperLimit();
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return this.clause;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -94,14 +110,18 @@ public class Range extends Clause {
         }
         @Override
         public ClauseType getType() {
-            return ClauseType.RANGE;
+            return ClauseType.LESS_THAN_EQUALS;
         }
         @Override
         public String getSummary() {
             if (this.clause == null) {
-                return "Less Than Equals";
+                return this.getType().getCaption();
             }
             return this.clause.getField() + " <= " + this.clause.getUpperLimit();
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return this.clause;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {

@@ -22,6 +22,10 @@ public class NotEquals extends Clause {
         return this.clause.getEquals().getField() + " != " + this.clause.getEquals().getValue().toString();
     }
     @Override
+    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        return this.clause;
+    }
+    @Override
     public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
         this.clause = (com.kii.iotcloud.trigger.clause.NotEquals)clause;
     }

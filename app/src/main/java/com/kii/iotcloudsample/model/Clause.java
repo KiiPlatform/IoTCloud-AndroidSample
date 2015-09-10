@@ -1,13 +1,26 @@
 package com.kii.iotcloudsample.model;
 
+import android.os.Parcelable;
+
 public abstract class Clause {
 
     public enum ClauseType {
-        AND,
-        OR,
-        EQUALS,
-        NOT_EQUALS,
-        RANGE
+        AND("And"),
+        OR("Or"),
+        EQUALS("Equals"),
+        NOT_EQUALS("Not Equals"),
+        GREATER_THAN("Greater Than"),
+        GREATER_THAN_EQUALS("Greater Than Equals"),
+        LESS_THAN("Less Than"),
+        LESS_THAN_EQUALS("Less Than Equals"),
+        RANGE("Range");
+        private final String caption;
+        private ClauseType(String caption) {
+            this.caption = caption;
+        }
+        public String getCaption() {
+            return this.caption;
+        }
     }
     public static final Clause[] ALL_CLAUSES = {
             new And(),
@@ -24,6 +37,7 @@ public abstract class Clause {
     public abstract ClauseType getType();
     public abstract String getSummary();
     public abstract void setClause(com.kii.iotcloud.trigger.clause.Clause clause);
+    public abstract com.kii.iotcloud.trigger.clause.Clause getClause();
     public boolean isContainer() {
         return false;
     }

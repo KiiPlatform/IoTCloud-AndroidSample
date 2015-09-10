@@ -16,7 +16,11 @@ public class And extends ContainerClause {
     }
     @Override
     public String getSummary() {
-        return "AND";
+        return this.getType().getCaption();
+    }
+    @Override
+    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        return this.clause;
     }
     @Override
     public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -35,7 +39,11 @@ public class And extends ContainerClause {
         }
         @Override
         public String getSummary() {
-            return "AND";
+            return "";
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return null;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -59,15 +67,19 @@ public class And extends ContainerClause {
         }
         @Override
         public String getSummary() {
-            return "AND";
+            return "";
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return null;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
         }
-        public AndOpen getClose() {
+        public AndOpen getOpen() {
             return this.open;
         }
-        public void setClose(AndOpen open)  {
+        public void setOpen(AndOpen open)  {
             this.open = open;
         }
     }

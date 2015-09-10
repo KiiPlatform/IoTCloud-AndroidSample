@@ -17,7 +17,11 @@ public class Equals extends Clause {
         if (this.clause == null) {
             return "Equals";
         }
-        return this.clause.getField() + " != " + this.clause.getValue().toString();
+        return this.clause.getField() + " == " + this.clause.getValue().toString();
+    }
+    @Override
+    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        return this.clause;
     }
     @Override
     public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {

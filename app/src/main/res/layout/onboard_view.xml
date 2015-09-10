@@ -10,20 +10,20 @@
         <LinearLayout android:id="@+id/onboard_with_id_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
             <TextView
+                android:id="@+id/textThingId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Thing ID"
-                android:id="@+id/textThingId"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
                 />
             <EditText
+                android:id="@+id/editTextThingId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextThingId"
                 android:singleLine="true"
                 android:layout_below="@+id/textThingId"
                 android:layout_alignParentLeft="true"
@@ -32,22 +32,22 @@
                 />
 
             <TextView
+                android:id="@+id/textThingPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Thing Password"
-                android:id="@+id/textThingPassword"
                 android:layout_below="@+id/editTextThingId"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
                 />
             <EditText
+                android:id="@+id/editTextThingPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:ems="10"
-                android:id="@+id/editTextThingPassword"
                 android:layout_below="@+id/textThingPassword"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -57,20 +57,20 @@
         <LinearLayout android:id="@+id/onboard_with_vender_id_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
             <TextView
+                android:id="@+id/textVenderThingId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Vender Thing ID"
-                android:id="@+id/textVenderThingId"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
                 />
             <EditText
+                android:id="@+id/editTextVenderThingId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextVenderThingId"
                 android:singleLine="true"
                 android:layout_below="@+id/textVenderThingId"
                 android:layout_alignParentLeft="true"
@@ -79,22 +79,22 @@
                 />
 
             <TextView
+                android:id="@+id/textVenderThingPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Thing Password"
-                android:id="@+id/textVenderThingPassword"
                 android:layout_below="@+id/editTextVenderThingId"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
                 />
             <EditText
+                android:id="@+id/editTextVenderThingPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:ems="10"
-                android:id="@+id/editTextVenderThingPassword"
                 android:layout_below="@+id/textVenderThingPassword"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -102,11 +102,11 @@
                 />
 
             <TextView
+                android:id="@+id/textThingType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Thing Type"
-                android:id="@+id/textThingType"
                 android:layout_below="@+id/editTextVenderThingPassword"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -114,9 +114,9 @@
                 android:layout_margin="10dp"
                 />
             <EditText
+                android:id="@+id/editTextThingType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextThingType"
                 android:singleLine="true"
                 android:layout_below="@+id/textThingType"
                 android:layout_alignParentLeft="true"
@@ -127,10 +127,10 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/buttonOnboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Onboard"
-        android:id="@+id/buttonOnboard"
         android:layout_below="@+id/onboard_form"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -138,20 +138,20 @@
         />
 
     <Switch
+        android:id="@+id/switchThingIDType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/switchThingIDType"
         android:layout_below="@+id/buttonOnboard"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp" />
 
     <TextView
+        android:id="@+id/textSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Use vendor thing ID"
-        android:id="@+id/textSwitch"
         android:layout_alignTop="@+id/switchThingIDType"
         android:layout_toRightOf="@+id/switchThingIDType"
         android:layout_toEndOf="@+id/switchThingIDType"

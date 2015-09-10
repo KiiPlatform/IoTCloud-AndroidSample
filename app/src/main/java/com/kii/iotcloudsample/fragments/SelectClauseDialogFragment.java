@@ -1,10 +1,13 @@
 package com.kii.iotcloudsample.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +24,12 @@ import com.kii.iotcloudsample.model.Clause;
 
 public class SelectClauseDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
+    public static final String EXTRA_CLAUSE_TYPE = "EXTRA_CLAUSE_TYPE";
     private ListView listView;
 
-    public static SelectClauseDialogFragment newFragment() {
+    public static SelectClauseDialogFragment newFragment(Fragment target, int requestCode) {
         SelectClauseDialogFragment fragment = new SelectClauseDialogFragment();
+        fragment.setTargetFragment(target, requestCode);
         return fragment;
     }
     public SelectClauseDialogFragment() {
@@ -54,7 +59,14 @@ public class SelectClauseDialogFragment extends DialogFragment implements Adapte
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Fragment target = getTargetFragment();
+        if (target != null) {
+            Clause clause = (Clause)parent.getItemAtPosition(position);
+            Intent data = new Intent();
+            data.putExtra(EXTRA_CLAUSE_TYPE, clause.getType());
+            target.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+        }
+        dismiss();
     }
 
     private class ClauseListAdapter extends ArrayAdapter<Clause> {

@@ -16,7 +16,11 @@ public class Or extends ContainerClause {
     }
     @Override
     public String getSummary() {
-        return "OR";
+        return this.getType().getCaption();
+    }
+    @Override
+    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        return this.clause;
     }
     @Override
     public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -35,7 +39,11 @@ public class Or extends ContainerClause {
         }
         @Override
         public String getSummary() {
-            return "OR";
+            return "";
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return null;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
@@ -59,7 +67,11 @@ public class Or extends ContainerClause {
         }
         @Override
         public String getSummary() {
-            return "OR";
+            return "";
+        }
+        @Override
+        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+            return null;
         }
         @Override
         public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
