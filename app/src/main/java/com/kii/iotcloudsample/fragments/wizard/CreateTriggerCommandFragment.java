@@ -1,4 +1,4 @@
-package com.kii.iotcloudsample.fragments;
+package com.kii.iotcloudsample.fragments.wizard;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,36 +10,19 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloud.command.Action;
 import com.kii.iotcloudsample.R;
+import com.kii.iotcloudsample.smart_light_demo.SetBrightness;
+import com.kii.iotcloudsample.smart_light_demo.SetColor;
+import com.kii.iotcloudsample.smart_light_demo.SetColorTemperature;
+import com.kii.iotcloudsample.smart_light_demo.TurnPower;
 
-import org.codepond.wizardroid.WizardStep;
-import org.codepond.wizardroid.persistence.ContextVariable;
-
-public class CreateTriggerCommandFragment extends WizardStep {
+public class CreateTriggerCommandFragment extends WizardFragment {
 
     public static final String TAG = CreateTriggerCommandFragment.class.getSimpleName();
 
-    @ContextVariable
-    private boolean turnPowerEnabled;
-    @ContextVariable
-    private boolean setBrightnessEnabled;
-    @ContextVariable
-    private boolean setColorEnabled;
-    @ContextVariable
-    private boolean setColorTemperatureEnabled;
-    @ContextVariable
-    private boolean power;
-    @ContextVariable
-    private int brightness;
-    @ContextVariable
-    private int colorR;
-    @ContextVariable
-    private int colorG;
-    @ContextVariable
-    private int colorB;
-    @ContextVariable
-    private int colorTemperature;
-
+    private IoTCloudAPI api;
     private CheckBox chkPower;
     private Switch switchPower;
     private CheckBox chkBrightness;
@@ -54,12 +37,33 @@ public class CreateTriggerCommandFragment extends WizardStep {
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
 
+    public static CreateTriggerCommandFragment newFragment(IoTCloudAPI api) {
+        CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("IoTCloudAPI", api);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
     public CreateTriggerCommandFragment() {
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+        }
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+        }
         View view = inflater.inflate(R.layout.create_trigger_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);
         this.chkPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -160,63 +164,86 @@ public class CreateTriggerCommandFragment extends WizardStep {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 chkColorTemperature.setText("Color temperature: " + progress);
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        this.validateRequiredField();
-        this.loadDataFields();
         return view;
-    }
-    @Override
-    public void onExit(int exitCode) {
-        switch (exitCode) {
-            case WizardStep.EXIT_NEXT:
-                this.saveDataFields();
-                break;
-            case WizardStep.EXIT_PREVIOUS:
-                break;
-        }
     }
     private void validateRequiredField() {
         if (!this.chkPower.isChecked() &&
             !this.chkBrightness.isChecked() &&
             !this.chkColor.isChecked() &&
             !this.chkColorTemperature.isChecked()) {
-            this.notifyIncomplete();
+            this.setNextButtonEnabled(false);
         } else {
-            this.notifyCompleted();
+            this.setNextButtonEnabled(true);
         }
     }
-    private void loadDataFields() {
-        this.switchPower.setChecked(this.power);
-        this.seekBrightness.setProgress(this.brightness);
-        this.seekR.setProgress(this.colorR);
-        this.seekG.setProgress(this.colorG);
-        this.seekB.setProgress(this.colorB);
-        this.seekColorTemperature.setProgress(this.colorTemperature);
+    private void clearView() {
+        this.switchPower.setChecked(false);
+        this.seekBrightness.setProgress(0);
+        this.seekR.setProgress(0);
+        this.seekR.setProgress(0);
+        this.seekB.setProgress(0);
+        this.seekColorTemperature.setProgress(0);
+        this.chkPower.setChecked(false);
+        this.chkBrightness.setChecked(false);
+        this.chkColor.setChecked(false);
+        this.chkColorTemperature.setChecked(false);
     }
-    private void saveDataFields() {
-        this.turnPowerEnabled = this.chkPower.isChecked();
-        if (chkPower.isChecked()) {
-            this.power = this.switchPower.isChecked();
+
+    @Override
+    public void onActivate() {
+        this.clearView();
+        for (Action action : this.editingTrigger.getActions()) {
+            if (action instanceof TurnPower) {
+                this.chkPower.setChecked(true);
+                this.switchPower.setChecked(((TurnPower)action).power);
+            } else if (action instanceof SetBrightness) {
+                this.chkBrightness.setChecked(true);
+                this.seekBrightness.setProgress(((SetBrightness)action).brightness);
+            } else if (action instanceof SetColor) {
+                this.chkColor.setChecked(true);
+                this.seekR.setProgress(((SetColor) action).color[0]);
+                this.seekG.setProgress(((SetColor) action).color[1]);
+                this.seekB.setProgress(((SetColor) action).color[2]);
+            } else if (action instanceof SetColorTemperature) {
+                this.chkColorTemperature.setChecked(true);
+                this.seekColorTemperature.setProgress(((SetColorTemperature) action).colorTemperature);
+            }
         }
-        this.setBrightnessEnabled = this.chkBrightness.isChecked();
-        if (chkBrightness.isChecked()) {
-            this.brightness = this.seekBrightness.getProgress();
+        this.validateRequiredField();
+    }
+    @Override
+    public void onInactivate(int exitCode) {
+        if (exitCode == EXIT_NEXT) {
+            this.editingTrigger.clearActions();
+            if (this.chkPower.isChecked()) {
+                this.editingTrigger.addAction(new TurnPower(this.switchPower.isChecked()));
+            }
+            if (this.chkBrightness.isChecked()) {
+                this.editingTrigger.addAction(new SetBrightness(this.seekBrightness.getProgress()));
+            }
+            if (this.chkColor.isChecked()) {
+                this.editingTrigger.addAction(new SetColor(this.seekR.getProgress(), this.seekG.getProgress(), this.seekB.getProgress()));
+            }
+            if (this.chkColorTemperature.isChecked()) {
+                this.editingTrigger.addAction(new SetColorTemperature(this.seekColorTemperature.getProgress()));
+            }
         }
-        this.setColorEnabled = this.chkColor.isChecked();
-        if (this.chkColor.isChecked()) {
-            this.colorR = this.seekR.getProgress();
-            this.colorG = this.seekG.getProgress();
-            this.colorB = this.seekB.getProgress();
-        }
-        this.setColorTemperatureEnabled = this.chkColorTemperature.isChecked();
-        if (this.chkColorTemperature.isChecked()) {
-            this.colorTemperature = this.seekColorTemperature.getProgress();
-        }
+    }
+    @Override
+    public String getNextButtonText() {
+        return "Next";
+    }
+    @Override
+    public String getPreviousButtonText() {
+        return "Cancel";
     }
 }

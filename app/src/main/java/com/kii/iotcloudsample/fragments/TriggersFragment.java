@@ -1,6 +1,7 @@
 package com.kii.iotcloudsample.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -99,6 +100,12 @@ public class TriggersFragment extends Fragment implements PagerFragment {
 
         return view;
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            this.loadTriggerList();
+        }
+    }
+
     @Override
     public void onVisible(boolean visible) {
         if (visible) {

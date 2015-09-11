@@ -1,4 +1,4 @@
-package com.kii.iotcloudsample.fragments;
+package com.kii.iotcloudsample.fragments.wizard;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,68 +12,35 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.trigger.Condition;
 import com.kii.iotcloud.trigger.StatePredicate;
-import com.kii.iotcloud.trigger.Trigger;
 import com.kii.iotcloud.trigger.TriggersWhen;
-import com.kii.iotcloudsample.AppConstants;
-import com.kii.iotcloudsample.CreateTriggerActivity;
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ImageViewHolder;
+import com.kii.iotcloudsample.fragments.EditClauseDialogFragment;
+import com.kii.iotcloudsample.fragments.SelectClauseDialogFragment;
 import com.kii.iotcloudsample.model.And;
 import com.kii.iotcloudsample.model.Clause;
 import com.kii.iotcloudsample.model.Equals;
 import com.kii.iotcloudsample.model.NotEquals;
 import com.kii.iotcloudsample.model.Or;
 import com.kii.iotcloudsample.model.Range;
-import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
-import com.kii.iotcloudsample.smart_light_demo.SetBrightness;
-import com.kii.iotcloudsample.smart_light_demo.SetColor;
-import com.kii.iotcloudsample.smart_light_demo.SetColorTemperature;
-import com.kii.iotcloudsample.smart_light_demo.TurnPower;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
-
-import org.codepond.wizardroid.WizardStep;
-import org.codepond.wizardroid.persistence.ContextVariable;
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public class CreateTriggerPredicateFragment extends WizardStep implements AdapterView.OnItemClickListener {
+public class CreateTriggerPredicateFragment extends WizardFragment implements AdapterView.OnItemClickListener {
 
     private static final int REQUEST_CODE_ADD_CLAUSE = 100;
     private static final int REQUEST_CODE_EDIT_CLAUSE = 101;
 
-    @ContextVariable
-    private boolean turnPowerEnabled;
-    @ContextVariable
-    private boolean setBrightnessEnabled;
-    @ContextVariable
-    private boolean setColorEnabled;
-    @ContextVariable
-    private boolean setColorTemperatureEnabled;
-    @ContextVariable
-    private boolean power;
-    @ContextVariable
-    private int brightness;
-    @ContextVariable
-    private int colorR;
-    @ContextVariable
-    private int colorG;
-    @ContextVariable
-    private int colorB;
-    @ContextVariable
-    private int colorTemperature;
-
+    private IoTCloudAPI api;
     private DragSortListView listView;
     private DragSortController controller;
     private ClauseAdapter adapter;
@@ -107,12 +74,32 @@ public class CreateTriggerPredicateFragment extends WizardStep implements Adapte
         }
     };
 
+    public static CreateTriggerPredicateFragment newFragment(IoTCloudAPI api) {
+        CreateTriggerPredicateFragment fragment = new CreateTriggerPredicateFragment();
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("IoTCloudAPI", api);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
     public CreateTriggerPredicateFragment() {
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+        }
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+        }
         View view = inflater.inflate(R.layout.create_trigger_predicate_view, null);
         ((FloatingActionButton)view.findViewById(R.id.fabAddClause)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -130,7 +117,6 @@ public class CreateTriggerPredicateFragment extends WizardStep implements Adapte
         this.listView.setDropListener(this.onDrop);
         this.listView.setRemoveListener(this.onRemove);
         this.listView.setAdapter(this.adapter);
-        this.validateClauses();
         return view;
     }
     @Override
@@ -215,22 +201,35 @@ public class CreateTriggerPredicateFragment extends WizardStep implements Adapte
         this.validateClauses();
     }
     @Override
-    public void onExit(int exitCode) {
-        switch (exitCode) {
-            case WizardStep.EXIT_NEXT:
-                this.createTrigger();
-                getActivity().finish();
-                break;
-            case WizardStep.EXIT_PREVIOUS:
-                break;
-        }
-    }
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Clause clause = (Clause)this.listView.getItemAtPosition(position);
         if (!clause.isContainer()) {
             this.editClause(clause.getType(), clause, position);
         }
+    }
+    @Override
+    public void onActivate() {
+        this.validateClauses();
+        if (this.editingTrigger.getPredicate() != null) {
+            List<Clause> clauses = this.parseClause(this.editingTrigger.getPredicate().getCondition().getClause());
+            for (Clause clause : clauses) {
+                this.adapter.add(clause);
+            }
+        }
+    }
+    @Override
+    public void onInactivate(int exitCode) {
+        com.kii.iotcloud.trigger.clause.Clause clause = this.parseClause(this.adapter.getItems());
+        StatePredicate predicate = new StatePredicate(new Condition(clause), TriggersWhen.CONDITION_TRUE);
+        this.editingTrigger.setPredicate(predicate);
+    }
+    @Override
+    public String getNextButtonText() {
+        return "Next";
+    }
+    @Override
+    public String getPreviousButtonText() {
+        return "Previous";
     }
     private DragSortController buildController(DragSortListView dslv) {
         DragSortController controller = new DragSortController(dslv);
@@ -252,58 +251,78 @@ public class CreateTriggerPredicateFragment extends WizardStep implements Adapte
     }
     private void validateClauses() {
         if (this.adapter != null) {
-            com.kii.iotcloud.trigger.clause.Clause clause = this.parseClauses(this.adapter.getItems());
+            com.kii.iotcloud.trigger.clause.Clause clause = this.parseClause(this.adapter.getItems());
             if (clause != null) {
                 if (clause instanceof com.kii.iotcloud.trigger.clause.ContainerClause) {
                     if (!((com.kii.iotcloud.trigger.clause.ContainerClause)clause).hasClause()) {
-                        this.notifyIncomplete();
+                        this.setNextButtonEnabled(false);
                         return;
                     }
                 }
-                this.notifyCompleted();
+                this.setNextButtonEnabled(true);
                 return;
             }
         }
-        this.notifyIncomplete();
+        this.setNextButtonEnabled(false);
     }
-    private void createTrigger() {
-        List<Action> actions = new ArrayList<Action>();
-        if (this.turnPowerEnabled) {
-            actions.add(new TurnPower(this.power));
-        }
-        if (this.setBrightnessEnabled) {
-            actions.add(new SetBrightness(this.brightness));
-        }
-        if (this.setColorEnabled) {
-            actions.add(new SetColor(this.colorR, this.colorG, this.colorB));
-        }
-        if (this.setColorTemperatureEnabled) {
-            actions.add(new SetColorTemperature(this.colorTemperature));
-        }
-        com.kii.iotcloud.trigger.clause.Clause clause = parseClauses(this.adapter.getItems());
-        StatePredicate predicate = new StatePredicate(new Condition(clause), TriggersWhen.CONDITION_TRUE);
-
-        // FIXME: WizarDroid does not support the persistence of Parcelable.
-        //        So we need to get the IoTCloudAPI from parent activity.
-        // see:https://github.com/Nimrodda/WizarDroid/wiki/WizarDroid-Context
-        IoTCloudAPI api = ((CreateTriggerActivity)getActivity()).getApi();
-        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-        wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions, predicate).then(new DoneCallback<Trigger>() {
-            @Override
-            public void onDone(Trigger result) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Failed to create new trigger: !" + result.getMessage(), Toast.LENGTH_LONG).show();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                getActivity().finish();
-            }
-        });
+    private List<Clause> parseClause(com.kii.iotcloud.trigger.clause.Clause clause) {
+        List<Clause> clauses = new ArrayList<Clause>();
+        this.parseClause(clause, clauses);
+        return clauses;
     }
-    private com.kii.iotcloud.trigger.clause.Clause parseClauses(List<Clause> clauses) {
+    private void parseClause(com.kii.iotcloud.trigger.clause.Clause clause, List<Clause> clauses) {
+        if (clause instanceof com.kii.iotcloud.trigger.clause.ContainerClause) {
+            com.kii.iotcloud.trigger.clause.ContainerClause container = (com.kii.iotcloud.trigger.clause.ContainerClause)clause;
+            if (container instanceof com.kii.iotcloud.trigger.clause.And) {
+                clauses.add(new And.AndOpen());
+            } else if (container instanceof com.kii.iotcloud.trigger.clause.Or) {
+                clauses.add(new Or.OrOpen());
+            }
+            for (com.kii.iotcloud.trigger.clause.Clause innerClause : container.getClauses()) {
+                this.parseClause(innerClause, clauses);
+            }
+            if (container instanceof com.kii.iotcloud.trigger.clause.And) {
+                clauses.add(new And.AndClose());
+            } else if (container instanceof com.kii.iotcloud.trigger.clause.Or) {
+                clauses.add(new Or.OrClose());
+            }
+        } else {
+            if (clause instanceof com.kii.iotcloud.trigger.clause.Equals) {
+                Equals equals = new Equals();
+                equals.setClause(clause);
+                clauses.add(equals);
+            } else if (clause instanceof com.kii.iotcloud.trigger.clause.NotEquals) {
+                NotEquals notEquals = new NotEquals();
+                notEquals.setClause(clause);
+                clauses.add(notEquals);
+            } else if (clause instanceof com.kii.iotcloud.trigger.clause.Range) {
+                com.kii.iotcloud.trigger.clause.Range range = (com.kii.iotcloud.trigger.clause.Range)clause;
+                if (range.getLowerLimit() != null) {
+                    if (range.getLowerIncluded() == Boolean.TRUE) {
+                        Range.GreaterThanEquals greaterThanEquals = new Range.GreaterThanEquals();
+                        greaterThanEquals.setClause(range);
+                        clauses.add(greaterThanEquals);
+                    } else {
+                        Range.GreaterThan greaterThan = new Range.GreaterThan();
+                        greaterThan.setClause(range);
+                        clauses.add(greaterThan);
+                    }
+                }
+                if (range.getUpperLimit() != null) {
+                    if (range.getUpperIncluded() == Boolean.TRUE) {
+                        Range.LessThanEquals lessThanEquals = new Range.LessThanEquals();
+                        lessThanEquals.setClause(range);
+                        clauses.add(lessThanEquals);
+                    } else {
+                        Range.LessThan lessThan = new Range.LessThan();
+                        lessThan.setClause(range);
+                        clauses.add(lessThan);
+                    }
+                }
+            }
+        }
+    }
+    private com.kii.iotcloud.trigger.clause.Clause parseClause(List<Clause> clauses) {
         if (clauses.size() == 0) {
             return null;
         }

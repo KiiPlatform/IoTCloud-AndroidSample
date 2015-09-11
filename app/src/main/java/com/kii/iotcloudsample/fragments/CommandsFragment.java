@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
 import com.kii.iotcloud.command.Command;
 import com.kii.iotcloudsample.CreateCommandActivity;
 import com.kii.iotcloudsample.R;
