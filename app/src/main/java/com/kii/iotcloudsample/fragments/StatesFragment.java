@@ -40,11 +40,11 @@ public class StatesFragment extends Fragment implements PagerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("IoTCloudAPI");
         }
         View view = inflater.inflate(R.layout.states_view, null);
         String caption = ((TextView)view.findViewById(R.id.textState)).getText().toString();

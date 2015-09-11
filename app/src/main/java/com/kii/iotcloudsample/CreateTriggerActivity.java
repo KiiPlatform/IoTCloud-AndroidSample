@@ -128,7 +128,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
+        this.api = savedInstanceState.getParcelable("IoTCloudAPI");
     }
     public IoTCloudAPI getApi() {
         return this.api;

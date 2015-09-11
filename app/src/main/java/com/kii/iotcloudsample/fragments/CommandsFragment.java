@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CommandsFragment extends Fragment implements PagerFragment {
+public class CommandsFragment extends Fragment implements PagerFragment, AdapterView.OnItemClickListener {
 
     private IoTCloudAPI api;
     private CommandArrayAdapter adapter;
@@ -97,6 +98,7 @@ public class CommandsFragment extends Fragment implements PagerFragment {
         this.adapter = new CommandArrayAdapter(getContext());
         this.loadCommandList();
         this.lstCommands.setAdapter(this.adapter);
+        this.lstCommands.setOnItemClickListener(this);
         this.progressLoading = (ProgressBar) view.findViewById(R.id.progressLoading);
 
         return view;
@@ -114,6 +116,13 @@ public class CommandsFragment extends Fragment implements PagerFragment {
             this.btnRefreshCommands.setEnabled(this.api.onboarded());
         }
     }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Command command = (Command)this.lstCommands.getItemAtPosition(position);
+        CommandDetailFragment dialog = CommandDetailFragment.newFragment(this.api, command);
+        dialog.show(getFragmentManager(), "CommandDetail");
+    }
+
     private void loadCommandList() {
         IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
         this.showLoading(true);

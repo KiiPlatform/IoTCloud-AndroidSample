@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="When"
+        android:textStyle="bold"
         android:layout_below="@+id/textTitle"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="10dp"

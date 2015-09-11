@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TriggersFragment extends Fragment implements PagerFragment {
+public class TriggersFragment extends Fragment implements PagerFragment, AdapterView.OnItemClickListener {
 
     private IoTCloudAPI api;
     private TriggerArrayAdapter adapter;
@@ -64,11 +65,11 @@ public class TriggersFragment extends Fragment implements PagerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = (IoTCloudAPI) savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = (IoTCloudAPI) arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("IoTCloudAPI");
         }
         View view = inflater.inflate(R.layout.triggers_view, null);
         String caption = ((TextView)view.findViewById(R.id.textTriggers)).getText().toString();
@@ -96,6 +97,7 @@ public class TriggersFragment extends Fragment implements PagerFragment {
         this.adapter = new TriggerArrayAdapter(getContext());
         this.loadTriggerList();
         this.lstTriggers.setAdapter(this.adapter);
+        this.lstTriggers.setOnItemClickListener(this);
         this.progressLoading = (ProgressBar) view.findViewById(R.id.progressLoading);
 
         return view;
@@ -113,6 +115,13 @@ public class TriggersFragment extends Fragment implements PagerFragment {
             this.btnRefreshTriggers.setEnabled(this.api.onboarded());
         }
     }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Trigger trigger = (Trigger)this.lstTriggers.getItemAtPosition(position);
+        TriggerDetailFragment dialog = TriggerDetailFragment.newFragment(this.api, trigger);
+        dialog.show(getFragmentManager(), "TriggerDetail");
+    }
+
     private void loadTriggerList() {
         IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
         this.showLoading(true);

@@ -38,6 +38,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Owner"
+                        android:textStyle="bold"
                         android:id="@+id/textOwnerCaption"
                         android:layout_margin="5dp"
                         />
@@ -59,6 +60,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Target"
+                        android:textStyle="bold"
                         android:id="@+id/textTargetCaption"
                         android:layout_margin="5dp"
                         />
