@@ -3,6 +3,7 @@ package com.kii.iotcloudsample.fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Pair;
@@ -103,6 +104,41 @@ public class TriggerDetailFragment extends DialogFragment {
                         switchTriggerEnabled.setChecked(!isChecked);
                     }
                 });
+            }
+        });
+
+        ((FloatingActionButton)view.findViewById(R.id.fabEditTrigger)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            }
+        });
+        ((FloatingActionButton)view.findViewById(R.id.fabDeleteTrigger)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Confirmation")
+                        .setMessage("Are you sure you want to delete trigger?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<Trigger>() {
+                                    @Override
+                                    public void onDone(Trigger result) {
+                                        Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
+                                        dismiss();
+                                    }
+                                }, new FailCallback<Throwable>() {
+                                    @Override
+                                    public void onFail(Throwable result) {
+                                        Toast.makeText(getContext(), "Failed to delete trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                        dismiss();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
             }
         });
 
