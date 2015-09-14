@@ -1,12 +1,14 @@
 package com.kii.iotcloudsample.promise_api_wrapper;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.Command;
+import com.kii.iotcloud.exception.IoTCloudException;
 import com.kii.iotcloud.trigger.Predicate;
 import com.kii.iotcloud.trigger.Trigger;
 
@@ -97,6 +99,41 @@ public class IoTCloudPromiseAPIWrapper {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.postNewTrigger(schemaName, schemaVersion, actions, predicate);
+            }
+        });
+    }
+
+    public Promise<Trigger, Throwable, Void> patchTrigger(
+            final String triggerID,
+            final String schemaName,
+            final int schemaVersion,
+            final List<Action> actions,
+            final Predicate predicate) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.patchTrigger(triggerID, schemaName, schemaVersion, actions, predicate);
+            }
+        });
+    }
+
+    public Promise<Trigger, Throwable, Void> enableTrigger(
+            final String triggerID,
+            final boolean enable) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.enableTrigger(triggerID, enable);
+            }
+        });
+    }
+
+    public Promise<Trigger, Throwable, Void> deleteTrigger(
+            final String triggerID) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.deleteTrigger(triggerID);
             }
         });
     }

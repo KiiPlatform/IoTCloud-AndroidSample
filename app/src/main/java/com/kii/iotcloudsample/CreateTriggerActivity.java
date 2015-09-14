@@ -89,7 +89,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     }, new FailCallback<Throwable>() {
                         @Override
                         public void onFail(Throwable result) {
-                            Toast.makeText(CreateTriggerActivity.this, "Failed to create new editingTrigger: !" + result.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateTriggerActivity.this, "Failed to create new editingTrigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
                             setResult(Activity.RESULT_CANCELED);
                             finish();
                         }

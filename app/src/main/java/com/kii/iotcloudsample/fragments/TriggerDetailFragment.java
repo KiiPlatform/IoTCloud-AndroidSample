@@ -10,10 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloud.Target;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.ActionResult;
 import com.kii.iotcloud.command.Command;
@@ -24,6 +28,10 @@ import com.kii.iotcloudsample.adapter.ActionArrayAdapter;
 import com.kii.iotcloudsample.adapter.ClauseAdapter;
 import com.kii.iotcloudsample.model.Clause;
 import com.kii.iotcloudsample.model.ClauseParser;
+import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
+
+import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,6 +77,41 @@ public class TriggerDetailFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.trigger_detail_view, null, false);
 
         ((TextView)view.findViewById(R.id.textTriggerId)).setText(trigger.getTriggerID());
+        final Switch switchTriggerEnabled = (Switch)view.findViewById(R.id.switchTriggerEnabled);
+        switchTriggerEnabled.setChecked(!trigger.disabled());
+        switchTriggerEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                wp.enableTrigger(trigger.getTriggerID(), isChecked).then(new DoneCallback<Trigger>() {
+                    @Override
+                    public void onDone(Trigger result) {
+                        if (isChecked) {
+                            Toast.makeText(getContext(), "Trigger is enabled!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new FailCallback<Throwable>() {
+                    @Override
+                    public void onFail(Throwable result) {
+                        if (isChecked) {
+                            Toast.makeText(getContext(), "Failed to enable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(), "Failed to disable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        switchTriggerEnabled.setChecked(!isChecked);
+                    }
+                });
+
+                if (isChecked) {
+
+                } else {
+
+                }
+            }
+        });
+
         // Show the command info
         Command command = trigger.getCommand();
         ((TextView) view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());

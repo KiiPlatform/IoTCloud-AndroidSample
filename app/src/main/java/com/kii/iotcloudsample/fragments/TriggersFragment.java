@@ -135,7 +135,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         }, new FailCallback<Throwable>() {
             @Override
             public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Unable to list triggers: !" + result.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Unable to list triggers!: " + result.getMessage(), Toast.LENGTH_LONG).show();
             }
         }).always(new AlwaysCallback<List<Trigger>, Throwable>() {
             @Override

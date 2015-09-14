@@ -218,7 +218,7 @@ public class CreateCommandFragment extends Fragment {
                 }, new FailCallback<Throwable>() {
                     @Override
                     public void onFail(Throwable result) {
-                        Toast.makeText(getContext(), "Failed to create new command: !" + result.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Failed to create new command!: " + result.getMessage(), Toast.LENGTH_LONG).show();
                         getActivity().setResult(Activity.RESULT_CANCELED);
                         getActivity().finish();
                     }
