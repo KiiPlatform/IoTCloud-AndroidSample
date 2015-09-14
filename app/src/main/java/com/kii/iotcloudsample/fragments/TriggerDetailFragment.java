@@ -103,12 +103,6 @@ public class TriggerDetailFragment extends DialogFragment {
                         switchTriggerEnabled.setChecked(!isChecked);
                     }
                 });
-
-                if (isChecked) {
-
-                } else {
-
-                }
             }
         });
 
