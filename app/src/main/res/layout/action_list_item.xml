@@ -27,7 +27,7 @@
         android:id="@+id/row_result"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:gravity="center_vertical|right"
         android:layout_gravity="center_vertical|right"

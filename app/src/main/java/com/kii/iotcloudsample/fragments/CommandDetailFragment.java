@@ -1,21 +1,13 @@
 package com.kii.iotcloudsample.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,14 +16,11 @@ import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.ActionResult;
 import com.kii.iotcloud.command.Command;
 import com.kii.iotcloudsample.R;
-import com.kii.iotcloudsample.adapter.ActionViewHolder;
-import com.kii.iotcloudsample.adapter.ImageViewHolder;
+import com.kii.iotcloudsample.adapter.ActionArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.kii.iotcloudsample.R.layout.action_list_item;
 
 public class CommandDetailFragment extends DialogFragment {
 
@@ -123,37 +112,4 @@ public class CommandDetailFragment extends DialogFragment {
         return dialog;
     }
 
-    private class ActionArrayAdapter extends ArrayAdapter<Pair<Action, ActionResult>> {
-        private final LayoutInflater inflater;
-        private ActionArrayAdapter(Context context) {
-            super(context, action_list_item);
-            this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ActionViewHolder holder = null;
-            if (convertView == null) {
-                convertView = this.inflater.inflate(action_list_item, parent, false);
-                holder = new ActionViewHolder();
-                holder.icon = (ImageView)convertView.findViewById(R.id.row_icon);
-                holder.textCommandID = (TextView)convertView.findViewById(R.id.row_id);
-                holder.textResult = (TextView)convertView.findViewById(R.id.row_result);
-                convertView.setTag(holder);
-            } else {
-                holder = (ActionViewHolder)convertView.getTag();
-            }
-            Pair<Action, ActionResult> item = this.getItem(position);
-            holder.textCommandID.setText(item.first.getActionName());
-            if (item.second == null) {
-                holder.textResult.setText("unfinished");
-            } else {
-                if (item.second.succeeded) {
-                    holder.textResult.setText("succeeded");
-                } else {
-                    holder.textResult.setText("failed");
-                }
-            }
-            return convertView;
-        }
-    }
 }
