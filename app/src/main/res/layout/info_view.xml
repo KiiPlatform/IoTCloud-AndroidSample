@@ -22,13 +22,65 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         >
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listViewInfo"
-            android:entries="@array/info_contents"
-            >
-        </ListView>
+        <LinearLayout android:id="@+id/onboard_with_vender_id_form" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical">
+
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+                <!-- Owner -->
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="45dip"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Owner"
+                        android:textStyle="bold"
+                        android:id="@+id/textOwnerCaption"
+                        android:layout_margin="5dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="---"
+                        android:id="@+id/textOwner"
+                        android:layout_margin="5dp"
+                        />
+                </TableRow>
+                <!-- Target -->
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="45dip"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Target"
+                        android:textStyle="bold"
+                        android:id="@+id/textTargetCaption"
+                        android:layout_margin="5dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="---"
+                        android:id="@+id/textTarget"
+                        android:layout_margin="5dp"
+                        />
+                </TableRow>
+            </TableLayout>
+
+            <Button android:id="@+id/logout_button" style="?android:textAppearanceSmall"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:text="@string/action_logout"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

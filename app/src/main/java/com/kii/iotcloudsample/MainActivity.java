@@ -1,5 +1,6 @@
 package com.kii.iotcloudsample;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,14 +10,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.kii.cloud.storage.Kii;
+import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Owner;
 import com.kii.iotcloud.TypedID;
+import com.kii.iotcloud.exception.StoredIoTCloudAPIInstanceNotFoundException;
+import com.kii.iotcloudsample.fragments.PagerFragment;
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
-import com.kii.iotcloudsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.sliding_tab.SlidingTabLayout;
 import com.kii.iotcloudsample.fragments.CommandsFragment;
 import com.kii.iotcloudsample.fragments.InfoFragment;
@@ -24,9 +28,6 @@ import com.kii.iotcloudsample.fragments.OnboardFragment;
 import com.kii.iotcloudsample.fragments.StatesFragment;
 import com.kii.iotcloudsample.fragments.TriggersFragment;
 import com.kii.iotcloudsample.smart_light_demo.ApiBuilder;
-
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,9 +51,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void login() {
-
-        KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper();
-
         final ProgressDialogFragment pdf = new ProgressDialogFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag(ProgressDialogFragment.TAG);
@@ -62,33 +60,23 @@ public class MainActivity extends AppCompatActivity {
         ft.addToBackStack(null);
         pdf.show(ft, ProgressDialogFragment.TAG);
 
-        wp.loginWithCredentials().then(new DoneCallback<Void>() {
-            @Override
-            public void onDone(Void result) {
-                pdf.dismiss();
-                Owner owner = new Owner(new TypedID(TypedID.Types.USER, Kii.user().getID()), Kii
-                        .user().getAccessToken());
-                api = ApiBuilder.buildApi(getApplicationContext(), owner);
-                Toast.makeText(getApplicationContext(), "Login succeeded", Toast.LENGTH_LONG).show();
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                // Launch Login Screen.
-                Intent i = new Intent();
-                i.setClass(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(i, 0);
-            }
-        });
+        try {
+            this.api = IoTCloudAPI.loadFromStoredInstance(this);
+            pdf.dismiss();
+        } catch (StoredIoTCloudAPIInstanceNotFoundException e) {
+            Intent i = new Intent();
+            i.setClass(getApplicationContext(), LoginActivity.class);
+            startActivityForResult(i, 0);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            Owner owner = new Owner(new TypedID(TypedID.Types.USER, Kii.user().getID()), Kii
+        if (requestCode == 0 && KiiUser.getCurrentUser() != null) {
+            Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
-            api = ApiBuilder.buildApi(getApplicationContext(), owner);
+            this.api = ApiBuilder.buildApi(getApplicationContext(), owner);
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag
                     (ProgressDialogFragment.TAG);
             if (pdf != null) {
@@ -96,13 +84,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    public IoTCloudAPI getApi() {
-        return this.api;
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("IoTCloudAPI", this.api);
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
     }
 
     class MyAdapter extends FragmentPagerAdapter {
 
+        private PagerFragment currentFragment;
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -134,18 +129,33 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
                         switch (position) {
                 case 0:
-                    return OnboardFragment.newOnboardFragment();
+                    return OnboardFragment.newFragment(api);
                 case 1:
-                    return CommandsFragment.newCommandsFragment();
+                    return CommandsFragment.newFragment(api);
                 case 2:
-                    return TriggersFragment.newTriggersFragment();
+                    return TriggersFragment.newFragment(api);
                 case 3:
-                    return StatesFragment.newStatesFragment();
+                    return StatesFragment.newFragment(api);
                 case 4:
-                    return InfoFragment.newInfoFragment();
+                    return InfoFragment.newFragment(api);
                 default:
                     throw new RuntimeException("Unknown flow");
             }
+        }
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            if (object instanceof PagerFragment && this.currentFragment != object) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                ((PagerFragment) object).onVisible(true);
+                if (this.currentFragment != null) {
+                    this.currentFragment.onVisible(false);
+                }
+                this.currentFragment = ((PagerFragment) object);
+            }
+            super.setPrimaryItem(container, position, object);
         }
 
     }

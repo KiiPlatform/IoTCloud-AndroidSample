@@ -3,11 +3,11 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textTriggers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Triggers in the Thing: {ThingID}"
-        android:id="@+id/textTriggers"
+        android:text="Triggers in the Thing: ${thingID}"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -15,36 +15,41 @@
         />
 
     <Button
+        android:id="@+id/buttonNewTrigger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Trigger"
-        android:id="@+id/buttonNewTrigger"
         android:layout_below="@id/textTriggers"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"/>
     <Button
+        android:id="@+id/buttonRefreshTriggers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Refresh"
-        android:id="@+id/buttonRefreshTriggers"
         android:layout_alignTop="@id/buttonNewTrigger"
         android:layout_toRightOf="@+id/buttonNewTrigger"
         android:layout_toEndOf="@+id/buttonNewTrigger"
         android:layout_marginLeft="3dp"
         />
-    <ScrollView
+    <ListView
+        android:id="@+id/listViewTriggers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonNewTrigger"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="10dp">
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listViewTriggers">
-        </ListView>
-    </ScrollView>
+        android:layout_margin="10dp"
+        />
+    <ProgressBar
+        android:id="@+id/progressLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonNewTrigger"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge"/>
 
 </RelativeLayout>

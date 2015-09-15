@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.res.AssetManager;
 
 import com.kii.cloud.storage.Kii;
+import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.iotcloud.Target;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +13,16 @@ import java.util.Properties;
 
 public class IoTCloudSampleApplication extends Application {
 
+    private static IoTCloudSampleApplication context;
+    public static IoTCloudSampleApplication getInstance() {
+        return context;
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         Properties properties = new Properties();
         AssetManager am = getAssets();
         try {
