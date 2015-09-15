@@ -95,7 +95,6 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         });
         this.lstTriggers = (ListView) view.findViewById(R.id.listViewTriggers);
         this.adapter = new TriggerArrayAdapter(getContext());
-        this.loadTriggerList();
         this.lstTriggers.setAdapter(this.adapter);
         this.lstTriggers.setOnItemClickListener(this);
         this.progressLoading = (ProgressBar) view.findViewById(R.id.progressLoading);
@@ -113,6 +112,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         if (visible) {
             this.btnNewTrigger.setEnabled(this.api.onboarded());
             this.btnRefreshTriggers.setEnabled(this.api.onboarded());
+            this.loadTriggerList();
         }
     }
     @Override

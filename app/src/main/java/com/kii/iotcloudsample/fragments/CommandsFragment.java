@@ -96,7 +96,6 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
         });
         this.lstCommands = (ListView) view.findViewById(R.id.listViewCommands);
         this.adapter = new CommandArrayAdapter(getContext());
-        this.loadCommandList();
         this.lstCommands.setAdapter(this.adapter);
         this.lstCommands.setOnItemClickListener(this);
         this.progressLoading = (ProgressBar) view.findViewById(R.id.progressLoading);
@@ -114,6 +113,7 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
         if (visible) {
             this.btnNewCommand.setEnabled(this.api.onboarded());
             this.btnRefreshCommands.setEnabled(this.api.onboarded());
+            this.loadCommandList();
         }
     }
     @Override
