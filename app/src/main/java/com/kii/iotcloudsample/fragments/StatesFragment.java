@@ -83,10 +83,7 @@ public class StatesFragment extends Fragment implements PagerFragment {
                 if (state != null) {
                     txtPower.setText(state.power ? "ON" : "OFF");
                     txtBrightness.setText(String.valueOf(state.brightness));
-                    txtColor.setText("#"
-                            + Integer.toHexString(state.color[0])
-                            + Integer.toHexString(state.color[1])
-                            + Integer.toHexString(state.color[2]));
+                    txtColor.setText(toColorString(state.color));
                     txtColorTemperature.setText(String.valueOf(state.colorTemperature));
                 } else {
                     txtPower.setText("---");
@@ -101,6 +98,13 @@ public class StatesFragment extends Fragment implements PagerFragment {
                 Toast.makeText(getContext(), "Unable to get the LightState!: " + result.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+    private String toColorString(int[] color) {
+        return "#" + (color[0] > 15 ? "" : "0") + Integer.toHexString(color[0])
+                + (color[1] > 15 ? "" : "0") + Integer.toHexString(color[1])
+                + (color[2] > 15 ? "" : "0") + Integer.toHexString(color[2]);
+
+
     }
 
 }
