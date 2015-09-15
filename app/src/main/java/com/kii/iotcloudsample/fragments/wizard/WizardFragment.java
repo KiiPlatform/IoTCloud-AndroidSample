@@ -32,7 +32,8 @@ public abstract class WizardFragment extends Fragment {
 
     public abstract String getNextButtonText();
     public abstract String getPreviousButtonText();
-    public abstract void onActivate();
+    public void onActivate() {
+    }
     public void onInactivate(int exitCode) {
     }
 

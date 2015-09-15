@@ -173,6 +173,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        this.onActivate();
         return view;
     }
     private void validateRequiredField() {
@@ -185,7 +186,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             this.setNextButtonEnabled(true);
         }
     }
-    private void clearView() {
+    private void clearEditingTrigger() {
         this.switchPower.setChecked(false);
         this.seekBrightness.setProgress(0);
         this.seekR.setProgress(0);
@@ -200,7 +201,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
 
     @Override
     public void onActivate() {
-        this.clearView();
+        this.clearEditingTrigger();
         for (Action action : this.editingTrigger.getActions()) {
             if (action instanceof TurnPower) {
                 this.chkPower.setChecked(true);

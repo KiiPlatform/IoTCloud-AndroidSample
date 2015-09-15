@@ -28,6 +28,7 @@ import org.jdeferred.FailCallback;
 public class CreateTriggerActivity extends AppCompatActivity implements WizardFragment.WizardController {
 
     public static final String TAG = CreateTriggerActivity.class.getSimpleName();
+    public static final String INTENT_TRIGGER = "INTENT_TRIGGER";
     private static final int WIZARD_PAGE_SIZE = 3;
     private IoTCloudAPI api;
     private WizardPagerAdapter adapter;
@@ -43,9 +44,14 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         setContentView(R.layout.activity_create_trigger);
         Intent i = getIntent();
         this.api = (IoTCloudAPI)i.getParcelableExtra("IoTCloudAPI");
+        if (i.hasExtra(INTENT_TRIGGER)) {
+            this.editingTrigger = new Trigger((com.kii.iotcloud.trigger.Trigger)i.getParcelableExtra(INTENT_TRIGGER));
+        } else {
+            this.editingTrigger = new Trigger();
+        }
         this.adapter = new WizardPagerAdapter(getSupportFragmentManager());
         this.viewPager = (ViewPager)findViewById(R.id.step_pager);
-        this.viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 View currentFocus = CreateTriggerActivity.this.getCurrentFocus();
@@ -54,15 +60,16 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
                 }
                 if (currentPosition < position) {
-                    ((WizardFragment)adapter.instantiateItem(viewPager, currentPosition)).onInactivate(WizardFragment.EXIT_NEXT);
+                    ((WizardFragment) adapter.instantiateItem(viewPager, currentPosition)).onInactivate(WizardFragment.EXIT_NEXT);
                 } else {
-                    ((WizardFragment)adapter.instantiateItem(viewPager, currentPosition)).onInactivate(WizardFragment.EXIT_PREVIOUS);
+                    ((WizardFragment) adapter.instantiateItem(viewPager, currentPosition)).onInactivate(WizardFragment.EXIT_PREVIOUS);
                 }
                 WizardFragment wizardFragment = (WizardFragment) adapter.instantiateItem(viewPager, position);
                 wizardFragment.onActivate();
                 currentPosition = position;
             }
-        });
+        };
+        this.viewPager.addOnPageChangeListener(onPageChangeListener);
         this.viewPager.setAdapter(this.adapter);
         this.nextButton = (Button)findViewById(R.id.wizard_next_button);
         this.nextButton.setOnClickListener(new View.OnClickListener() {
@@ -80,20 +87,39 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                 } else if (position + 1 == WIZARD_PAGE_SIZE) {
                     wizardFragment.onInactivate(WizardFragment.EXIT_NEXT);
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                    wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.iotcloud.trigger.Trigger>() {
-                        @Override
-                        public void onDone(com.kii.iotcloud.trigger.Trigger result) {
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        }
-                    }, new FailCallback<Throwable>() {
-                        @Override
-                        public void onFail(Throwable result) {
-                            Toast.makeText(CreateTriggerActivity.this, "Failed to create new editingTrigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                            setResult(Activity.RESULT_CANCELED);
-                            finish();
-                        }
-                    });
+                    if (editingTrigger.getTriggerID() == null) {
+                        wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.iotcloud.trigger.Trigger>() {
+                            @Override
+                            public void onDone(com.kii.iotcloud.trigger.Trigger result) {
+                                Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                setResult(Activity.RESULT_OK);
+                                finish();
+                            }
+                        }, new FailCallback<Throwable>() {
+                            @Override
+                            public void onFail(Throwable result) {
+                                Toast.makeText(CreateTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                setResult(Activity.RESULT_CANCELED);
+                                finish();
+                            }
+                        });
+                    } else {
+                        wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.iotcloud.trigger.Trigger>() {
+                            @Override
+                            public void onDone(com.kii.iotcloud.trigger.Trigger result) {
+                                Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                setResult(Activity.RESULT_OK);
+                                finish();
+                            }
+                        }, new FailCallback<Throwable>() {
+                            @Override
+                            public void onFail(Throwable result) {
+                                Toast.makeText(CreateTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                setResult(Activity.RESULT_CANCELED);
+                                finish();
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -116,9 +142,6 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
             }
         });
         this.previousButton.setText("Cancel");
-
-        // TODO: Supports to edit existing editingTrigger
-        this.editingTrigger = new Trigger();
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {

@@ -78,6 +78,7 @@ public class CreateTriggersWhenFragment extends WizardFragment {
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -98,7 +99,7 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     }
     @Override
     public String getNextButtonText() {
-        return "Create";
+        return "Save";
     }
     @Override
     public String getPreviousButtonText() {

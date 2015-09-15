@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trigger {
+    private String triggerID;
     private List<Action> actions = new ArrayList<Action>();
     private StatePredicate predicate = null;
 
@@ -19,8 +20,12 @@ public class Trigger {
         }
         // TODO:Supports Schedule Predicate
         this.predicate = (StatePredicate)trigger.getPredicate();
+        this.triggerID = trigger.getTriggerID();
     }
 
+    public String getTriggerID() {
+        return this.triggerID;
+    }
     public void clearActions() {
         this.actions.clear();
     }

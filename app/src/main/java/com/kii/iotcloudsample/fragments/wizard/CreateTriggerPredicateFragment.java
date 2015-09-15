@@ -206,13 +206,14 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     }
     @Override
     public void onActivate() {
-        this.validateClauses();
         if (this.editingTrigger.getPredicate() != null) {
             List<Clause> clauses = ClauseParser.parseClause(this.editingTrigger.getPredicate().getCondition().getClause());
+            this.adapter.clear();
             for (Clause clause : clauses) {
                 this.adapter.add(clause);
             }
         }
+        this.validateClauses();
     }
     @Override
     public void onInactivate(int exitCode) {

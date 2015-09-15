@@ -2,6 +2,7 @@ package com.kii.iotcloudsample.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -24,6 +25,7 @@ import com.kii.iotcloud.command.ActionResult;
 import com.kii.iotcloud.command.Command;
 import com.kii.iotcloud.trigger.StatePredicate;
 import com.kii.iotcloud.trigger.Trigger;
+import com.kii.iotcloudsample.CreateTriggerActivity;
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ActionArrayAdapter;
 import com.kii.iotcloudsample.adapter.ClauseAdapter;
@@ -109,6 +111,13 @@ public class TriggerDetailFragment extends DialogFragment {
 
         ((FloatingActionButton)view.findViewById(R.id.fabEditTrigger)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // TODO
+                Intent i = new Intent();
+                i.setClass(getContext(), CreateTriggerActivity.class);
+                i.putExtra("IoTCloudAPI", api);
+                i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
+                startActivity(i);
+                dismiss();
             }
         });
         ((FloatingActionButton)view.findViewById(R.id.fabDeleteTrigger)).setOnClickListener(new View.OnClickListener() {
