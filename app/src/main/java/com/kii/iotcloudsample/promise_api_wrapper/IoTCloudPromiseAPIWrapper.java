@@ -6,11 +6,13 @@ import android.util.Pair;
 
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Target;
+import com.kii.iotcloud.TargetState;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.Command;
 import com.kii.iotcloud.exception.IoTCloudException;
 import com.kii.iotcloud.trigger.Predicate;
 import com.kii.iotcloud.trigger.Trigger;
+import com.kii.iotcloudsample.smart_light_demo.LightState;
 
 import org.jdeferred.Promise;
 import org.jdeferred.android.AndroidDeferredManager;
@@ -134,6 +136,15 @@ public class IoTCloudPromiseAPIWrapper {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.deleteTrigger(triggerID);
+            }
+        });
+    }
+
+    public Promise<LightState, Throwable, Void> getLightState() {
+        return adm.when(new DeferredAsyncTask<Void, Void, LightState>() {
+            @Override
+            protected LightState doInBackgroundSafe(Void... voids) throws Exception {
+                return api.getTargetState(LightState.class);
             }
         });
     }

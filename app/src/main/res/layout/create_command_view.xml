@@ -133,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Color temperature: 0"
+        android:text="Color Temperature: 0"
         android:textStyle="bold"
         android:checked="true"
         android:layout_below="@+id/seekBarB"
