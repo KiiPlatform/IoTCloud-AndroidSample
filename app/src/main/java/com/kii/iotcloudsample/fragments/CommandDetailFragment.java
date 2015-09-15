@@ -3,6 +3,7 @@ package com.kii.iotcloudsample.fragments;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +32,13 @@ public class CommandDetailFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static CommandDetailFragment newFragment(IoTCloudAPI api, Command command) {
+    public static CommandDetailFragment newFragment(IoTCloudAPI api, Command command, Fragment targetFragment, int requestCode) {
         CommandDetailFragment fragment = new CommandDetailFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);
         arguments.putParcelable("Command", command);
         fragment.setArguments(arguments);
+        fragment.setTargetFragment(targetFragment, requestCode);
         return fragment;
     }
 

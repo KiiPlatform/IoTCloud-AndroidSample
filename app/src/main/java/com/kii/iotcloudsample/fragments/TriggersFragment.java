@@ -118,7 +118,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Trigger trigger = (Trigger)this.lstTriggers.getItemAtPosition(position);
-        TriggerDetailFragment dialog = TriggerDetailFragment.newFragment(this.api, trigger);
+        TriggerDetailFragment dialog = TriggerDetailFragment.newFragment(this.api, trigger, this, 0);
         dialog.show(getFragmentManager(), "TriggerDetail");
     }
 

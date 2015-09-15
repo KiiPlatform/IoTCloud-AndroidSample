@@ -1,11 +1,13 @@
 package com.kii.iotcloudsample.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -49,12 +51,13 @@ public class TriggerDetailFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static TriggerDetailFragment newFragment(IoTCloudAPI api, Trigger trigger) {
+    public static TriggerDetailFragment newFragment(IoTCloudAPI api, Trigger trigger, Fragment targetFragment, int requestCode) {
         TriggerDetailFragment fragment = new TriggerDetailFragment();
         Bundle arguments = new Bundle();
         arguments.putParcelable("IoTCloudAPI", api);
         arguments.putParcelable("Trigger", trigger);
         fragment.setArguments(arguments);
+        fragment.setTargetFragment(targetFragment, requestCode);
         return fragment;
     }
 
@@ -94,6 +97,7 @@ public class TriggerDetailFragment extends DialogFragment {
                         } else {
                             Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
                         }
+                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                     }
                 }, new FailCallback<Throwable>() {
                     @Override
@@ -111,12 +115,12 @@ public class TriggerDetailFragment extends DialogFragment {
 
         ((FloatingActionButton)view.findViewById(R.id.fabEditTrigger)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateTriggerActivity.class);
                 i.putExtra("IoTCloudAPI", api);
                 i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
-                startActivity(i);
+                getTargetFragment().startActivityForResult(i, 0);
+//                startActivity(i);
                 dismiss();
             }
         });
@@ -132,6 +136,7 @@ public class TriggerDetailFragment extends DialogFragment {
                                     @Override
                                     public void onDone(Trigger result) {
                                         Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
+                                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                                         dismiss();
                                     }
                                 }, new FailCallback<Throwable>() {
@@ -210,5 +215,4 @@ public class TriggerDetailFragment extends DialogFragment {
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return dialog;
     }
-
 }

@@ -119,7 +119,7 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Command command = (Command)this.lstCommands.getItemAtPosition(position);
-        CommandDetailFragment dialog = CommandDetailFragment.newFragment(this.api, command);
+        CommandDetailFragment dialog = CommandDetailFragment.newFragment(this.api, command, this, 0);
         dialog.show(getFragmentManager(), "CommandDetail");
     }
 
