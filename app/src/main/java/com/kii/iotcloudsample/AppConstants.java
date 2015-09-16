@@ -6,6 +6,7 @@ public class AppConstants {
     public static final String APPHOST = "api-jp.kii.com";
     public static final String APPSITEURL = "https://" + APPHOST + "/api";
     public static final String APPSITEURL_IOT = "https://" + APPHOST;
+    public static final String SENDER_ID = "";
     public static final String THING_TYPE = "SmartLight-Demo";
     public static final String SCHEMA_NAME = "Smart-Light-Demo";
     public static final int SCHEMA_VERSION = 1;

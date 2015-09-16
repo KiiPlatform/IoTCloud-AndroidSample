@@ -2,6 +2,7 @@ package com.kii.iotcloudsample;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,14 +11,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
 import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloud.Owner;
+import com.kii.iotcloud.PushBackend;
 import com.kii.iotcloud.TypedID;
+import com.kii.iotcloud.exception.IoTCloudException;
 import com.kii.iotcloud.exception.StoredIoTCloudAPIInstanceNotFoundException;
 import com.kii.iotcloudsample.fragments.PagerFragment;
 import com.kii.iotcloudsample.fragments.ProgressDialogFragment;
@@ -28,6 +34,8 @@ import com.kii.iotcloudsample.fragments.OnboardFragment;
 import com.kii.iotcloudsample.fragments.StatesFragment;
 import com.kii.iotcloudsample.fragments.TriggersFragment;
 import com.kii.iotcloudsample.smart_light_demo.ApiBuilder;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             this.api = IoTCloudAPI.loadFromStoredInstance(this);
+            new GCMRegisterTask(this.api).execute();
             pdf.dismiss();
         } catch (StoredIoTCloudAPIInstanceNotFoundException e) {
             Intent i = new Intent();
@@ -77,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
             this.api = ApiBuilder.buildApi(getApplicationContext(), owner);
+            new GCMRegisterTask(this.api).execute();
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag
                     (ProgressDialogFragment.TAG);
             if (pdf != null) {
@@ -93,6 +103,54 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
+    }
+
+    public class GCMRegisterTask extends AsyncTask<Void, Void, Exception> {
+
+        private final IoTCloudAPI api;
+
+        GCMRegisterTask(IoTCloudAPI api) {
+            this.api = api;
+        }
+        @Override
+        protected Exception doInBackground(Void... params) {
+            if (TextUtils.isEmpty(IoTCloudSampleApplication.getInstance().getSenderID())) {
+                return null;
+            }
+            String registrationId = null;
+            int retry = 0;
+            Exception lastException = null;
+            while (retry < 3) {
+                try {
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(MainActivity.this);
+                    registrationId = gcm.register(IoTCloudSampleApplication.getInstance().getSenderID());
+                    break;
+                } catch (IOException ignore) {
+                    lastException = ignore;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        lastException = e;
+                    }
+                    retry++;
+                }
+            }
+            if (TextUtils.isEmpty(registrationId)) {
+                return lastException;
+            }
+            try {
+                this.api.installPush(registrationId, PushBackend.GCM);
+            } catch (IoTCloudException e) {
+                return e;
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(final Exception e) {
+            if (e != null) {
+                Toast.makeText(MainActivity.this, "Unable to register GCM!: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     class MyAdapter extends FragmentPagerAdapter {

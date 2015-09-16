@@ -68,6 +68,10 @@ public class InfoFragment extends Fragment {
         if (this.api.getTarget() != null) {
             textTarget.setText(this.api.getTarget().getID().getID());
         }
+        TextView textInstallationID = (TextView)view.findViewById(R.id.textInstallationID);
+        if (this.api.getInstallationID() != null) {
+            textInstallationID.setText(this.api.getInstallationID());
+        }
         return view;
     }
 }
