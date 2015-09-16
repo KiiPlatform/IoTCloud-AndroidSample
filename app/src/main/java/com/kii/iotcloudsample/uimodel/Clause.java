@@ -1,6 +1,4 @@
-package com.kii.iotcloudsample.model;
-
-import android.os.Parcelable;
+package com.kii.iotcloudsample.uimodel;
 
 public abstract class Clause {
 

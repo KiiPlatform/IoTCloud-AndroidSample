@@ -20,7 +20,7 @@ import com.kii.iotcloud.trigger.clause.Equals;
 import com.kii.iotcloud.trigger.clause.NotEquals;
 import com.kii.iotcloud.trigger.clause.Range;
 import com.kii.iotcloudsample.R;
-import com.kii.iotcloudsample.model.Clause;
+import com.kii.iotcloudsample.uimodel.Clause;
 
 public class EditClauseDialogFragment extends DialogFragment {
 

@@ -19,7 +19,7 @@ import com.kii.iotcloudsample.fragments.wizard.CreateTriggerCommandFragment;
 import com.kii.iotcloudsample.fragments.wizard.CreateTriggerPredicateFragment;
 import com.kii.iotcloudsample.fragments.wizard.CreateTriggersWhenFragment;
 import com.kii.iotcloudsample.fragments.wizard.WizardFragment;
-import com.kii.iotcloudsample.model.Trigger;
+import com.kii.iotcloudsample.uimodel.Trigger;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 
 import org.jdeferred.DoneCallback;

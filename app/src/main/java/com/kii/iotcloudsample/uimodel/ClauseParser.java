@@ -1,4 +1,4 @@
-package com.kii.iotcloudsample.model;
+package com.kii.iotcloudsample.uimodel;
 
 import com.kii.iotcloud.trigger.clause.ContainerClause;
 

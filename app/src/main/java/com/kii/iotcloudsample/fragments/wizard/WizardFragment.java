@@ -2,7 +2,7 @@ package com.kii.iotcloudsample.fragments.wizard;
 
 import android.support.v4.app.Fragment;
 
-import com.kii.iotcloudsample.model.Trigger;
+import com.kii.iotcloudsample.uimodel.Trigger;
 
 import java.lang.ref.WeakReference;
 

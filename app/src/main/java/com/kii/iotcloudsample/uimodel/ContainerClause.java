@@ -1,4 +1,4 @@
-package com.kii.iotcloudsample.model;
+package com.kii.iotcloudsample.uimodel;
 
 public abstract class ContainerClause extends Clause {
     public boolean isContainer() {

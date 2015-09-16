@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ImageViewHolder;
-import com.kii.iotcloudsample.model.Clause;
+import com.kii.iotcloudsample.uimodel.Clause;
 
 public class SelectClauseDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 

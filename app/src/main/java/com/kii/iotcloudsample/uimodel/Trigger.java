@@ -1,8 +1,7 @@
-package com.kii.iotcloudsample.model;
+package com.kii.iotcloudsample.uimodel;
 
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.trigger.StatePredicate;
-import com.kii.iotcloud.trigger.TriggersWhen;
 
 import java.util.ArrayList;
 import java.util.List;

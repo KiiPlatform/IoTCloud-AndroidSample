@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kii.iotcloudsample.R;
-import com.kii.iotcloudsample.model.Clause;
+import com.kii.iotcloudsample.uimodel.Clause;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,19 +17,16 @@ import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ClauseAdapter;
 import com.kii.iotcloudsample.fragments.EditClauseDialogFragment;
 import com.kii.iotcloudsample.fragments.SelectClauseDialogFragment;
-import com.kii.iotcloudsample.model.And;
-import com.kii.iotcloudsample.model.Clause;
-import com.kii.iotcloudsample.model.ClauseParser;
-import com.kii.iotcloudsample.model.Equals;
-import com.kii.iotcloudsample.model.NotEquals;
-import com.kii.iotcloudsample.model.Or;
-import com.kii.iotcloudsample.model.Range;
+import com.kii.iotcloudsample.uimodel.And;
+import com.kii.iotcloudsample.uimodel.Clause;
+import com.kii.iotcloudsample.uimodel.ClauseParser;
+import com.kii.iotcloudsample.uimodel.Equals;
+import com.kii.iotcloudsample.uimodel.NotEquals;
+import com.kii.iotcloudsample.uimodel.Or;
+import com.kii.iotcloudsample.uimodel.Range;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 public class CreateTriggerPredicateFragment extends WizardFragment implements AdapterView.OnItemClickListener {

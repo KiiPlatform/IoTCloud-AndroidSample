@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.ActionResult;
 import com.kii.iotcloud.command.Command;
@@ -31,15 +30,14 @@ import com.kii.iotcloudsample.CreateTriggerActivity;
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.adapter.ActionArrayAdapter;
 import com.kii.iotcloudsample.adapter.ClauseAdapter;
-import com.kii.iotcloudsample.model.Clause;
-import com.kii.iotcloudsample.model.ClauseParser;
+import com.kii.iotcloudsample.uimodel.Clause;
+import com.kii.iotcloudsample.uimodel.ClauseParser;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TriggerDetailFragment extends DialogFragment {
