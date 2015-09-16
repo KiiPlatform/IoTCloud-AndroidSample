@@ -14,6 +14,7 @@ import com.kii.iotcloud.IoTCloudAPI;
 import com.kii.iotcloudsample.R;
 import com.kii.iotcloudsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.iotcloudsample.smart_light_demo.LightState;
+import com.kii.iotcloudsample.utils.Utils;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
@@ -83,7 +84,7 @@ public class StatesFragment extends Fragment implements PagerFragment {
                 if (state != null) {
                     txtPower.setText(state.power ? "ON" : "OFF");
                     txtBrightness.setText(String.valueOf(state.brightness));
-                    txtColor.setText(toColorString(state.color));
+                    txtColor.setText(Utils.toColorString(state.color));
                     txtColorTemperature.setText(String.valueOf(state.colorTemperature));
                 } else {
                     txtPower.setText("---");
@@ -99,12 +100,4 @@ public class StatesFragment extends Fragment implements PagerFragment {
             }
         });
     }
-    private String toColorString(int[] color) {
-        return "#" + (color[0] > 15 ? "" : "0") + Integer.toHexString(color[0])
-                + (color[1] > 15 ? "" : "0") + Integer.toHexString(color[1])
-                + (color[2] > 15 ? "" : "0") + Integer.toHexString(color[2]);
-
-
-    }
-
 }

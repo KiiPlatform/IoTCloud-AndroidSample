@@ -9,26 +9,32 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:layout_marginRight="6dp" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_weight="1"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/row_id"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textSize="10sp"
-            android:textStyle="bold"/>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/row_action_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center_vertical|left"
+        android:layout_gravity="center_vertical|left"
+        android:textSize="10sp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/row_action"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:textIsSelectable="false"/>
     <TextView
         android:id="@+id/row_result"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:textSize="10sp"
         android:textStyle="bold"
+        android:layout_weight="2"
         android:gravity="center_vertical|right"
         android:layout_gravity="center_vertical|right"
         android:textIsSelectable="false"/>

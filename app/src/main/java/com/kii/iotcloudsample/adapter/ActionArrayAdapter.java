@@ -12,6 +12,11 @@ import android.widget.TextView;
 import com.kii.iotcloud.command.Action;
 import com.kii.iotcloud.command.ActionResult;
 import com.kii.iotcloudsample.R;
+import com.kii.iotcloudsample.smart_light_demo.SetBrightness;
+import com.kii.iotcloudsample.smart_light_demo.SetColor;
+import com.kii.iotcloudsample.smart_light_demo.SetColorTemperature;
+import com.kii.iotcloudsample.smart_light_demo.TurnPower;
+import com.kii.iotcloudsample.utils.Utils;
 
 import static com.kii.iotcloudsample.R.layout.action_list_item;
 
@@ -30,14 +35,15 @@ public class ActionArrayAdapter extends ArrayAdapter<Pair<Action, ActionResult>>
             convertView = this.inflater.inflate(action_list_item, parent, false);
             holder = new ActionViewHolder();
             holder.icon = (ImageView) convertView.findViewById(R.id.row_icon);
-            holder.textCommandID = (TextView) convertView.findViewById(R.id.row_id);
+            holder.textActionName = (TextView) convertView.findViewById(R.id.row_action_name);
+            holder.textAction = (TextView) convertView.findViewById(R.id.row_action);
             holder.textResult = (TextView) convertView.findViewById(R.id.row_result);
             convertView.setTag(holder);
         } else {
             holder = (ActionViewHolder) convertView.getTag();
         }
         Pair<Action, ActionResult> item = this.getItem(position);
-        holder.textCommandID.setText(item.first.getActionName());
+        holder.textActionName.setText(item.first.getActionName());
         if (item.second == null) {
             holder.textResult.setText("unfinished");
         } else {
@@ -46,6 +52,15 @@ public class ActionArrayAdapter extends ArrayAdapter<Pair<Action, ActionResult>>
             } else {
                 holder.textResult.setText("failed");
             }
+        }
+        if (item.first instanceof TurnPower) {
+            holder.textAction.setText(((TurnPower)item.first).power ? "ON" : "OFF");
+        } else if (item.first instanceof SetBrightness) {
+            holder.textAction.setText(String.valueOf(((SetBrightness)item.first).brightness));
+        } else if (item.first instanceof SetColor) {
+            holder.textAction.setText(Utils.toColorString(((SetColor)item.first).color));
+        } else if (item.first instanceof SetColorTemperature) {
+            holder.textAction.setText(String.valueOf(((SetColorTemperature)item.first).colorTemperature));
         }
         return convertView;
     }

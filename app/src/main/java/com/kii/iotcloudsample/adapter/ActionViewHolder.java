@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 public class ActionViewHolder {
     public ImageView icon;
-    public TextView textCommandID;
+    public TextView textActionName;
+    public TextView textAction;
     public TextView textResult;
 }
