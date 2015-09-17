@@ -27,10 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.cloud.storage.KiiUser;
-import com.kii.cloud.storage.exception.app.AppException;
-import com.kii.cloud.storage.exception.app.BadRequestException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -299,9 +296,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
             try {
                 KiiUser.logIn(mEmail, mPassword);
                 return null;
-            } catch (IOException e) {
-                return e;
-            } catch (AppException e) {
+            } catch (Exception e) {
                 return e;
             }
         }
@@ -343,9 +338,7 @@ public class LoginActivity extends FragmentActivity implements LoaderCallbacks<C
                 KiiUser newUser = KiiUser.builderWithEmail(mEmail).build();
                 newUser.register(mPassword);
                 return null;
-            } catch (IOException e) {
-                return e;
-            } catch (AppException e) {
+            } catch (Exception e) {
                 return e;
             }
         }

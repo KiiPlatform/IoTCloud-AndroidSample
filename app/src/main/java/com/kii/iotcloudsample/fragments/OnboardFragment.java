@@ -84,7 +84,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         mOnboardedFormView = view.findViewById(R.id.onboarded_form);
         mOnboardOperationFormView = view.findViewById(R.id.onboard_operation_form);
         final Button buttonOnboard = (Button) view.findViewById(R.id.buttonOnboard);
-        final Button buttonOnboardOther = (Button) view.findViewById(R.id.buttonOnboardOther);
         final EditText editTextThingID = (EditText) view.findViewById(R.id.editTextThingId);
         final EditText editTextThingPassword = (EditText) view.findViewById(R.id.editTextThingPassword);
         final EditText editTextVenderThingID = (EditText) view.findViewById(R.id.editTextVenderThingId);
@@ -104,15 +103,18 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         buttonOnboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (api.onboarded()) {
+                }
                 if (aSwitch.isChecked()) {
                     final String venderThingID = editTextVenderThingID.getText().toString();
                     final String thingPassword = editTextVenderThingPassword.getText().toString();
                     final String thingType = editTextThingType.getText().toString();
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                    wp.onBoard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
+                    wp.onboard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
                         @Override
                         public void onDone(Target result) {
                             Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
+                            showOnboardedForm(api.onboarded());
                         }
                     }, new FailCallback<Throwable>() {
                         @Override
@@ -124,7 +126,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                     final String thingID = editTextThingID.getText().toString();
                     final String thingPassword = editTextThingPassword.getText().toString();
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                    wp.onBoard(thingID, thingPassword).then(new DoneCallback<Target>() {
+                    wp.onboard(thingID, thingPassword).then(new DoneCallback<Target>() {
                         @Override
                         public void onDone(Target result) {
                             Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
@@ -136,12 +138,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                         }
                     });
                 }
-            }
-        });
-        buttonOnboardOther.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOnboardedForm(false);
             }
         });
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -36,7 +36,7 @@ public class IoTCloudPromiseAPIWrapper {
         this.api = api;
     }
 
-    public Promise<Target, Throwable, Void> onBoard(final String thingID, final String thingPassword) {
+    public Promise<Target, Throwable, Void> onboard(final String thingID, final String thingPassword) {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
@@ -44,7 +44,7 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
-    public Promise<Target, Throwable, Void> onBoard(final String venderThingID, final String thingPassword, final String thingType) {
+    public Promise<Target, Throwable, Void> onboard(final String venderThingID, final String thingPassword, final String thingType) {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
