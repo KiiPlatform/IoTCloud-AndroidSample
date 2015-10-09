@@ -165,7 +165,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
             mOnboardFormView.setVisibility(View.GONE);
             mOnboardOperationFormView.setVisibility(View.GONE);
             KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper(this.api);
-            wp.loadWithThingID(api.getTarget().getID().getID()).then(new DoneCallback<KiiThing>() {
+            wp.loadWithThingID(api.getTarget().getTypedID().getID()).then(new DoneCallback<KiiThing>() {
                 @Override
                 public void onDone(KiiThing thing) {
                     txtThingId.setText(thing.getID());
