@@ -60,7 +60,7 @@ public class StatesFragment extends Fragment implements PagerFragment {
         }
         View view = inflater.inflate(R.layout.states_view, null);
         String caption = ((TextView)view.findViewById(R.id.textInformation)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getID().getID() : "---");
+        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
         ((TextView)view.findViewById(R.id.textInformation)).setText(caption);
 
         this.txtPower = (TextView)view.findViewById(R.id.textPower);

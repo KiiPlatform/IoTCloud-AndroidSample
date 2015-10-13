@@ -73,7 +73,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         }
         View view = inflater.inflate(R.layout.triggers_view, null);
         String caption = ((TextView)view.findViewById(R.id.textTriggers)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getID().getID() : "---");
+        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
         ((TextView)view.findViewById(R.id.textTriggers)).setText(caption);
 
         this.btnNewTrigger = (Button) view.findViewById(R.id.buttonNewTrigger);

@@ -68,9 +68,9 @@ public class CommandDetailFragment extends DialogFragment {
         ((TextView)view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
         ((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
 
-        ((TextView)view.findViewById(R.id.textTargetID)).setText(command.getTargetID().getID());
+        ((TextView)view.findViewById(R.id.textTargetID)).setText(command.getTargetID().getTypedID());
         if (command.getIssuerID() != null) {
-            ((TextView) view.findViewById(R.id.textIssuerID)).setText(command.getIssuerID().getID());
+            ((TextView) view.findViewById(R.id.textIssuerID)).setText(command.getIssuerID().getTypedID());
         } else {
             ((TextView) view.findViewById(R.id.textIssuerID)).setText("---");
         }

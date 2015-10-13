@@ -62,11 +62,11 @@ public class InfoFragment extends Fragment {
         });
         TextView textOwner = (TextView)view.findViewById(R.id.textOwner);
         if (this.api.getOwner() != null) {
-            textOwner.setText(this.api.getOwner().getID().getID());
+            textOwner.setText(this.api.getOwner().getTypedID().getID());
         }
         TextView textTarget = (TextView)view.findViewById(R.id.textTarget);
         if (this.api.getTarget() != null) {
-            textTarget.setText(this.api.getTarget().getID().getID());
+            textTarget.setText(this.api.getTarget().getTypedID().getID());
         }
         TextView textInstallationID = (TextView)view.findViewById(R.id.textInstallationID);
         if (this.api.getInstallationID() != null) {

@@ -74,7 +74,7 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
         }
         View view = inflater.inflate(R.layout.commands_view, null);
         String caption = ((TextView)view.findViewById(R.id.textCommands)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getID().getID() : "---");
+        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
         ((TextView)view.findViewById(R.id.textCommands)).setText(caption);
 
         this.btnNewCommand = (Button) view.findViewById(R.id.buttonNewCommand);
