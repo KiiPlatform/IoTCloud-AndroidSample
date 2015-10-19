@@ -1,8 +1,8 @@
 ## How to build
 
 ```
-git clone git@github.com:KiiPlatform/IoTCloud-AndroidSample.git
-cd IoTCloud-AndroidSample
+git clone git@github.com:KiiPlatform/thing-if-AndroidSample.git
+cd thing-if-AndroidSample
 git submodule init
 git submodule update
 ```
