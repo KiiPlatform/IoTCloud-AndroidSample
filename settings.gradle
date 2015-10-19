@@ -1,1 +1,1 @@
-include ':app', ':IoTCloud-AndroidSDK:iotcloudsdk', ':libraries:drag-sort-listview:library'
+include ':app', ':thing-if-AndroidSDK:thingif', ':libraries:drag-sort-listview:library'
