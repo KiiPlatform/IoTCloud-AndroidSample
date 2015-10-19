@@ -1,6 +1,6 @@
-[submodule "IoTCloud-AndroidSDK"]
-	path = IoTCloud-AndroidSDK
-	url = git@github.com:KiiPlatform/IoTCloud-AndroidSDK.git
 [submodule "libraries/drag-sort-listview"]
 	path = libraries/drag-sort-listview
 	url = https://github.com/JayH5/drag-sort-listview.git
+[submodule "thing-if-AndroidSDK"]
+	path = thing-if-AndroidSDK
+	url = https://github.com/KiiPlatform/thing-if-AndroidSDK.git
