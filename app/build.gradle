@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "com.kii.iotcloudsample"
+        applicationId "com.kii.thingifsample"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

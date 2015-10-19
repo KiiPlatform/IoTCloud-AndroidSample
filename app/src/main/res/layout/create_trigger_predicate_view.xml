@@ -24,7 +24,7 @@
 
         <com.mobeta.android.dslv.DragSortListView
             xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:dslv="http://schemas.android.com/apk/res/com.kii.iotcloudsample"
+            xmlns:dslv="http://schemas.android.com/apk/res/com.kii.thingifsample"
             android:id="@android:id/list"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
