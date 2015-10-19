@@ -38,7 +38,7 @@
             style="?android:attr/borderlessButtonStyle" />
     </LinearLayout>
 
-    <com.kii.iotcloudsample.fragments.wizard.NonSwipeableViewPager
+    <com.kii.thingifsample.fragments.wizard.NonSwipeableViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/step_pager"
         android:layout_width="match_parent"
