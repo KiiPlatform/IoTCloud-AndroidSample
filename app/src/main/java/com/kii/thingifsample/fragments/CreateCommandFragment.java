@@ -15,9 +15,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.command.Command;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.command.Action;
+import com.kii.thingif.command.Command;
 import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;

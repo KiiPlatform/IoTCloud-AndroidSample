@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.trigger.TriggersWhen;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.trigger.TriggersWhen;
 import com.kii.thingifsample.R;
 
 import java.util.Arrays;

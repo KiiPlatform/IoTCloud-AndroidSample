@@ -2,10 +2,10 @@ package com.kii.thingifsample.smart_light_demo;
 
 import android.content.Context;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.IoTCloudAPIBuilder;
-import com.kii.iotcloud.Owner;
-import com.kii.iotcloud.schema.SchemaBuilder;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.IoTCloudAPIBuilder;
+import com.kii.thingif.Owner;
+import com.kii.thingif.schema.SchemaBuilder;
 import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.IoTCloudSampleApplication;
 

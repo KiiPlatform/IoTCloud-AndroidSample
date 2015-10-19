@@ -4,7 +4,7 @@ import com.kii.thingifsample.R;
 
 public class And extends ContainerClause {
 
-    private com.kii.iotcloud.trigger.clause.And clause;
+    private com.kii.thingif.trigger.clause.And clause;
 
     @Override
     public int getIcon() {
@@ -19,12 +19,12 @@ public class And extends ContainerClause {
         return this.getType().getCaption();
     }
     @Override
-    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+    public com.kii.thingif.trigger.clause.Clause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
-        this.clause = (com.kii.iotcloud.trigger.clause.And)clause;
+    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
+        this.clause = (com.kii.thingif.trigger.clause.And)clause;
     }
 
     public static class AndOpen extends ContainerClause {
@@ -42,11 +42,11 @@ public class And extends ContainerClause {
             return "";
         }
         @Override
-        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        public com.kii.thingif.trigger.clause.Clause getClause() {
             return null;
         }
         @Override
-        public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
+        public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
         }
         public AndClose getClose() {
             return this.close;
@@ -70,11 +70,11 @@ public class And extends ContainerClause {
             return "";
         }
         @Override
-        public com.kii.iotcloud.trigger.clause.Clause getClause() {
+        public com.kii.thingif.trigger.clause.Clause getClause() {
             return null;
         }
         @Override
-        public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
+        public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
         }
         public AndOpen getOpen() {
             return this.open;

@@ -10,8 +10,8 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.command.Action;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.command.Action;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.smart_light_demo.SetBrightness;
 import com.kii.thingifsample.smart_light_demo.SetColor;

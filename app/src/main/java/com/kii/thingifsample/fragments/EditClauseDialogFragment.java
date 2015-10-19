@@ -16,9 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.kii.iotcloud.trigger.clause.Equals;
-import com.kii.iotcloud.trigger.clause.NotEquals;
-import com.kii.iotcloud.trigger.clause.Range;
+import com.kii.thingif.trigger.clause.Equals;
+import com.kii.thingif.trigger.clause.NotEquals;
+import com.kii.thingif.trigger.clause.Range;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.uimodel.Clause;
 
@@ -27,7 +27,7 @@ public class EditClauseDialogFragment extends DialogFragment {
     public static final String EXTRA_CLAUSE = "EXTRA_CLAUSE";
     public static final String EXTRA_EDITING_LIST_POSITION = "EXTRA_EDITING_LIST_POSITION";
 
-    public static EditClauseDialogFragment newFragment(Fragment target, int requestCode, Clause.ClauseType clauseType, com.kii.iotcloud.trigger.clause.Clause clause, int editingListPosition) {
+    public static EditClauseDialogFragment newFragment(Fragment target, int requestCode, Clause.ClauseType clauseType, com.kii.thingif.trigger.clause.Clause clause, int editingListPosition) {
         EditClauseDialogFragment fragment = new EditClauseDialogFragment();
         fragment.setTargetFragment(target, requestCode);
 
@@ -43,7 +43,7 @@ public class EditClauseDialogFragment extends DialogFragment {
     private EditText editTextField;
     private EditText editTextValue;
     private Clause.ClauseType clauseType;
-    private com.kii.iotcloud.trigger.clause.Clause clause;
+    private com.kii.thingif.trigger.clause.Clause clause;
     private int editingListPosition;
 
     public EditClauseDialogFragment() {
@@ -91,7 +91,7 @@ public class EditClauseDialogFragment extends DialogFragment {
                         Fragment target = getTargetFragment();
                         if (target != null) {
                             Intent data = new Intent();
-                            com.kii.iotcloud.trigger.clause.Clause clause = createClause();
+                            com.kii.thingif.trigger.clause.Clause clause = createClause();
                             if (clause == null) {
                                 return;
                             }
@@ -108,7 +108,7 @@ public class EditClauseDialogFragment extends DialogFragment {
         });
         return dialog;
     }
-    private com.kii.iotcloud.trigger.clause.Clause createClause() {
+    private com.kii.thingif.trigger.clause.Clause createClause() {
         String field = this.editTextField.getText().toString();
         String value = this.editTextValue.getText().toString();
         if (TextUtils.isEmpty(field)) {
@@ -123,32 +123,32 @@ public class EditClauseDialogFragment extends DialogFragment {
             case EQUALS:
                 // FIXME: cannot determine correct type.
                 if (this.isBoolean(value)) {
-                    return new com.kii.iotcloud.trigger.clause.Equals(field, Boolean.parseBoolean(value));
+                    return new com.kii.thingif.trigger.clause.Equals(field, Boolean.parseBoolean(value));
                 } else if (this.isLong(value)) {
-                    return new com.kii.iotcloud.trigger.clause.Equals(field, Long.parseLong(value));
+                    return new com.kii.thingif.trigger.clause.Equals(field, Long.parseLong(value));
                 } else {
-                    return new com.kii.iotcloud.trigger.clause.Equals(field, value);
+                    return new com.kii.thingif.trigger.clause.Equals(field, value);
                 }
             case NOT_EQUALS:
                 // FIXME: cannot determine correct type.
                 if (this.isBoolean(value)) {
-                    return new com.kii.iotcloud.trigger.clause.NotEquals(
-                            new com.kii.iotcloud.trigger.clause.Equals(field, Boolean.parseBoolean(value)));
+                    return new com.kii.thingif.trigger.clause.NotEquals(
+                            new com.kii.thingif.trigger.clause.Equals(field, Boolean.parseBoolean(value)));
                 } else if (this.isLong(value)) {
-                    return new com.kii.iotcloud.trigger.clause.NotEquals(
-                            new com.kii.iotcloud.trigger.clause.Equals(field, Long.parseLong(value)));
+                    return new com.kii.thingif.trigger.clause.NotEquals(
+                            new com.kii.thingif.trigger.clause.Equals(field, Long.parseLong(value)));
                 } else {
-                    return new com.kii.iotcloud.trigger.clause.NotEquals(
-                            new com.kii.iotcloud.trigger.clause.Equals(field, value));
+                    return new com.kii.thingif.trigger.clause.NotEquals(
+                            new com.kii.thingif.trigger.clause.Equals(field, value));
                 }
             case GREATER_THAN:
-                return com.kii.iotcloud.trigger.clause.Range.greaterThan(field, Long.valueOf(value));
+                return com.kii.thingif.trigger.clause.Range.greaterThan(field, Long.valueOf(value));
             case GREATER_THAN_EQUALS:
-                return com.kii.iotcloud.trigger.clause.Range.greaterThanEquals(field, Long.valueOf(value));
+                return com.kii.thingif.trigger.clause.Range.greaterThanEquals(field, Long.valueOf(value));
             case LESS_THAN:
-                return com.kii.iotcloud.trigger.clause.Range.lessThan(field, Long.valueOf(value));
+                return com.kii.thingif.trigger.clause.Range.lessThan(field, Long.valueOf(value));
             case LESS_THAN_EQUALS:
-                return com.kii.iotcloud.trigger.clause.Range.lessThanEquals(field, Long.valueOf(value));
+                return com.kii.thingif.trigger.clause.Range.lessThanEquals(field, Long.valueOf(value));
             default:
                 return null;
         }
@@ -164,7 +164,7 @@ public class EditClauseDialogFragment extends DialogFragment {
     private boolean isBoolean(String s) {
         return "true".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s);
     }
-    private String getField(com.kii.iotcloud.trigger.clause.Clause clause) {
+    private String getField(com.kii.thingif.trigger.clause.Clause clause) {
         if (clause != null) {
             if (clause instanceof Equals) {
                 return ((Equals)clause).getField();
@@ -176,7 +176,7 @@ public class EditClauseDialogFragment extends DialogFragment {
         }
         return "";
     }
-    private String getValue(com.kii.iotcloud.trigger.clause.Clause clause) {
+    private String getValue(com.kii.thingif.trigger.clause.Clause clause) {
         if (clause != null) {
             if (clause instanceof Equals) {
                 Object value = ((Equals) clause).getValue();

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.thingif.IoTCloudAPI;
 import com.kii.thingifsample.MainActivity;
 import com.kii.thingifsample.R;
 

@@ -4,8 +4,8 @@ import android.app.Application;
 import android.content.res.AssetManager;
 
 import com.kii.cloud.storage.Kii;
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.Target;
 
 import java.io.IOException;
 import java.io.InputStream;

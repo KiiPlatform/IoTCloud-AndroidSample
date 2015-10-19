@@ -4,7 +4,7 @@ import com.kii.thingifsample.R;
 
 public class NotEquals extends Clause {
 
-    private com.kii.iotcloud.trigger.clause.NotEquals clause;
+    private com.kii.thingif.trigger.clause.NotEquals clause;
 
     @Override
     public int getIcon() {
@@ -22,11 +22,11 @@ public class NotEquals extends Clause {
         return this.clause.getEquals().getField() + " != " + this.clause.getEquals().getValue().toString();
     }
     @Override
-    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+    public com.kii.thingif.trigger.clause.Clause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
-        this.clause = (com.kii.iotcloud.trigger.clause.NotEquals)clause;
+    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
+        this.clause = (com.kii.thingif.trigger.clause.NotEquals)clause;
     }
 }

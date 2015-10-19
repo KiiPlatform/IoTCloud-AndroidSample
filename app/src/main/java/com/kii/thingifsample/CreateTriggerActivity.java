@@ -14,7 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.thingif.IoTCloudAPI;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerPredicateFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggersWhenFragment;
@@ -45,7 +45,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         Intent i = getIntent();
         this.api = (IoTCloudAPI)i.getParcelableExtra("IoTCloudAPI");
         if (i.hasExtra(INTENT_TRIGGER)) {
-            this.editingTrigger = new Trigger((com.kii.iotcloud.trigger.Trigger)i.getParcelableExtra(INTENT_TRIGGER));
+            this.editingTrigger = new Trigger((com.kii.thingif.trigger.Trigger)i.getParcelableExtra(INTENT_TRIGGER));
         } else {
             this.editingTrigger = new Trigger();
         }
@@ -88,9 +88,9 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     wizardFragment.onInactivate(WizardFragment.EXIT_NEXT);
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                     if (editingTrigger.getTriggerID() == null) {
-                        wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.iotcloud.trigger.Trigger>() {
+                        wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                             @Override
-                            public void onDone(com.kii.iotcloud.trigger.Trigger result) {
+                            public void onDone(com.kii.thingif.trigger.Trigger result) {
                                 Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_OK);
                                 finish();
@@ -104,9 +104,9 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                             }
                         });
                     } else {
-                        wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.iotcloud.trigger.Trigger>() {
+                        wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                             @Override
-                            public void onDone(com.kii.iotcloud.trigger.Trigger result) {
+                            public void onDone(com.kii.thingif.trigger.Trigger result) {
                                 Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_OK);
                                 finish();

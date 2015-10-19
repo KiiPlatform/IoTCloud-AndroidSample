@@ -18,8 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.trigger.Trigger;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;

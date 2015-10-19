@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.command.ActionResult;
+import com.kii.thingif.command.Action;
+import com.kii.thingif.command.ActionResult;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.smart_light_demo.SetBrightness;
 import com.kii.thingifsample.smart_light_demo.SetColor;

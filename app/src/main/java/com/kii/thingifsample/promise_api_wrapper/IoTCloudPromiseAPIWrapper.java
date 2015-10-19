@@ -2,14 +2,14 @@ package com.kii.thingifsample.promise_api_wrapper;
 
 import android.util.Pair;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
-import com.kii.iotcloud.TargetState;
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.command.Command;
-import com.kii.iotcloud.exception.IoTCloudException;
-import com.kii.iotcloud.trigger.Predicate;
-import com.kii.iotcloud.trigger.Trigger;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.Target;
+import com.kii.thingif.TargetState;
+import com.kii.thingif.command.Action;
+import com.kii.thingif.command.Command;
+import com.kii.thingif.exception.IoTCloudException;
+import com.kii.thingif.trigger.Predicate;
+import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.smart_light_demo.LightState;
 
 import org.jdeferred.Promise;

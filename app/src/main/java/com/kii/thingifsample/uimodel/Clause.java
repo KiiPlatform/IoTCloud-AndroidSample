@@ -34,8 +34,8 @@ public abstract class Clause {
     public abstract int getIcon();
     public abstract ClauseType getType();
     public abstract String getSummary();
-    public abstract void setClause(com.kii.iotcloud.trigger.clause.Clause clause);
-    public abstract com.kii.iotcloud.trigger.clause.Clause getClause();
+    public abstract void setClause(com.kii.thingif.trigger.clause.Clause clause);
+    public abstract com.kii.thingif.trigger.clause.Clause getClause();
     public boolean isContainer() {
         return false;
     }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.thingif.IoTCloudAPI;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.smart_light_demo.LightState;

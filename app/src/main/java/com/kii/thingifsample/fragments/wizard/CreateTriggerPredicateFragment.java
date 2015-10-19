@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.trigger.Condition;
-import com.kii.iotcloud.trigger.StatePredicate;
-import com.kii.iotcloud.trigger.TriggersWhen;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.trigger.Condition;
+import com.kii.thingif.trigger.StatePredicate;
+import com.kii.thingif.trigger.TriggersWhen;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ClauseAdapter;
 import com.kii.thingifsample.fragments.EditClauseDialogFragment;
@@ -142,29 +142,29 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
             }
         } else if (requestCode == REQUEST_CODE_EDIT_CLAUSE) {
              if (resultCode == Activity.RESULT_OK) {
-                 com.kii.iotcloud.trigger.clause.Clause clause = data.getParcelableExtra(EditClauseDialogFragment.EXTRA_CLAUSE);
+                 com.kii.thingif.trigger.clause.Clause clause = data.getParcelableExtra(EditClauseDialogFragment.EXTRA_CLAUSE);
                  int editingListPosition = data.getIntExtra(EditClauseDialogFragment.EXTRA_EDITING_LIST_POSITION, -1);
                  if (editingListPosition >= 0) {
                      this.adapter.getItem(editingListPosition).setClause(clause);
                  } else {
-                     if (clause instanceof com.kii.iotcloud.trigger.clause.And) {
+                     if (clause instanceof com.kii.thingif.trigger.clause.And) {
                          And and = new And();
                          and.setClause(clause);
                          this.adapter.add(and);
-                     } else if (clause instanceof com.kii.iotcloud.trigger.clause.Or) {
+                     } else if (clause instanceof com.kii.thingif.trigger.clause.Or) {
                          Or or = new Or();
                          or.setClause(clause);
                          this.adapter.add(or);
-                     } else if (clause instanceof com.kii.iotcloud.trigger.clause.Equals) {
+                     } else if (clause instanceof com.kii.thingif.trigger.clause.Equals) {
                          Equals equals = new Equals();
                          equals.setClause(clause);
                          this.adapter.add(equals);
-                     } else if (clause instanceof com.kii.iotcloud.trigger.clause.NotEquals) {
+                     } else if (clause instanceof com.kii.thingif.trigger.clause.NotEquals) {
                          NotEquals notEquals = new NotEquals();
                          notEquals.setClause(clause);
                          this.adapter.add(notEquals);
-                     } else if (clause instanceof com.kii.iotcloud.trigger.clause.Range) {
-                         com.kii.iotcloud.trigger.clause.Range range = (com.kii.iotcloud.trigger.clause.Range)clause;
+                     } else if (clause instanceof com.kii.thingif.trigger.clause.Range) {
+                         com.kii.thingif.trigger.clause.Range range = (com.kii.thingif.trigger.clause.Range)clause;
                          if (range.getLowerLimit() != null) {
                              if (range.getLowerIncluded() == Boolean.TRUE) {
                                  Range.GreaterThanEquals greaterThanEquals = new Range.GreaterThanEquals();
@@ -214,7 +214,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     }
     @Override
     public void onInactivate(int exitCode) {
-        com.kii.iotcloud.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
+        com.kii.thingif.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
         StatePredicate predicate = new StatePredicate(new Condition(clause), TriggersWhen.CONDITION_TRUE);
         this.editingTrigger.setPredicate(predicate);
     }
@@ -246,10 +246,10 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     }
     private void validateClauses() {
         if (this.adapter != null) {
-            com.kii.iotcloud.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
+            com.kii.thingif.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
             if (clause != null) {
-                if (clause instanceof com.kii.iotcloud.trigger.clause.ContainerClause) {
-                    if (!((com.kii.iotcloud.trigger.clause.ContainerClause)clause).hasClause()) {
+                if (clause instanceof com.kii.thingif.trigger.clause.ContainerClause) {
+                    if (!((com.kii.thingif.trigger.clause.ContainerClause)clause).hasClause()) {
                         this.setNextButtonEnabled(false);
                         return;
                     }

@@ -1,7 +1,7 @@
 package com.kii.thingifsample.uimodel;
 
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.trigger.StatePredicate;
+import com.kii.thingif.command.Action;
+import com.kii.thingif.trigger.StatePredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Trigger {
 
     public Trigger() {
     }
-    public Trigger(com.kii.iotcloud.trigger.Trigger trigger) {
+    public Trigger(com.kii.thingif.trigger.Trigger trigger) {
         for (Action action : trigger.getCommand().getActions()) {
             this.actions.add(action);
         }

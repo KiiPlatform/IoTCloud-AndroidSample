@@ -2,8 +2,8 @@ package com.kii.thingifsample.promise_api_wrapper;
 
 import com.kii.cloud.storage.KiiThing;
 import com.kii.cloud.storage.KiiUser;
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.Target;
 
 import org.jdeferred.Promise;
 import org.jdeferred.android.AndroidDeferredManager;

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.kii.iotcloud.IoTCloudAPI;
+import com.kii.thingif.IoTCloudAPI;
 import com.kii.thingifsample.fragments.CreateCommandFragment;
 
 public class CreateCommandActivity extends AppCompatActivity {

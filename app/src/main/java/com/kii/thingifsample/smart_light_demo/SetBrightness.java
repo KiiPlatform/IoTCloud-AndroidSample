@@ -1,6 +1,6 @@
 package com.kii.thingifsample.smart_light_demo;
 
-import com.kii.iotcloud.command.Action;
+import com.kii.thingif.command.Action;
 
 public class SetBrightness extends Action {
     public int brightness;

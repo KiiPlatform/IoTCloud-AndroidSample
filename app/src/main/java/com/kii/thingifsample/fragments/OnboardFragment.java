@@ -14,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.cloud.storage.KiiThing;
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.Target;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.Target;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;

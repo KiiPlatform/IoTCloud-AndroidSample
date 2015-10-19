@@ -12,10 +12,10 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.kii.iotcloud.IoTCloudAPI;
-import com.kii.iotcloud.command.Action;
-import com.kii.iotcloud.command.ActionResult;
-import com.kii.iotcloud.command.Command;
+import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.command.Action;
+import com.kii.thingif.command.ActionResult;
+import com.kii.thingif.command.Command;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ActionArrayAdapter;
 

@@ -3,7 +3,7 @@ package com.kii.thingifsample.uimodel;
 import com.kii.thingifsample.R;
 
 public class Equals extends Clause {
-    private com.kii.iotcloud.trigger.clause.Equals clause;
+    private com.kii.thingif.trigger.clause.Equals clause;
     @Override
     public int getIcon() {
         return R.drawable.ic_code_equal_black_36dp;
@@ -20,11 +20,11 @@ public class Equals extends Clause {
         return this.clause.getField() + " == " + this.clause.getValue().toString();
     }
     @Override
-    public com.kii.iotcloud.trigger.clause.Clause getClause() {
+    public com.kii.thingif.trigger.clause.Clause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.iotcloud.trigger.clause.Clause clause) {
-        this.clause = (com.kii.iotcloud.trigger.clause.Equals)clause;
+    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
+        this.clause = (com.kii.thingif.trigger.clause.Equals)clause;
     }
 }
