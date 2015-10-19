@@ -15,7 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.Command;
 import com.kii.thingifsample.AppConstants;
@@ -39,7 +39,7 @@ public class CreateCommandFragment extends Fragment {
 
     public static final String TAG = CreateCommandFragment.class.getSimpleName();
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private CheckBox chkPower;
     private Switch switchPower;
     private CheckBox chkBrightness;
@@ -55,10 +55,10 @@ public class CreateCommandFragment extends Fragment {
     private SeekBar seekColorTemperature;
     private Button btnSendCommand;
 
-    public static CreateCommandFragment newFragment(IoTCloudAPI api) {
+    public static CreateCommandFragment newFragment(ThingIFAPI api) {
         CreateCommandFragment fragment = new CreateCommandFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -70,18 +70,18 @@ public class CreateCommandFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.create_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);

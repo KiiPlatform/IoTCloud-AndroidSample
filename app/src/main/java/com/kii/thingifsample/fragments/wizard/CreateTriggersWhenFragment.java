@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.TriggersWhen;
 import com.kii.thingifsample.R;
 
@@ -22,14 +22,14 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     private static final String DESCRIPTION_CONDITION_CHANGED = "TriggerManager checks previous state and current state. Command is executed when previous state and current state is evaluated in different value. (i.e. (true, false) or (false, true))";
 
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private Spinner spinTriggersWhen;
     private TextView txtDescription;
 
-    public static CreateTriggersWhenFragment newFragment(IoTCloudAPI api) {
+    public static CreateTriggersWhenFragment newFragment(ThingIFAPI api) {
         CreateTriggersWhenFragment fragment = new CreateTriggersWhenFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -40,18 +40,18 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.create_trigger_when_view, null);
         this.spinTriggersWhen = (Spinner)view.findViewById(R.id.spinTriggersWhen);

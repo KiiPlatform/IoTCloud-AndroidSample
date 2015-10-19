@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.R;
@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class TriggersFragment extends Fragment implements PagerFragment, AdapterView.OnItemClickListener {
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private TriggerArrayAdapter adapter;
     private ListView lstTriggers;
     private ProgressBar progressLoading;
@@ -48,10 +48,10 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         // Required empty public constructor
     }
 
-    public static TriggersFragment newFragment(IoTCloudAPI api) {
+    public static TriggersFragment newFragment(ThingIFAPI api) {
         TriggersFragment fragment = new TriggersFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -59,17 +59,17 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.triggers_view, null);
         String caption = ((TextView)view.findViewById(R.id.textTriggers)).getText().toString();
@@ -82,7 +82,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("IoTCloudAPI", api);
+                i.putExtra("ThingIFAPI", api);
                 startActivityForResult(i, 0);
             }
         });

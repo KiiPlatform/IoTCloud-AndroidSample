@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.cloud.storage.KiiThing;
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.R;
@@ -42,16 +42,16 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     private TextView txtFirmwareVersion;
     private TextView txtLot;
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
 
     public OnboardFragment() {
         // Required empty public constructor
     }
 
-    public static OnboardFragment newFragment(IoTCloudAPI api) {
+    public static OnboardFragment newFragment(ThingIFAPI api) {
         OnboardFragment fragment = new OnboardFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -59,7 +59,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
@@ -71,11 +71,11 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.onboard_view, null);
         mOnboardWithIDFormView = view.findViewById(R.id.onboard_with_id_form);

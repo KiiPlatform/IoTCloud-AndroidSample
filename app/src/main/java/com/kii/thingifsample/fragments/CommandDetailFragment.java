@@ -12,7 +12,7 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.ActionResult;
 import com.kii.thingif.command.Command;
@@ -25,17 +25,17 @@ import java.util.List;
 
 public class CommandDetailFragment extends DialogFragment {
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private Command command;
 
     public CommandDetailFragment() {
         // Required empty public constructor
     }
 
-    public static CommandDetailFragment newFragment(IoTCloudAPI api, Command command, Fragment targetFragment, int requestCode) {
+    public static CommandDetailFragment newFragment(ThingIFAPI api, Command command, Fragment targetFragment, int requestCode) {
         CommandDetailFragment fragment = new CommandDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         arguments.putParcelable("Command", command);
         fragment.setArguments(arguments);
         fragment.setTargetFragment(targetFragment, requestCode);
@@ -45,20 +45,20 @@ public class CommandDetailFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
         outState.putParcelable("Command", this.command);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
             this.command = savedInstanceState.getParcelable("Command");
 
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
             this.command = arguments.getParcelable("Command");
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();

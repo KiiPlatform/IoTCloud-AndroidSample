@@ -19,12 +19,12 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiUser;
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Owner;
 import com.kii.thingif.PushBackend;
 import com.kii.thingif.TypedID;
-import com.kii.thingif.exception.IoTCloudException;
-import com.kii.thingif.exception.StoredIoTCloudAPIInstanceNotFoundException;
+import com.kii.thingif.exception.ThingIFException;
+import com.kii.thingif.exception.StoredThingIFAPIInstanceNotFoundException;
 import com.kii.thingifsample.fragments.PagerFragment;
 import com.kii.thingifsample.fragments.ProgressDialogFragment;
 import com.kii.thingifsample.sliding_tab.SlidingTabLayout;
@@ -39,7 +39,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         pdf.show(ft, ProgressDialogFragment.TAG);
 
         try {
-            this.api = IoTCloudAPI.loadFromStoredInstance(this);
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
             new GCMRegisterTask(this.api).execute();
             pdf.dismiss();
-        } catch (StoredIoTCloudAPIInstanceNotFoundException e) {
+        } catch (StoredThingIFAPIInstanceNotFoundException e) {
             Intent i = new Intent();
             i.setClass(getApplicationContext(), LoginActivity.class);
             startActivityForResult(i, 0);
@@ -97,19 +97,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = (IoTCloudAPI)savedInstanceState.getParcelable("IoTCloudAPI");
+        this.api = (ThingIFAPI)savedInstanceState.getParcelable("ThingIFAPI");
     }
 
     public class GCMRegisterTask extends AsyncTask<Void, Void, Exception> {
 
-        private final IoTCloudAPI api;
+        private final ThingIFAPI api;
 
-        GCMRegisterTask(IoTCloudAPI api) {
+        GCMRegisterTask(ThingIFAPI api) {
             this.api = api;
         }
         @Override
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
             try {
                 this.api.installPush(registrationId, PushBackend.GCM);
-            } catch (IoTCloudException e) {
+            } catch (ThingIFException e) {
                 return e;
             }
             return null;

@@ -20,7 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.ActionResult;
 import com.kii.thingif.command.Command;
@@ -42,17 +42,17 @@ import java.util.List;
 
 public class TriggerDetailFragment extends DialogFragment {
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private Trigger trigger;
 
     public TriggerDetailFragment() {
         // Required empty public constructor
     }
 
-    public static TriggerDetailFragment newFragment(IoTCloudAPI api, Trigger trigger, Fragment targetFragment, int requestCode) {
+    public static TriggerDetailFragment newFragment(ThingIFAPI api, Trigger trigger, Fragment targetFragment, int requestCode) {
         TriggerDetailFragment fragment = new TriggerDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         arguments.putParcelable("Trigger", trigger);
         fragment.setArguments(arguments);
         fragment.setTargetFragment(targetFragment, requestCode);
@@ -62,19 +62,19 @@ public class TriggerDetailFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
         outState.putParcelable("Trigger", this.trigger);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
             this.trigger = savedInstanceState.getParcelable("Trigger");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
             this.trigger = arguments.getParcelable("Trigger");
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -115,7 +115,7 @@ public class TriggerDetailFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("IoTCloudAPI", api);
+                i.putExtra("ThingIFAPI", api);
                 i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
                 getTargetFragment().startActivityForResult(i, 0);
 //                startActivity(i);

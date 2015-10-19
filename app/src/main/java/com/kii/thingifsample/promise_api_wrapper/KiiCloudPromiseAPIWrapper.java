@@ -2,7 +2,7 @@ package com.kii.thingifsample.promise_api_wrapper;
 
 import com.kii.cloud.storage.KiiThing;
 import com.kii.cloud.storage.KiiUser;
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
 
 import org.jdeferred.Promise;
@@ -12,9 +12,9 @@ import org.jdeferred.android.DeferredAsyncTask;
 public class KiiCloudPromiseAPIWrapper {
 
     private AndroidDeferredManager adm;
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
 
-    public KiiCloudPromiseAPIWrapper(IoTCloudAPI api) {
+    public KiiCloudPromiseAPIWrapper(ThingIFAPI api) {
         this.adm = new AndroidDeferredManager();
         this.api = api;
     }

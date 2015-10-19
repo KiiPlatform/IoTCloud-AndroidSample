@@ -10,7 +10,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.smart_light_demo.SetBrightness;
@@ -22,7 +22,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
 
     public static final String TAG = CreateTriggerCommandFragment.class.getSimpleName();
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private CheckBox chkPower;
     private Switch switchPower;
     private CheckBox chkBrightness;
@@ -37,10 +37,10 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
 
-    public static CreateTriggerCommandFragment newFragment(IoTCloudAPI api) {
+    public static CreateTriggerCommandFragment newFragment(ThingIFAPI api) {
         CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -51,18 +51,18 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.create_trigger_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);

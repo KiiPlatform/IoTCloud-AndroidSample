@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.smart_light_demo.LightState;
@@ -23,7 +23,7 @@ import org.jdeferred.FailCallback;
  */
 public class StatesFragment extends Fragment implements PagerFragment {
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private TextView txtPower;
     private TextView txtBrightness;
     private TextView txtColor;
@@ -33,10 +33,10 @@ public class StatesFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static StatesFragment newFragment(IoTCloudAPI api) {
+    public static StatesFragment newFragment(ThingIFAPI api) {
         StatesFragment fragment = new StatesFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -44,18 +44,18 @@ public class StatesFragment extends Fragment implements PagerFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.states_view, null);
         String caption = ((TextView)view.findViewById(R.id.textInformation)).getText().toString();

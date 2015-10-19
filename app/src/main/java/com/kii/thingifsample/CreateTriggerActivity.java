@@ -14,7 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerPredicateFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggersWhenFragment;
@@ -30,7 +30,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     public static final String TAG = CreateTriggerActivity.class.getSimpleName();
     public static final String INTENT_TRIGGER = "INTENT_TRIGGER";
     private static final int WIZARD_PAGE_SIZE = 3;
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private WizardPagerAdapter adapter;
     private ViewPager viewPager;
     private Button nextButton;
@@ -43,7 +43,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trigger);
         Intent i = getIntent();
-        this.api = (IoTCloudAPI)i.getParcelableExtra("IoTCloudAPI");
+        this.api = (ThingIFAPI)i.getParcelableExtra("ThingIFAPI");
         if (i.hasExtra(INTENT_TRIGGER)) {
             this.editingTrigger = new Trigger((com.kii.thingif.trigger.Trigger)i.getParcelableExtra(INTENT_TRIGGER));
         } else {
@@ -146,14 +146,14 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+        this.api = savedInstanceState.getParcelable("ThingIFAPI");
     }
-    public IoTCloudAPI getApi() {
+    public ThingIFAPI getApi() {
         return this.api;
     }
 

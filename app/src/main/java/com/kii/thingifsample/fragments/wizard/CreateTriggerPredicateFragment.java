@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.Condition;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.TriggersWhen;
@@ -34,7 +34,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     private static final int REQUEST_CODE_ADD_CLAUSE = 100;
     private static final int REQUEST_CODE_EDIT_CLAUSE = 101;
 
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
     private DragSortListView listView;
     private DragSortController controller;
     private ClauseAdapter adapter;
@@ -68,10 +68,10 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
         }
     };
 
-    public static CreateTriggerPredicateFragment newFragment(IoTCloudAPI api) {
+    public static CreateTriggerPredicateFragment newFragment(ThingIFAPI api) {
         CreateTriggerPredicateFragment fragment = new CreateTriggerPredicateFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("IoTCloudAPI", api);
+        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -81,18 +81,18 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("IoTCloudAPI", this.api);
+        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("IoTCloudAPI");
+            this.api = savedInstanceState.getParcelable("ThingIFAPI");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("IoTCloudAPI");
+            this.api = arguments.getParcelable("ThingIFAPI");
         }
         View view = inflater.inflate(R.layout.create_trigger_predicate_view, null);
         ((FloatingActionButton)view.findViewById(R.id.fabAddClause)).setOnClickListener(new View.OnClickListener() {

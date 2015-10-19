@@ -2,12 +2,12 @@ package com.kii.thingifsample.promise_api_wrapper;
 
 import android.util.Pair;
 
-import com.kii.thingif.IoTCloudAPI;
+import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
 import com.kii.thingif.TargetState;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.Command;
-import com.kii.thingif.exception.IoTCloudException;
+import com.kii.thingif.exception.ThingIFException;
 import com.kii.thingif.trigger.Predicate;
 import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.smart_light_demo.LightState;
@@ -22,14 +22,14 @@ import java.util.List;
 public class IoTCloudPromiseAPIWrapper {
 
     private AndroidDeferredManager adm;
-    private IoTCloudAPI api;
+    private ThingIFAPI api;
 
-    public IoTCloudPromiseAPIWrapper(IoTCloudAPI api) {
+    public IoTCloudPromiseAPIWrapper(ThingIFAPI api) {
         this.adm = new AndroidDeferredManager();
         this.api = api;
     }
 
-    public IoTCloudPromiseAPIWrapper(AndroidDeferredManager manager, IoTCloudAPI api) {
+    public IoTCloudPromiseAPIWrapper(AndroidDeferredManager manager, ThingIFAPI api) {
         this.adm = manager;
         this.api = api;
     }
