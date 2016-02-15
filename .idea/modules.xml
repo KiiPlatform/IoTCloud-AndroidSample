@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IoTCloud-AndroidSDK/IoTCloud-AndroidSDK.iml" filepath="$PROJECT_DIR$/IoTCloud-AndroidSDK/IoTCloud-AndroidSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/IoTCloudSample.iml" filepath="$PROJECT_DIR$/IoTCloudSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/IoTCloud-AndroidSDK/iotcloudsdk/iotcloudsdk.iml" filepath="$PROJECT_DIR$/IoTCloud-AndroidSDK/iotcloudsdk/iotcloudsdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/drag-sort-listview/drag-sort-listview.iml" filepath="$PROJECT_DIR$/libraries/drag-sort-listview/drag-sort-listview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/drag-sort-listview/library/library.iml" filepath="$PROJECT_DIR$/libraries/drag-sort-listview/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/thing-if-AndroidSDK/thing-if-AndroidSDK.iml" filepath="$PROJECT_DIR$/thing-if-AndroidSDK/thing-if-AndroidSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/thing-if-AndroidSample.iml" filepath="$PROJECT_DIR$/thing-if-AndroidSample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/thing-if-AndroidSDK/thingif/thingif.iml" filepath="$PROJECT_DIR$/thing-if-AndroidSDK/thingif/thingif.iml" />
     </modules>
   </component>
 </project>
