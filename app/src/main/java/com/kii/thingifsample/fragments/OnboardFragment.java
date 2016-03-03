@@ -1,6 +1,10 @@
 package com.kii.thingifsample.fragments;
 
 
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -167,13 +171,41 @@ public class OnboardFragment extends Fragment implements PagerFragment {
             KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper(this.api);
             wp.loadWithThingID(api.getTarget().getTypedID().getID()).then(new DoneCallback<KiiThing>() {
                 @Override
-                public void onDone(KiiThing thing) {
+                public void onDone(final KiiThing thing) {
                     txtThingId.setText(thing.getID());
                     if (thing.getVendorThingID() != null) {
                         txtVenderThingId.setText(thing.getVendorThingID());
                     } else {
                         txtVenderThingId.setText("---");
                     }
+                    txtThingId.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (thing.getID() != null) {
+                                ClipData.Item item = new ClipData.Item(thing.getID());
+                                String[] mimeType = new String[1];
+                                mimeType[0] = ClipDescription.MIMETYPE_TEXT_PLAIN;
+                                ClipData cd = new ClipData(new ClipDescription("text_data", mimeType), item);
+                                ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                cm.setPrimaryClip(cd);
+                                Toast.makeText(getActivity(), thing.getID() +  " copy to clipboard", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    txtVenderThingId.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (thing.getVendorThingID() != null) {
+                                ClipData.Item item = new ClipData.Item(thing.getVendorThingID());
+                                String[] mimeType = new String[1];
+                                mimeType[0] = ClipDescription.MIMETYPE_TEXT_PLAIN;
+                                ClipData cd = new ClipData(new ClipDescription("text_data", mimeType), item);
+                                ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                cm.setPrimaryClip(cd);
+                                Toast.makeText(getActivity(), thing.getVendorThingID() +  " copy to clipboard", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                     if (thing.getThingType() != null) {
                         txtThingType.setText(thing.getThingType());
                     } else {

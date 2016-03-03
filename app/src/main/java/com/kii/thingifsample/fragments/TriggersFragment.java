@@ -170,12 +170,19 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
                 holder = new ImageViewHolder();
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_icon);
                 holder.text = (TextView)convertView.findViewById(R.id.row_text);
+                holder.rightText = (TextView)convertView.findViewById(R.id.right_text);
                 convertView.setTag(holder);
             } else {
                 holder = (ImageViewHolder)convertView.getTag();
             }
             Trigger item = this.getItem(position);
+
             holder.text.setText(item.getTriggerID());
+            if (item.getCommand() != null) {
+                holder.rightText.setText("Command");
+            } else {
+                holder.rightText.setText("ServerCode");
+            }
             return convertView;
         }
     }

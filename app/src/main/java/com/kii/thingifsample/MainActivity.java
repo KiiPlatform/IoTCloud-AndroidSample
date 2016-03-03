@@ -57,13 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
         login();
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (this.api == null) {
-            finish();
-        }
-    }
 
     private void login() {
         final ProgressDialogFragment pdf = new ProgressDialogFragment();
