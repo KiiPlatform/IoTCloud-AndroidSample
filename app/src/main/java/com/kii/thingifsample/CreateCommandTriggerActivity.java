@@ -25,9 +25,9 @@ import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
 
-public class CreateTriggerActivity extends AppCompatActivity implements WizardFragment.WizardController {
+public class CreateCommandTriggerActivity extends AppCompatActivity implements WizardFragment.WizardController {
 
-    public static final String TAG = CreateTriggerActivity.class.getSimpleName();
+    public static final String TAG = CreateCommandTriggerActivity.class.getSimpleName();
     public static final String INTENT_TRIGGER = "INTENT_TRIGGER";
     private static final int WIZARD_PAGE_SIZE = 3;
     private ThingIFAPI api;
@@ -41,7 +41,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_trigger);
+        setContentView(R.layout.activity_create_command_trigger);
         Intent i = getIntent();
         this.api = (ThingIFAPI)i.getParcelableExtra("ThingIFAPI");
         if (i.hasExtra(INTENT_TRIGGER)) {
@@ -54,9 +54,9 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                View currentFocus = CreateTriggerActivity.this.getCurrentFocus();
+                View currentFocus = CreateCommandTriggerActivity.this.getCurrentFocus();
                 if (currentFocus != null) {
-                    InputMethodManager imm = (InputMethodManager) CreateTriggerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) CreateCommandTriggerActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
                 }
                 if (currentPosition < position) {
@@ -91,14 +91,14 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                         wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                             @Override
                             public void onDone(com.kii.thingif.trigger.Trigger result) {
-                                Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(CreateCommandTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_OK);
                                 finish();
                             }
                         }, new FailCallback<Throwable>() {
                             @Override
                             public void onFail(Throwable result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(CreateCommandTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_CANCELED);
                                 finish();
                             }
@@ -107,14 +107,14 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                         wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                             @Override
                             public void onDone(com.kii.thingif.trigger.Trigger result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(CreateCommandTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_OK);
                                 finish();
                             }
                         }, new FailCallback<Throwable>() {
                             @Override
                             public void onFail(Throwable result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(CreateCommandTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_CANCELED);
                                 finish();
                             }
@@ -184,7 +184,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     fragment = CreateTriggersWhenFragment.newFragment(api);
                     break;
             }
-            fragment.setController(CreateTriggerActivity.this);
+            fragment.setController(CreateCommandTriggerActivity.this);
             fragment.setEditingTrigger(editingTrigger);
             return fragment;
         }

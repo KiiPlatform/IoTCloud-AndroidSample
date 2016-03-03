@@ -3,9 +3,11 @@ package com.kii.thingifsample.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.Trigger;
-import com.kii.thingifsample.CreateTriggerActivity;
+import com.kii.thingifsample.CreateCommandTriggerActivity;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -80,10 +82,24 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         this.btnNewTrigger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("ThingIFAPI", api);
-                startActivityForResult(i, 0);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                dialog.setTitle("Choose the type of Trigger");
+                dialog.setItems(new String[]{"Command", "Server Code"},
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    Intent i = new Intent();
+                                    i.setClass(getContext(), CreateCommandTriggerActivity.class);
+                                    i.putExtra("ThingIFAPI", api);
+                                    startActivityForResult(i, 0);
+                                } else if (which == 1) {
+
+                                }
+                            }
+                        }
+                );
+                dialog.create().show();
             }
         });
         this.btnRefreshTriggers = (Button) view.findViewById(R.id.buttonRefreshTriggers);
