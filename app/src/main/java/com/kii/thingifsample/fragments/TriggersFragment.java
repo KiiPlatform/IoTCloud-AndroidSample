@@ -22,7 +22,8 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.Trigger;
-import com.kii.thingifsample.CreateCommandTriggerActivity;
+import com.kii.thingifsample.CreateTriggerActivity;
+import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -88,14 +89,15 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent();
+                                i.setClass(getContext(), CreateTriggerActivity.class);
+                                i.putExtra("ThingIFAPI", api);
                                 if (which == 0) {
-                                    Intent i = new Intent();
-                                    i.setClass(getContext(), CreateCommandTriggerActivity.class);
-                                    i.putExtra("ThingIFAPI", api);
-                                    startActivityForResult(i, 0);
+                                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.COMMAND);
                                 } else if (which == 1) {
-
+                                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.SERVER_CODE);
                                 }
+                                startActivityForResult(i, 0);
                             }
                         }
                 );

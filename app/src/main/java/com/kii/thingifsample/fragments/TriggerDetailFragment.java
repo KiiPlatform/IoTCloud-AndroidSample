@@ -26,7 +26,8 @@ import com.kii.thingif.command.ActionResult;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.Trigger;
-import com.kii.thingifsample.CreateCommandTriggerActivity;
+import com.kii.thingifsample.CreateTriggerActivity;
+import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ActionArrayAdapter;
 import com.kii.thingifsample.adapter.ClauseAdapter;
@@ -114,11 +115,15 @@ public class TriggerDetailFragment extends DialogFragment {
         ((FloatingActionButton)view.findViewById(R.id.fabEditTrigger)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent();
-                i.setClass(getContext(), CreateCommandTriggerActivity.class);
+                i.setClass(getContext(), CreateTriggerActivity.class);
                 i.putExtra("ThingIFAPI", api);
-                i.putExtra(CreateCommandTriggerActivity.INTENT_TRIGGER, trigger);
+                i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
+                if (trigger.getCommand() != null) {
+                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.COMMAND);
+                } else {
+                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.SERVER_CODE);
+                }
                 getTargetFragment().startActivityForResult(i, 0);
-//                startActivity(i);
                 dismiss();
             }
         });

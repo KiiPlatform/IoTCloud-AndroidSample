@@ -1,165 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Trigger Action"
+        android:text="ServerCode"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="5dp"
         />
 
-    <CheckBox
-        android:id="@+id/checkboxPower"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Power"
+        android:text="Endpoint"
         android:textStyle="bold"
-        android:checked="true"
-        android:layout_below="@id/textTitle"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         />
-
-    <Switch
-        android:id="@+id/switchPower"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editTextEndpoint"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/checkboxPower"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:singleLine="true"
         />
 
-    <CheckBox
-        android:id="@+id/checkboxBrightness"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Brightness: 0"
+        android:text="Executor Access Token"
         android:textStyle="bold"
-        android:checked="true"
-        android:layout_below="@+id/switchPower"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         />
-
-    <SeekBar
-        android:id="@+id/seekBarBrightness"
+    <EditText
+        android:id="@+id/editTextExecutorAccessToken"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/checkboxBrightness"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        />
-
-    <CheckBox
-        android:id="@+id/checkboxColor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Color"
-        android:textStyle="bold"
-        android:checked="true"
-        android:layout_below="@+id/seekBarBrightness"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:singleLine="true"
         />
 
     <TextView
-        android:id="@+id/textR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="R: 0"
+        android:text="Target App ID"
         android:textStyle="bold"
-        android:layout_below="@+id/checkboxColor"
-        android:layout_alignParentLeft="true"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        />
-
-    <SeekBar
-        android:id="@+id/seekBarR"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/textR"
-        android:layout_alignTop="@+id/textR"
-        android:max="255"
-        />
-
-    <TextView
-        android:id="@+id/textG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="G: 0"
-        android:textStyle="bold"
-        android:layout_below="@+id/seekBarR"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        />
-
-    <SeekBar
-        android:id="@+id/seekBarG"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/textR"
-        android:layout_alignTop="@+id/textG"
-        android:max="255"
-        />
-
-    <TextView
-        android:id="@+id/textB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="B: 0"
-        android:textStyle="bold"
-        android:layout_below="@+id/seekBarG"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        />
-
-    <SeekBar
-        android:id="@+id/seekBarB"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/textB"
-        android:layout_alignTop="@+id/textB"
-        android:max="255"
-        />
-
-    <CheckBox
-        android:id="@+id/checkboxColorTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Color temperature: 0"
-        android:textStyle="bold"
-        android:checked="true"
-        android:layout_below="@+id/seekBarB"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         />
-
-    <SeekBar
-        android:id="@+id/seekBarColorTemperature"
+    <EditText
+        android:id="@+id/editTextTargetAppID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/checkboxColorTemperature"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:singleLine="true"
         />
 
-</RelativeLayout>
+
+</LinearLayout>
