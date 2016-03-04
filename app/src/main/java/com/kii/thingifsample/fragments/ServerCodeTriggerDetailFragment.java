@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +28,17 @@ import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ClauseAdapter;
+import com.kii.thingifsample.adapter.ParameterArrayAdapter;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.uimodel.Clause;
 import com.kii.thingifsample.uimodel.ClauseParser;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ServerCodeTriggerDetailFragment extends DialogFragment {
@@ -161,6 +166,19 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         if (!TextUtils.isEmpty(serverCode.getTargetAppID())) {
             ((TextView) view.findViewById(R.id.textTargetAppID)).setText(serverCode.getTargetAppID());
         }
+
+        ParameterArrayAdapter adapter = new ParameterArrayAdapter(getActivity());
+        JSONObject parameters = serverCode.getParameters();
+        if (parameters != null) {
+            for(Iterator<String> keys = parameters.keys(); keys.hasNext();) {
+                String key = keys.next();
+                try {
+                    adapter.add(new Pair<String, Object>(key, parameters.get(key)));
+                } catch (JSONException e) {
+                }
+            }
+        }
+        ((ListView) view.findViewById(R.id.listViewParameters)).setAdapter(adapter);
 
         // Show the predicate info
         StatePredicate predicate = (StatePredicate)trigger.getPredicate();

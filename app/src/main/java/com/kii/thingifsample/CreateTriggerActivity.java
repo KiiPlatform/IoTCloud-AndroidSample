@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -26,6 +27,8 @@ import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CreateTriggerActivity extends AppCompatActivity implements WizardFragment.WizardController {
 
@@ -102,11 +105,21 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                     if (editingTrigger.getTriggerID() == null) {
                         if (editingTrigger.getServerCode() != null) {
+                            JSONObject parameters = null;
+                            if (editingTrigger.getServerCode().parameters.size() > 0) {
+                                parameters = new JSONObject();
+                                for (Pair<String, Object> parameter : editingTrigger.getServerCode().parameters) {
+                                    try {
+                                        parameters.put(parameter.first, parameter.second);
+                                    } catch (JSONException e) {
+                                    }
+                                }
+                            }
                             ServerCode serverCode = new ServerCode(
                                     editingTrigger.getServerCode().endpoint,
                                     editingTrigger.getServerCode().executorAccessToken,
                                     editingTrigger.getServerCode().targetAppID,
-                                    null);
+                                    parameters);
                             wp.postNewTrigger(serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
@@ -141,11 +154,21 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                         }
                     } else {
                         if (editingTrigger.getServerCode() != null) {
+                            JSONObject parameters = null;
+                            if (editingTrigger.getServerCode().parameters.size() > 0) {
+                                parameters = new JSONObject();
+                                for (Pair<String, Object> parameter : editingTrigger.getServerCode().parameters) {
+                                    try {
+                                        parameters.put(parameter.first, parameter.second);
+                                    } catch (JSONException e) {
+                                    }
+                                }
+                            }
                             ServerCode serverCode = new ServerCode(
                                     editingTrigger.getServerCode().endpoint,
                                     editingTrigger.getServerCode().executorAccessToken,
                                     editingTrigger.getServerCode().targetAppID,
-                                    null);
+                                    parameters);
                             wp.patchTrigger(editingTrigger.getTriggerID(), serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {

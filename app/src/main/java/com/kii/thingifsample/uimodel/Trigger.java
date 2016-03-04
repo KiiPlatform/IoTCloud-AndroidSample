@@ -1,9 +1,15 @@
 package com.kii.thingifsample.uimodel;
 
+import android.util.Pair;
+
 import com.kii.thingif.command.Action;
 import com.kii.thingif.trigger.StatePredicate;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Trigger {
@@ -56,12 +62,23 @@ public class Trigger {
         public String endpoint;
         public String executorAccessToken;
         public String targetAppID;
+        public List<Pair<String, Object>> parameters = new ArrayList<Pair<String, Object>>();
         public ServerCode() {
         }
         public ServerCode(com.kii.thingif.trigger.ServerCode serverCode) {
             this.endpoint = serverCode.getEndpoint();
             this.executorAccessToken = serverCode.getExecutorAccessToken();
             this.targetAppID = serverCode.getTargetAppID();
+            if (serverCode.getParameters() != null) {
+                JSONObject json = serverCode.getParameters();
+                for(Iterator<String> keys = json.keys(); keys.hasNext();) {
+                    String key = keys.next();
+                    try {
+                        parameters.add(new Pair<String, Object>(key, json.get(key)));
+                    } catch (JSONException ignore) {
+                    }
+                }
+            }
         }
     }
 }
