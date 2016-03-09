@@ -11,6 +11,7 @@ import com.kii.thingif.exception.ThingIFException;
 import com.kii.thingif.trigger.Predicate;
 import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.Trigger;
+import com.kii.thingif.trigger.TriggeredServerCodeResult;
 import com.kii.thingifsample.smart_light_demo.LightState;
 
 import org.jdeferred.Promise;
@@ -168,4 +169,20 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+    public Promise<List<TriggeredServerCodeResult>, Throwable, Void> listTriggeredServerCodeResults(final String triggerID) {
+        return adm.when(new DeferredAsyncTask<Void, Void, List<TriggeredServerCodeResult>>() {
+            @Override
+            protected List<TriggeredServerCodeResult> doInBackgroundSafe(Void... voids) throws Exception {
+                List<TriggeredServerCodeResult> results = new ArrayList<TriggeredServerCodeResult>();
+                String paginationKey = null;
+                do {
+                    Pair<List<TriggeredServerCodeResult>, String> result = api.listTriggeredServerCodeResults(triggerID, 0, paginationKey);
+                    results.addAll(result.first);
+                    paginationKey = result.second;
+                } while (paginationKey != null);
+                return results;
+            }
+        });
+    }
+
 }

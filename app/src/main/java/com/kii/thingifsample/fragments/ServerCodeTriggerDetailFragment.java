@@ -158,6 +158,12 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
                         .show();
             }
         });
+        ((FloatingActionButton)view.findViewById(R.id.fabShowResult)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ServerCodeResultsDialogFragment dialog = ServerCodeResultsDialogFragment.newFragment(api, trigger.getTriggerID());
+                dialog.show(getFragmentManager(), "serverCodeResultsDialogFragment");
+            }
+        });
 
         // Show the server code info
         ServerCode serverCode = trigger.getServerCode();
