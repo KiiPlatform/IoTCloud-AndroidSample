@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.kii.cloud.storage.KiiUser;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ParameterArrayAdapter;
@@ -205,7 +206,7 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
             this.editTextEndpoint.setText(this.editingTrigger.getServerCode().endpoint);
         }
         if (TextUtils.isEmpty(this.editingTrigger.getServerCode().executorAccessToken)) {
-            this.editTextExecutorAccessToken.setText("");
+            this.editTextExecutorAccessToken.setText(KiiUser.getCurrentUser().getAccessToken());
         } else {
             this.editTextExecutorAccessToken.setText(this.editingTrigger.getServerCode().executorAccessToken);
         }

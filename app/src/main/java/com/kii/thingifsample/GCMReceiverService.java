@@ -34,7 +34,7 @@ public class GCMReceiverService extends IntentService {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Received a push notification msg=" + msg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                     }
                 });
             }
