@@ -206,7 +206,7 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
             this.editTextEndpoint.setText(this.editingTrigger.getServerCode().endpoint);
         }
         if (TextUtils.isEmpty(this.editingTrigger.getServerCode().executorAccessToken)) {
-            this.editTextExecutorAccessToken.setText(KiiUser.getCurrentUser().getAccessToken());
+            this.editTextExecutorAccessToken.setText(api.getTarget().getAccessToken());
         } else {
             this.editTextExecutorAccessToken.setText(this.editingTrigger.getServerCode().executorAccessToken);
         }
