@@ -38,7 +38,7 @@
             android:label="@string/title_activity_create_command" >
         </activity>
         <activity
-            android:name="com.kii.thingifsample.CreateTriggerActivity"
+            android:name=".CreateTriggerActivity"
             android:label="@string/title_activity_create_trigger" >
         </activity>
         <service android:name="com.kii.thingifsample.GCMReceiverService" />

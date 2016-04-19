@@ -9,7 +9,9 @@ import com.kii.thingif.command.Action;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.exception.ThingIFException;
 import com.kii.thingif.trigger.Predicate;
+import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.Trigger;
+import com.kii.thingif.trigger.TriggeredServerCodeResult;
 import com.kii.thingifsample.smart_light_demo.LightState;
 
 import org.jdeferred.Promise;
@@ -102,6 +104,16 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+    public Promise<Trigger, Throwable, Void> postNewTrigger(
+            final ServerCode serverCode,
+            final Predicate predicate) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewTrigger(serverCode, predicate);
+            }
+        });
+    }
 
     public Promise<Trigger, Throwable, Void> patchTrigger(
             final String triggerID,
@@ -113,6 +125,17 @@ public class IoTCloudPromiseAPIWrapper {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.patchTrigger(triggerID, schemaName, schemaVersion, actions, predicate);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> patchTrigger(
+            final String triggerID,
+            final ServerCode serverCode,
+            final Predicate predicate) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.patchTrigger(triggerID, serverCode, predicate);
             }
         });
     }
@@ -146,4 +169,20 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+    public Promise<List<TriggeredServerCodeResult>, Throwable, Void> listTriggeredServerCodeResults(final String triggerID) {
+        return adm.when(new DeferredAsyncTask<Void, Void, List<TriggeredServerCodeResult>>() {
+            @Override
+            protected List<TriggeredServerCodeResult> doInBackgroundSafe(Void... voids) throws Exception {
+                List<TriggeredServerCodeResult> results = new ArrayList<TriggeredServerCodeResult>();
+                String paginationKey = null;
+                do {
+                    Pair<List<TriggeredServerCodeResult>, String> result = api.listTriggeredServerCodeResults(triggerID, 0, paginationKey);
+                    results.addAll(result.first);
+                    paginationKey = result.second;
+                } while (paginationKey != null);
+                return results;
+            }
+        });
+    }
+
 }

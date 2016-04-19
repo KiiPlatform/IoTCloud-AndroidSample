@@ -19,24 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!--<ImageButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_delete_white_36dp"-->
-            <!--android:background="@drawable/oval_button"-->
-            <!--android:padding="4dp"-->
-            <!--/>-->
-            <!--<ImageButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_mode_edit_white_36dp"-->
-            <!--android:background="@drawable/oval_button"-->
-            <!--android:padding="4dp"-->
-            <!--/>-->
-
-
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

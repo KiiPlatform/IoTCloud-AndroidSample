@@ -9,14 +9,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerPredicateFragment;
+import com.kii.thingifsample.fragments.wizard.CreateTriggerServerCodeFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggersWhenFragment;
 import com.kii.thingifsample.fragments.wizard.WizardFragment;
 import com.kii.thingifsample.uimodel.Trigger;
@@ -24,14 +27,22 @@ import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CreateTriggerActivity extends AppCompatActivity implements WizardFragment.WizardController {
 
+    public enum TriggerType {
+        COMMAND,
+        SERVER_CODE
+    }
+
     public static final String TAG = CreateTriggerActivity.class.getSimpleName();
     public static final String INTENT_TRIGGER = "INTENT_TRIGGER";
+    public static final String INTENT_TRIGGER_TYPE = "INTENT_TRIGGER_TYPE";
     private static final int WIZARD_PAGE_SIZE = 3;
     private ThingIFAPI api;
-    private WizardPagerAdapter adapter;
+    private FragmentStatePagerAdapter adapter;
     private ViewPager viewPager;
     private Button nextButton;
     private Button previousButton;
@@ -41,7 +52,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_trigger);
+        setContentView(R.layout.activity_create_command_trigger);
         Intent i = getIntent();
         this.api = (ThingIFAPI)i.getParcelableExtra("ThingIFAPI");
         if (i.hasExtra(INTENT_TRIGGER)) {
@@ -49,7 +60,12 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         } else {
             this.editingTrigger = new Trigger();
         }
-        this.adapter = new WizardPagerAdapter(getSupportFragmentManager());
+        TriggerType triggerType = (TriggerType)i.getSerializableExtra(INTENT_TRIGGER_TYPE);
+        if (triggerType == TriggerType.COMMAND) {
+            this.adapter = new CommandTriggerWizardPagerAdapter(getSupportFragmentManager());
+        } else if (triggerType == TriggerType.SERVER_CODE) {
+            this.adapter = new ServerCodeTriggerWizardPagerAdapter(getSupportFragmentManager());
+        }
         this.viewPager = (ViewPager)findViewById(R.id.step_pager);
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -88,37 +104,103 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     wizardFragment.onInactivate(WizardFragment.EXIT_NEXT);
                     IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                     if (editingTrigger.getTriggerID() == null) {
-                        wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
-                            @Override
-                            public void onDone(com.kii.thingif.trigger.Trigger result) {
-                                Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_OK);
-                                finish();
+                        if (editingTrigger.getServerCode() != null) {
+                            JSONObject parameters = null;
+                            if (editingTrigger.getServerCode().parameters.size() > 0) {
+                                parameters = new JSONObject();
+                                for (Pair<String, Object> parameter : editingTrigger.getServerCode().parameters) {
+                                    try {
+                                        parameters.put(parameter.first, parameter.second);
+                                    } catch (JSONException e) {
+                                    }
+                                }
                             }
-                        }, new FailCallback<Throwable>() {
-                            @Override
-                            public void onFail(Throwable result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_CANCELED);
-                                finish();
-                            }
-                        });
+                            ServerCode serverCode = new ServerCode(
+                                    editingTrigger.getServerCode().endpoint,
+                                    editingTrigger.getServerCode().executorAccessToken,
+                                    editingTrigger.getServerCode().targetAppID,
+                                    parameters);
+                            wp.postNewTrigger(serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                                @Override
+                                public void onDone(com.kii.thingif.trigger.Trigger result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+                            }, new FailCallback<Throwable>() {
+                                @Override
+                                public void onFail(Throwable result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_CANCELED);
+                                    finish();
+                                }
+                            });
+                        } else {
+                            wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                                @Override
+                                public void onDone(com.kii.thingif.trigger.Trigger result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+                            }, new FailCallback<Throwable>() {
+                                @Override
+                                public void onFail(Throwable result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Failed to create new trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_CANCELED);
+                                    finish();
+                                }
+                            });
+                        }
                     } else {
-                        wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
-                            @Override
-                            public void onDone(com.kii.thingif.trigger.Trigger result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_OK);
-                                finish();
+                        if (editingTrigger.getServerCode() != null) {
+                            JSONObject parameters = null;
+                            if (editingTrigger.getServerCode().parameters.size() > 0) {
+                                parameters = new JSONObject();
+                                for (Pair<String, Object> parameter : editingTrigger.getServerCode().parameters) {
+                                    try {
+                                        parameters.put(parameter.first, parameter.second);
+                                    } catch (JSONException e) {
+                                    }
+                                }
                             }
-                        }, new FailCallback<Throwable>() {
-                            @Override
-                            public void onFail(Throwable result) {
-                                Toast.makeText(CreateTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_CANCELED);
-                                finish();
-                            }
-                        });
+                            ServerCode serverCode = new ServerCode(
+                                    editingTrigger.getServerCode().endpoint,
+                                    editingTrigger.getServerCode().executorAccessToken,
+                                    editingTrigger.getServerCode().targetAppID,
+                                    parameters);
+                            wp.patchTrigger(editingTrigger.getTriggerID(), serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                                @Override
+                                public void onDone(com.kii.thingif.trigger.Trigger result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+                            }, new FailCallback<Throwable>() {
+                                @Override
+                                public void onFail(Throwable result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_CANCELED);
+                                    finish();
+                                }
+                            });
+                        } else {
+                            wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                                @Override
+                                public void onDone(com.kii.thingif.trigger.Trigger result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+                            }, new FailCallback<Throwable>() {
+                                @Override
+                                public void onFail(Throwable result) {
+                                    Toast.makeText(CreateTriggerActivity.this, "Failed to update trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                    setResult(Activity.RESULT_CANCELED);
+                                    finish();
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -162,12 +244,12 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         this.nextButton.setEnabled(enabled);
     }
 
-    private class WizardPagerAdapter extends FragmentStatePagerAdapter {
+    private class CommandTriggerWizardPagerAdapter extends FragmentStatePagerAdapter {
         private static final int PAGE_COMMAND_SETTING  = 0;
         private static final int PAGE_PREDICATE_SETTING = 1;
         private static final int PAGE_TRIGGER_WHEN_SETTING = 2;
 
-        public WizardPagerAdapter(FragmentManager fm) {
+        public CommandTriggerWizardPagerAdapter(FragmentManager fm) {
             super(fm);
         }
         @Override
@@ -176,6 +258,37 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
             switch (position) {
                 case PAGE_COMMAND_SETTING:
                     fragment = CreateTriggerCommandFragment.newFragment(api);
+                    break;
+                case PAGE_PREDICATE_SETTING:
+                    fragment = CreateTriggerPredicateFragment.newFragment(api);
+                    break;
+                case PAGE_TRIGGER_WHEN_SETTING:
+                    fragment = CreateTriggersWhenFragment.newFragment(api);
+                    break;
+            }
+            fragment.setController(CreateTriggerActivity.this);
+            fragment.setEditingTrigger(editingTrigger);
+            return fragment;
+        }
+        @Override
+        public int getCount() {
+            return WIZARD_PAGE_SIZE;
+        }
+    }
+    private class ServerCodeTriggerWizardPagerAdapter extends FragmentStatePagerAdapter {
+        private static final int PAGE_SERVER_CODE_SETTING  = 0;
+        private static final int PAGE_PREDICATE_SETTING = 1;
+        private static final int PAGE_TRIGGER_WHEN_SETTING = 2;
+
+        public ServerCodeTriggerWizardPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int position) {
+            WizardFragment fragment = null;
+            switch (position) {
+                case PAGE_SERVER_CODE_SETTING:
+                    fragment = CreateTriggerServerCodeFragment.newFragment(api);
                     break;
                 case PAGE_PREDICATE_SETTING:
                     fragment = CreateTriggerPredicateFragment.newFragment(api);

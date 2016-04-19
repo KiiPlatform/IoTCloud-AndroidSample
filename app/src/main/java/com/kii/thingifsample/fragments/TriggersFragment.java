@@ -3,9 +3,11 @@ package com.kii.thingifsample.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.CreateTriggerActivity;
+import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -80,10 +83,25 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         this.btnNewTrigger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
-                i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("ThingIFAPI", api);
-                startActivityForResult(i, 0);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                dialog.setTitle("Choose the type of Trigger");
+                dialog.setItems(new String[]{"Command", "Server Code"},
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent();
+                                i.setClass(getContext(), CreateTriggerActivity.class);
+                                i.putExtra("ThingIFAPI", api);
+                                if (which == 0) {
+                                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.COMMAND);
+                                } else if (which == 1) {
+                                    i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.SERVER_CODE);
+                                }
+                                startActivityForResult(i, 0);
+                            }
+                        }
+                );
+                dialog.create().show();
             }
         });
         this.btnRefreshTriggers = (Button) view.findViewById(R.id.buttonRefreshTriggers);
@@ -118,8 +136,13 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Trigger trigger = (Trigger)this.lstTriggers.getItemAtPosition(position);
-        TriggerDetailFragment dialog = TriggerDetailFragment.newFragment(this.api, trigger, this, 0);
-        dialog.show(getFragmentManager(), "TriggerDetail");
+        if (trigger.getCommand() != null) {
+            CommandTriggerDetailFragment dialog = CommandTriggerDetailFragment.newFragment(this.api, trigger, this, 0);
+            dialog.show(getFragmentManager(), "CommandTriggerDetail");
+        } else {
+            ServerCodeTriggerDetailFragment dialog = ServerCodeTriggerDetailFragment.newFragment(this.api, trigger, this, 0);
+            dialog.show(getFragmentManager(), "ServerCodeTriggerDetail");
+        }
     }
 
     private void loadTriggerList() {
@@ -170,12 +193,19 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
                 holder = new ImageViewHolder();
                 holder.icon = (ImageView)convertView.findViewById(R.id.row_icon);
                 holder.text = (TextView)convertView.findViewById(R.id.row_text);
+                holder.rightText = (TextView)convertView.findViewById(R.id.right_text);
                 convertView.setTag(holder);
             } else {
                 holder = (ImageViewHolder)convertView.getTag();
             }
             Trigger item = this.getItem(position);
+
             holder.text.setText(item.getTriggerID());
+            if (item.getCommand() != null) {
+                holder.rightText.setText("Command");
+            } else {
+                holder.rightText.setText("ServerCode");
+            }
             return convertView;
         }
     }
