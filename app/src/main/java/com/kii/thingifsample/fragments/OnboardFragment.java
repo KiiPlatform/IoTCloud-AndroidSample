@@ -134,6 +134,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                         @Override
                         public void onDone(Target result) {
                             Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
+                            showOnboardedForm(api.onboarded());
                         }
                     }, new FailCallback<Throwable>() {
                         @Override
