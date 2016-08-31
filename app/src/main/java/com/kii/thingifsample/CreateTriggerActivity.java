@@ -136,7 +136,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                 }
                             });
                         } else {
-                            wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate(), editingTrigger.getCommandTarget()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();

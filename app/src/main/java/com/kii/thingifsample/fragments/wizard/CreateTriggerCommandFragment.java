@@ -6,12 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.kii.thingif.StandaloneThing;
+import com.kii.thingif.Target;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
+import com.kii.thingif.gateway.EndNode;
+import com.kii.thingif.gateway.Gateway;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.smart_light_demo.SetBrightness;
 import com.kii.thingifsample.smart_light_demo.SetColor;
@@ -36,6 +42,12 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     private SeekBar seekB;
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
+    private CheckBox chkCrossTrigger;
+    private Spinner spinnerTargetType;
+    private TextView textViewThingID;
+    private EditText editTextThingID;
+    private TextView textViewVendorThingID;
+    private EditText editTextVendorThingID;
 
     public static CreateTriggerCommandFragment newFragment(ThingIFAPI api) {
         CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
@@ -173,6 +185,28 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        this.chkCrossTrigger = (CheckBox)view.findViewById(R.id.checkboxCrossTrigger);
+        this.chkCrossTrigger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                spinnerTargetType.setEnabled(isChecked);
+                textViewThingID.setEnabled(isChecked);
+                editTextThingID.setEnabled(isChecked);
+                textViewVendorThingID.setEnabled(isChecked);
+                editTextVendorThingID.setEnabled(isChecked);
+                validateRequiredField();
+            }
+        });
+        this.spinnerTargetType = (Spinner)view.findViewById(R.id.spinnerTargetType);
+        this.spinnerTargetType.setEnabled(false);
+        this.textViewThingID = (TextView)view.findViewById(R.id.textViewThingID);
+        this.textViewThingID.setEnabled(false);
+        this.editTextThingID = (EditText)view.findViewById(R.id.editTextThingID);
+        this.editTextThingID.setEnabled(false);
+        this.textViewVendorThingID = (TextView)view.findViewById(R.id.textViewVendorThingID);
+        this.textViewVendorThingID.setEnabled(false);
+        this.editTextVendorThingID = (EditText)view.findViewById(R.id.editTextVendorThingID);
+        this.editTextVendorThingID.setEnabled(false);
         this.onActivate();
         return view;
     }
@@ -197,6 +231,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
         this.chkBrightness.setChecked(false);
         this.chkColor.setChecked(false);
         this.chkColorTemperature.setChecked(false);
+        this.chkCrossTrigger.setChecked(false);
     }
 
     @Override
@@ -236,6 +271,23 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             }
             if (this.chkColorTemperature.isChecked()) {
                 this.editingTrigger.addAction(new SetColorTemperature(this.seekColorTemperature.getProgress()));
+            }
+            if (this.chkCrossTrigger.isChecked()) {
+                String thingID = this.editTextThingID.getText().toString();
+                String vendorThingID = this.editTextVendorThingID.getText().toString();
+                Target commandTarget = null;
+                switch(this.spinnerTargetType.getSelectedItemPosition()) {
+                    case 0:// StandaloneThing.
+                        commandTarget = new StandaloneThing(thingID, vendorThingID, null);
+                        break;
+                    case 1:// Gateway.
+                        commandTarget = new Gateway(thingID, vendorThingID);
+                        break;
+                    case 2:// EndNode.
+                        commandTarget = new EndNode(thingID, vendorThingID, null);
+                        break;
+                }
+                this.editingTrigger.setCommandTarget(commandTarget);
             }
         }
     }
