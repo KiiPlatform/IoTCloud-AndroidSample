@@ -2,6 +2,7 @@ package com.kii.thingifsample.uimodel;
 
 import android.util.Pair;
 
+import com.kii.thingif.Target;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.trigger.StatePredicate;
 
@@ -17,6 +18,7 @@ public class Trigger {
     private List<Action> actions = new ArrayList<Action>();
     private StatePredicate predicate = null;
     private ServerCode serverCode = null;
+    private Target commandTarget = null;
 
     public Trigger() {
     }
@@ -57,6 +59,8 @@ public class Trigger {
     public void setPredicate(StatePredicate predicate) {
         this.predicate = predicate;
     }
+    public Target getCommandTarget() { return this.commandTarget; }
+    public void setCommandTarget(Target commandTarget) { this.commandTarget = commandTarget; }
 
     public static class ServerCode {
         public String endpoint;

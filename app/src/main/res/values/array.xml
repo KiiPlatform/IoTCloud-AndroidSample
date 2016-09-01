@@ -4,4 +4,10 @@
         <item>true</item>
         <item>false</item>
     </string-array>
+
+    <string-array name="target_types">
+        <item>StandaloneThing</item>
+        <item>Gateway</item>
+        <item>EndNode</item>
+    </string-array>
 </resources>

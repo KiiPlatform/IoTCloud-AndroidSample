@@ -96,11 +96,17 @@ public class IoTCloudPromiseAPIWrapper {
             final String schemaName,
             final int schemaVersion,
             final List<Action> actions,
-            final Predicate predicate) {
+            final Predicate predicate,
+            final Target commandTarget) {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.postNewTrigger(schemaName, schemaVersion, actions, predicate);
+                if (commandTarget == null) {
+                    return api.postNewTrigger(schemaName, schemaVersion, actions, predicate);
+                } else {
+                    return api.postNewTrigger(schemaName, schemaVersion, actions, predicate,
+                            commandTarget);
+                }
             }
         });
     }
@@ -151,11 +157,11 @@ public class IoTCloudPromiseAPIWrapper {
         });
     }
 
-    public Promise<Trigger, Throwable, Void> deleteTrigger(
+    public Promise<String, Throwable, Void> deleteTrigger(
             final String triggerID) {
-        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+        return adm.when(new DeferredAsyncTask<Void, Void, String>() {
             @Override
-            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+            protected String doInBackgroundSafe(Void... voids) throws Exception {
                 return api.deleteTrigger(triggerID);
             }
         });

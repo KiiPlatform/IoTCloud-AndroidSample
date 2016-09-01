@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent">
+<RelativeLayout
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
@@ -162,4 +165,68 @@
         android:layout_margin="10dp"
         />
 
-</RelativeLayout>
+    <CheckBox
+        android:id="@+id/checkboxCrossTrigger"
+        android:checked="false"
+        android:text="Enable Cross Trigger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"
+        android:layout_below="@+id/seekBarColorTemperature"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        />
+
+    <Spinner
+        android:id="@+id/spinnerTargetType"
+        android:entries="@array/target_types"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/checkboxCrossTrigger"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"
+        android:spinnerMode="dialog" />
+
+    <TextView
+        android:id="@+id/textViewThingID"
+        android:text="Thing ID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/spinnerTargetType"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        />
+    <EditText
+        android:id="@+id/editTextThingID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewThingID"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:id="@+id/textViewVendorThingID"
+        android:text="Vendor thing ID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/editTextThingID"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        />
+    <EditText
+        android:id="@+id/editTextVendorThingID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewVendorThingID"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
+
+</RelativeLayout></ScrollView>

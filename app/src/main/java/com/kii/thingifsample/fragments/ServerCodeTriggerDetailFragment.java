@@ -135,9 +135,9 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<Trigger>() {
+                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
                                     @Override
-                                    public void onDone(Trigger result) {
+                                    public void onDone(String result) {
                                         Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
                                         getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                                         dismiss();
