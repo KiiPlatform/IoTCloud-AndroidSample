@@ -125,12 +125,18 @@ public class IoTCloudPromiseAPIWrapper {
             final String triggerID,
             final String schemaName,
             final int schemaVersion,
+            final Target commandTarget,
             final List<Action> actions,
             final Predicate predicate) {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.patchTrigger(triggerID, schemaName, schemaVersion, actions, predicate);
+                if (commandTarget == null) {
+                    return api.patchTrigger(triggerID, schemaName, schemaVersion, actions, predicate);
+                } else {
+                    return api.patchTrigger(triggerID, schemaName, schemaVersion, commandTarget,
+                            actions, predicate);
+                }
             }
         });
     }

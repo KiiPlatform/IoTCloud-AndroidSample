@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.kii.thingif.StandaloneThing;
 import com.kii.thingif.Target;
+import com.kii.thingif.TargetThing;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.gateway.EndNode;
@@ -254,6 +255,19 @@ public class CreateTriggerCommandFragment extends WizardFragment {
                 this.seekColorTemperature.setProgress(((SetColorTemperature) action).colorTemperature);
             }
         }
+        TargetThing commandTarget = (TargetThing)this.editingTrigger.getCommandTarget();
+        if (commandTarget != null && !commandTarget.getTypedID().equals(this.editingTrigger.getTargetID())) {
+            this.chkCrossTrigger.setChecked(true);
+            if (commandTarget instanceof StandaloneThing) {
+                this.spinnerTargetType.setSelection(0);
+            } else if (commandTarget instanceof Gateway) {
+                this.spinnerTargetType.setSelection(1);
+            } else if (commandTarget instanceof EndNode) {
+                this.spinnerTargetType.setSelection(2);
+            }
+            this.editTextThingID.setText(commandTarget.getThingID());
+            this.editTextVendorThingID.setText(commandTarget.getVendorThingID());
+        }
         this.validateRequiredField();
     }
     @Override
@@ -276,16 +290,18 @@ public class CreateTriggerCommandFragment extends WizardFragment {
                 String thingID = this.editTextThingID.getText().toString();
                 String vendorThingID = this.editTextVendorThingID.getText().toString();
                 Target commandTarget = null;
-                switch(this.spinnerTargetType.getSelectedItemPosition()) {
-                    case 0:// StandaloneThing.
-                        commandTarget = new StandaloneThing(thingID, vendorThingID, null);
-                        break;
-                    case 1:// Gateway.
-                        commandTarget = new Gateway(thingID, vendorThingID);
-                        break;
-                    case 2:// EndNode.
-                        commandTarget = new EndNode(thingID, vendorThingID, null);
-                        break;
+                if (!thingID.isEmpty()) {
+                    switch (this.spinnerTargetType.getSelectedItemPosition()) {
+                        case 0:// StandaloneThing.
+                            commandTarget = new StandaloneThing(thingID, vendorThingID, null);
+                            break;
+                        case 1:// Gateway.
+                            commandTarget = new Gateway(thingID, vendorThingID);
+                            break;
+                        case 2:// EndNode.
+                            commandTarget = new EndNode(thingID, vendorThingID, null);
+                            break;
+                    }
                 }
                 this.editingTrigger.setCommandTarget(commandTarget);
             }

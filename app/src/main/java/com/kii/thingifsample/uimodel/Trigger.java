@@ -3,6 +3,7 @@ package com.kii.thingifsample.uimodel;
 import android.util.Pair;
 
 import com.kii.thingif.Target;
+import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.trigger.StatePredicate;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class Trigger {
     private String triggerID;
+    private TypedID targetID;
     private List<Action> actions = new ArrayList<Action>();
     private StatePredicate predicate = null;
     private ServerCode serverCode = null;
@@ -33,11 +35,13 @@ public class Trigger {
         // TODO:Supports Schedule Predicate
         this.predicate = (StatePredicate)trigger.getPredicate();
         this.triggerID = trigger.getTriggerID();
+        this.targetID = trigger.getTargetID();
     }
 
     public String getTriggerID() {
         return this.triggerID;
     }
+    public TypedID getTargetID() { return this.targetID; }
     public void clearActions() {
         this.actions.clear();
     }
