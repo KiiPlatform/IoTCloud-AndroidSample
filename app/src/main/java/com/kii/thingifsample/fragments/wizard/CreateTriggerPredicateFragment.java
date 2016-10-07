@@ -204,7 +204,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public void onActivate() {
         if (this.editingTrigger.getPredicate() != null) {
-            List<Clause> clauses = ClauseParser.parseClause(this.editingTrigger.getPredicate().getCondition().getClause());
+            List<Clause> clauses = ClauseParser.parseClause(this.editingTrigger.getCondition().getClause());
             this.adapter.clear();
             for (Clause clause : clauses) {
                 this.adapter.add(clause);
@@ -215,8 +215,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public void onInactivate(int exitCode) {
         com.kii.thingif.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
-        StatePredicate predicate = new StatePredicate(new Condition(clause), TriggersWhen.CONDITION_TRUE);
-        this.editingTrigger.setPredicate(predicate);
+        this.editingTrigger.setCondition(new Condition(clause));
     }
     @Override
     public String getNextButtonText() {
