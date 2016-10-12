@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.Command;
+import com.kii.thingif.command.CommandForm;
 import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -209,7 +210,9 @@ public class CreateCommandFragment extends Fragment {
                     return;
                 }
                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                wp.postNewCommand(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions).then(new DoneCallback<Command>() {
+                CommandForm form = new CommandForm(
+                        AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions);
+                wp.postNewCommand(form).then(new DoneCallback<Command>() {
                     @Override
                     public void onDone(Command result) {
                         getActivity().setResult(Activity.RESULT_OK);

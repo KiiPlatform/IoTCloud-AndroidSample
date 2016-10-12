@@ -2,6 +2,7 @@ package com.kii.thingifsample.uimodel;
 
 import android.util.Pair;
 
+import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.trigger.Condition;
 import com.kii.thingif.trigger.StatePredicate;
@@ -17,6 +18,7 @@ import java.util.List;
 public class Trigger {
     private String triggerID;
     private List<Action> actions = new ArrayList<Action>();
+    private TypedID commandTargetID = null;
     private Condition condition = null;
     private TriggersWhen triggersWhen = null;
     private ServerCode serverCode = null;
@@ -28,6 +30,7 @@ public class Trigger {
             for (Action action : trigger.getCommand().getActions()) {
                 this.actions.add(action);
             }
+            this.commandTargetID = trigger.getCommand().getTargetID();
         } else {
             this.serverCode = new ServerCode(trigger.getServerCode());
         }
@@ -50,6 +53,8 @@ public class Trigger {
     public List<Action> getActions() {
         return this.actions;
     }
+    public TypedID getCommandTargetID() { return this.commandTargetID; }
+    public void setCommandTargetID(TypedID id) { this.commandTargetID = id; }
     public ServerCode getServerCode() {
         return this.serverCode;
     }

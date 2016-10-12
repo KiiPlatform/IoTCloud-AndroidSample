@@ -162,4 +162,40 @@
         android:layout_margin="10dp"
         />
 
+    <TextView
+        android:id="@+id/labelTargetID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Target ID for triggerd command"
+        android:textStyle="bold"
+        android:layout_below="@+id/seekBarColorTemperature"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/labelTargetID"
+        android:layout_alignParentLeft="true"
+        >
+        <TextView
+            android:id="@+id/textTypeThing"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="thing: "
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            />
+        <EditText
+            android:id="@+id/editTextTargetID"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            />
+    </LinearLayout>
 </RelativeLayout>

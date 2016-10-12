@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.ServerCode;
+import com.kii.thingif.trigger.TriggeredCommandForm;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerPredicateFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerServerCodeFragment;
@@ -136,7 +137,15 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                 }
                             });
                         } else {
-                            wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            TriggeredCommandForm.Builder builder =
+                                    TriggeredCommandForm.Builder.newBuilder(
+                                            AppConstants.SCHEMA_NAME,
+                                            AppConstants.SCHEMA_VERSION,
+                                            editingTrigger.getActions());
+                            if (editingTrigger.getCommandTargetID() != null) {
+                                builder.setTargetID(editingTrigger.getCommandTargetID());
+                            }
+                            wp.postNewTrigger(builder.build(), editingTrigger.getPredicate(), null).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
@@ -185,7 +194,15 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                 }
                             });
                         } else {
-                            wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            TriggeredCommandForm.Builder builder =
+                                    TriggeredCommandForm.Builder.newBuilder(
+                                            AppConstants.SCHEMA_NAME,
+                                            AppConstants.SCHEMA_VERSION,
+                                            editingTrigger.getActions());
+                            if (editingTrigger.getCommandTargetID() != null) {
+                                builder.setTargetID(editingTrigger.getCommandTargetID());
+                            }
+                            wp.patchTrigger(editingTrigger.getTriggerID(), builder.build(), editingTrigger.getPredicate(), null).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
