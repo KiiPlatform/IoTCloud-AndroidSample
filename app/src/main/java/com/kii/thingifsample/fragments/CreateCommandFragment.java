@@ -4,12 +4,14 @@ package com.kii.thingifsample.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,6 +31,8 @@ import com.kii.thingifsample.smart_light_demo.TurnPower;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +59,9 @@ public class CreateCommandFragment extends Fragment {
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
     private Button btnSendCommand;
+    private EditText editTextTitle;
+    private EditText editTextDescription;
+    private EditText editTextMetadata;
 
     public static CreateCommandFragment newFragment(ThingIFAPI api) {
         CreateCommandFragment fragment = new CreateCommandFragment();
@@ -187,6 +194,9 @@ public class CreateCommandFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        this.editTextTitle = (EditText)view.findViewById(R.id.editTextTitle);
+        this.editTextDescription = (EditText)view.findViewById(R.id.editTextDescription);
+        this.editTextMetadata = (EditText)view.findViewById(R.id.editTextMetadata);
 
         this.btnSendCommand = (Button)view.findViewById(R.id.buttonSendCommand);
         this.btnSendCommand.setOnClickListener(new View.OnClickListener() {
@@ -212,6 +222,23 @@ public class CreateCommandFragment extends Fragment {
                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
                 CommandForm form = new CommandForm(
                         AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions);
+                String title = editTextTitle.getText().toString();
+                String description = editTextDescription.getText().toString();
+                String metadata = editTextMetadata.getText().toString();
+                if (!TextUtils.isEmpty(title)) {
+                    form.setTitle(title);
+                }
+                if (!TextUtils.isEmpty(description)) {
+                    form.setDescription(description);
+                }
+                if (!TextUtils.isEmpty(metadata)) {
+                    try {
+                        form.setMetadata(new JSONObject(metadata));
+                    } catch (JSONException e) {
+                        Toast.makeText(getContext(), "Metadata to JSON failed.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
                 wp.postNewCommand(form).then(new DoneCallback<Command>() {
                     @Override
                     public void onDone(Command result) {

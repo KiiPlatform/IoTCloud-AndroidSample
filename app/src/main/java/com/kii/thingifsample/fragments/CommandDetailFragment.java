@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,22 @@ public class CommandDetailFragment extends DialogFragment {
         ViewGroup.LayoutParams lp = listViewActions.getLayoutParams();
         lp.height = height + (listViewActions.getDividerHeight() * (actions.size() - 1));
         listViewActions.setLayoutParams(lp);
+
+        if (!TextUtils.isEmpty(command.getTitle())) {
+            ((TextView) view.findViewById(R.id.textTitle)).setText(command.getTitle());
+        } else {
+            ((TextView) view.findViewById(R.id.textTitle)).setText("---");
+        }
+        if (!TextUtils.isEmpty(command.getDescription())) {
+            ((TextView) view.findViewById(R.id.textDescription)).setText(command.getDescription());
+        } else {
+            ((TextView) view.findViewById(R.id.textDescription)).setText("---");
+        }
+        if (command.getMetadata() != null) {
+            ((TextView)view.findViewById(R.id.textMetadata)).setText(command.getMetadata().toString());
+        } else {
+            ((TextView) view.findViewById(R.id.textMetadata)).setText("---");
+        }
 
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
