@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.TypedID;
@@ -20,6 +21,9 @@ import com.kii.thingifsample.smart_light_demo.SetBrightness;
 import com.kii.thingifsample.smart_light_demo.SetColor;
 import com.kii.thingifsample.smart_light_demo.SetColorTemperature;
 import com.kii.thingifsample.smart_light_demo.TurnPower;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CreateTriggerCommandFragment extends WizardFragment {
 
@@ -40,6 +44,9 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     private CheckBox chkColorTemperature;
     private SeekBar seekColorTemperature;
     private EditText editTextTargetID;
+    private EditText editTextTitle;
+    private EditText editTextDescription;
+    private EditText editTextMetadata;
 
     public static CreateTriggerCommandFragment newFragment(ThingIFAPI api) {
         CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
@@ -178,6 +185,9 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             }
         });
         this.editTextTargetID = (EditText)view.findViewById(R.id.editTextTargetID);
+        this.editTextTitle = (EditText)view.findViewById(R.id.editTextTitle);
+        this.editTextDescription = (EditText)view.findViewById(R.id.editTextDescription);
+        this.editTextMetadata = (EditText)view.findViewById(R.id.editTextMetadata);
         this.onActivate();
         return view;
     }
@@ -227,6 +237,15 @@ public class CreateTriggerCommandFragment extends WizardFragment {
         if (this.editingTrigger.getCommandTargetID() != null) {
             this.editTextTargetID.setText(this.editingTrigger.getCommandTargetID().getID());
         }
+        if (this.editingTrigger.getCommandTitle() != null) {
+            this.editTextTitle.setText(this.editingTrigger.getCommandTitle());
+        }
+        if (this.editingTrigger.getCommandDescription() != null) {
+            this.editTextDescription.setText(this.editingTrigger.getCommandDescription());
+        }
+        if (this.editingTrigger.getCommandMetadata() != null) {
+            this.editTextMetadata.setText(this.editingTrigger.getCommandMetadata().toString());
+        }
         this.validateRequiredField();
     }
     @Override
@@ -248,6 +267,20 @@ public class CreateTriggerCommandFragment extends WizardFragment {
             if (!TextUtils.isEmpty(this.editTextTargetID.getText().toString())) {
                 this.editingTrigger.setCommandTargetID(
                         new TypedID(TypedID.Types.THING, this.editTextTargetID.getText().toString()));
+            }
+            if (!TextUtils.isEmpty(this.editTextTitle.getText().toString())) {
+                this.editingTrigger.setCommandTitle(this.editTextTitle.getText().toString());
+            }
+            if (!TextUtils.isEmpty(this.editTextDescription.getText().toString())) {
+                this.editingTrigger.setCommandDescription(this.editTextDescription.getText().toString());
+            }
+            if (!TextUtils.isEmpty(this.editTextMetadata.getText().toString())) {
+                try {
+                    this.editingTrigger.setCommandMetadata(
+                            new JSONObject(this.editTextMetadata.getText().toString()));
+                } catch (JSONException e) {
+                    Toast.makeText(getContext(), "Metadata to JSON failed.", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

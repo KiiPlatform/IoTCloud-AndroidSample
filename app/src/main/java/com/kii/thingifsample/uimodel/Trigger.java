@@ -6,6 +6,7 @@ import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.trigger.Condition;
 import com.kii.thingif.trigger.StatePredicate;
+import com.kii.thingif.trigger.TriggerOptions;
 import com.kii.thingif.trigger.TriggersWhen;
 
 import org.json.JSONException;
@@ -19,9 +20,13 @@ public class Trigger {
     private String triggerID;
     private List<Action> actions = new ArrayList<Action>();
     private TypedID commandTargetID = null;
+    private String commandTitle = null;
+    private String commandDescription = null;
+    private JSONObject commandMetadata = null;
     private Condition condition = null;
     private TriggersWhen triggersWhen = null;
     private ServerCode serverCode = null;
+    private TriggerOptions options = null;
 
     public Trigger() {
     }
@@ -55,6 +60,12 @@ public class Trigger {
     }
     public TypedID getCommandTargetID() { return this.commandTargetID; }
     public void setCommandTargetID(TypedID id) { this.commandTargetID = id; }
+    public String getCommandTitle() { return this.commandTitle; }
+    public void setCommandTitle(String title) { this.commandTitle = title; }
+    public String getCommandDescription() { return this.commandDescription; }
+    public void setCommandDescription(String description) { this.commandDescription = description; }
+    public JSONObject getCommandMetadata() { return this.commandMetadata; }
+    public void setCommandMetadata(JSONObject json) { this.commandMetadata = json; }
     public ServerCode getServerCode() {
         return this.serverCode;
     }
@@ -72,6 +83,8 @@ public class Trigger {
     public void setCondition(Condition condition) { this.condition = condition; }
     public TriggersWhen getTriggersWhen() { return this.triggersWhen; }
     public void setTriggersWhen(TriggersWhen triggersWhen) { this.triggersWhen = triggersWhen; }
+    public TriggerOptions getOptions() { return this.options; }
+    public void setOptions(TriggerOptions options) { this.options = options; }
 
     public static class ServerCode {
         public String endpoint;
