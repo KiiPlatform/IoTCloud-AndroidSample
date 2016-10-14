@@ -102,7 +102,7 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     }
     @Override
     public String getNextButtonText() {
-        return "Save";
+        return "Nsxt";
     }
     @Override
     public String getPreviousButtonText() {

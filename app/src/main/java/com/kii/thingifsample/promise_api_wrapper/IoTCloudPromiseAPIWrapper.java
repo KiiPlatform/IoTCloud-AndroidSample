@@ -136,6 +136,17 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+    public Promise<Trigger, Throwable, Void> postNewTrigger(
+            final ServerCode serverCode,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewTrigger(serverCode, predicate, options);
+            }
+        });
+    }
 
     public Promise<Trigger, Throwable, Void> patchTrigger(
             final String triggerID,
@@ -170,6 +181,18 @@ public class IoTCloudPromiseAPIWrapper {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.patchTrigger(triggerID, serverCode, predicate);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> patchTrigger(
+            final String triggerID,
+            final ServerCode serverCode,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.patchTrigger(triggerID, serverCode, predicate, options);
             }
         });
     }
