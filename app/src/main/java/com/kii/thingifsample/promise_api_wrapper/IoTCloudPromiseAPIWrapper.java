@@ -7,10 +7,13 @@ import com.kii.thingif.Target;
 import com.kii.thingif.TargetState;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.Command;
+import com.kii.thingif.command.CommandForm;
 import com.kii.thingif.exception.ThingIFException;
 import com.kii.thingif.trigger.Predicate;
 import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.Trigger;
+import com.kii.thingif.trigger.TriggerOptions;
+import com.kii.thingif.trigger.TriggeredCommandForm;
 import com.kii.thingif.trigger.TriggeredServerCodeResult;
 import com.kii.thingifsample.smart_light_demo.LightState;
 
@@ -75,6 +78,14 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
+    public Promise<Command, Throwable, Void> postNewCommand(final CommandForm form) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Command>() {
+            @Override
+            protected Command doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewCommand(form);
+            }
+        });
+    }
 
     public Promise<List<Trigger>, Throwable, Void> listTriggers() {
         return adm.when(new DeferredAsyncTask<Void, Void, List<Trigger>>() {
@@ -105,12 +116,34 @@ public class IoTCloudPromiseAPIWrapper {
         });
     }
     public Promise<Trigger, Throwable, Void> postNewTrigger(
+            final TriggeredCommandForm form,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewTrigger(form, predicate, options);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> postNewTrigger(
             final ServerCode serverCode,
             final Predicate predicate) {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.postNewTrigger(serverCode, predicate);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> postNewTrigger(
+            final ServerCode serverCode,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.postNewTrigger(serverCode, predicate, options);
             }
         });
     }
@@ -130,12 +163,36 @@ public class IoTCloudPromiseAPIWrapper {
     }
     public Promise<Trigger, Throwable, Void> patchTrigger(
             final String triggerID,
+            final TriggeredCommandForm form,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.patchTrigger(triggerID, form, predicate, options);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> patchTrigger(
+            final String triggerID,
             final ServerCode serverCode,
             final Predicate predicate) {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
                 return api.patchTrigger(triggerID, serverCode, predicate);
+            }
+        });
+    }
+    public Promise<Trigger, Throwable, Void> patchTrigger(
+            final String triggerID,
+            final ServerCode serverCode,
+            final Predicate predicate,
+            final TriggerOptions options) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+            @Override
+            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+                return api.patchTrigger(triggerID, serverCode, predicate, options);
             }
         });
     }
@@ -151,11 +208,11 @@ public class IoTCloudPromiseAPIWrapper {
         });
     }
 
-    public Promise<Trigger, Throwable, Void> deleteTrigger(
+    public Promise<String, Throwable, Void> deleteTrigger(
             final String triggerID) {
-        return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
+        return adm.when(new DeferredAsyncTask<Void, Void, String>() {
             @Override
-            protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
+            protected String doInBackgroundSafe(Void... voids) throws Exception {
                 return api.deleteTrigger(triggerID);
             }
         });

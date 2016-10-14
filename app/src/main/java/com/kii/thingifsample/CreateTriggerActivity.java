@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.ServerCode;
+import com.kii.thingif.trigger.TriggeredCommandForm;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
+import com.kii.thingifsample.fragments.wizard.CreateTriggerOptionFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerPredicateFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerServerCodeFragment;
 import com.kii.thingifsample.fragments.wizard.CreateTriggersWhenFragment;
@@ -40,7 +42,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     public static final String TAG = CreateTriggerActivity.class.getSimpleName();
     public static final String INTENT_TRIGGER = "INTENT_TRIGGER";
     public static final String INTENT_TRIGGER_TYPE = "INTENT_TRIGGER_TYPE";
-    private static final int WIZARD_PAGE_SIZE = 3;
+    private static final int WIZARD_PAGE_SIZE = 4;
     private ThingIFAPI api;
     private FragmentStatePagerAdapter adapter;
     private ViewPager viewPager;
@@ -120,7 +122,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                     editingTrigger.getServerCode().executorAccessToken,
                                     editingTrigger.getServerCode().targetAppID,
                                     parameters);
-                            wp.postNewTrigger(serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            wp.postNewTrigger(serverCode, editingTrigger.getPredicate(), editingTrigger.getOptions()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
@@ -136,7 +138,24 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                 }
                             });
                         } else {
-                            wp.postNewTrigger(AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            TriggeredCommandForm.Builder builder =
+                                    TriggeredCommandForm.Builder.newBuilder(
+                                            AppConstants.SCHEMA_NAME,
+                                            AppConstants.SCHEMA_VERSION,
+                                            editingTrigger.getActions());
+                            if (editingTrigger.getCommandTargetID() != null) {
+                                builder.setTargetID(editingTrigger.getCommandTargetID());
+                            }
+                            if (editingTrigger.getCommandTitle() != null) {
+                                builder.setTitle(editingTrigger.getCommandTitle());
+                            }
+                            if (editingTrigger.getCommandDescription() != null) {
+                                builder.setDescription(editingTrigger.getCommandDescription());
+                            }
+                            if (editingTrigger.getCommandMetadata() != null) {
+                                builder.setMetadata(editingTrigger.getCommandMetadata());
+                            }
+                            wp.postNewTrigger(builder.build(), editingTrigger.getPredicate(), editingTrigger.getOptions()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "New Trigger is created. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
@@ -169,7 +188,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                     editingTrigger.getServerCode().executorAccessToken,
                                     editingTrigger.getServerCode().targetAppID,
                                     parameters);
-                            wp.patchTrigger(editingTrigger.getTriggerID(), serverCode, editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            wp.patchTrigger(editingTrigger.getTriggerID(), serverCode, editingTrigger.getPredicate(), editingTrigger.getOptions()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
@@ -185,7 +204,24 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                                 }
                             });
                         } else {
-                            wp.patchTrigger(editingTrigger.getTriggerID(), AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, editingTrigger.getActions(), editingTrigger.getPredicate()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
+                            TriggeredCommandForm.Builder builder =
+                                    TriggeredCommandForm.Builder.newBuilder(
+                                            AppConstants.SCHEMA_NAME,
+                                            AppConstants.SCHEMA_VERSION,
+                                            editingTrigger.getActions());
+                            if (editingTrigger.getCommandTargetID() != null) {
+                                builder.setTargetID(editingTrigger.getCommandTargetID());
+                            }
+                            if (editingTrigger.getCommandTitle() != null) {
+                                builder.setTitle(editingTrigger.getCommandTitle());
+                            }
+                            if (editingTrigger.getCommandDescription() != null) {
+                                builder.setDescription(editingTrigger.getCommandDescription());
+                            }
+                            if (editingTrigger.getCommandMetadata() != null) {
+                                builder.setMetadata(editingTrigger.getCommandMetadata());
+                            }
+                            wp.patchTrigger(editingTrigger.getTriggerID(), builder.build(), editingTrigger.getPredicate(), editingTrigger.getOptions()).then(new DoneCallback<com.kii.thingif.trigger.Trigger>() {
                                 @Override
                                 public void onDone(com.kii.thingif.trigger.Trigger result) {
                                     Toast.makeText(CreateTriggerActivity.this, "Trigger is updated. TriggerID=" + result.getTriggerID(), Toast.LENGTH_LONG).show();
@@ -248,6 +284,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         private static final int PAGE_COMMAND_SETTING  = 0;
         private static final int PAGE_PREDICATE_SETTING = 1;
         private static final int PAGE_TRIGGER_WHEN_SETTING = 2;
+        private static final int PAGE_OPTION_SETTING = 3;
 
         public CommandTriggerWizardPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -265,6 +302,9 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                 case PAGE_TRIGGER_WHEN_SETTING:
                     fragment = CreateTriggersWhenFragment.newFragment(api);
                     break;
+                case PAGE_OPTION_SETTING:
+                    fragment = CreateTriggerOptionFragment.newFragment(api);
+                    break;
             }
             fragment.setController(CreateTriggerActivity.this);
             fragment.setEditingTrigger(editingTrigger);
@@ -279,6 +319,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         private static final int PAGE_SERVER_CODE_SETTING  = 0;
         private static final int PAGE_PREDICATE_SETTING = 1;
         private static final int PAGE_TRIGGER_WHEN_SETTING = 2;
+        private static final int PAGE_OPTION_SETTING = 3;
 
         public ServerCodeTriggerWizardPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -295,6 +336,9 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                     break;
                 case PAGE_TRIGGER_WHEN_SETTING:
                     fragment = CreateTriggersWhenFragment.newFragment(api);
+                    break;
+                case PAGE_OPTION_SETTING:
+                    fragment = CreateTriggerOptionFragment.newFragment(api);
                     break;
             }
             fragment.setController(CreateTriggerActivity.this);

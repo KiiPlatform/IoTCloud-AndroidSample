@@ -135,9 +135,9 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<Trigger>() {
+                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
                                     @Override
-                                    public void onDone(Trigger result) {
+                                    public void onDone(String result) {
                                         Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
                                         getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                                         dismiss();
@@ -206,6 +206,23 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         ViewGroup.LayoutParams lp = listViewCondition.getLayoutParams();
         lp.height = height + (listViewCondition.getDividerHeight() * (clauses.size() - 1));
         listViewCondition.setLayoutParams(lp);
+
+        // Show options info
+        if (trigger.getTitle() != null) {
+            ((TextView) view.findViewById(R.id.textTitle)).setText(trigger.getTitle());
+        } else {
+            ((TextView) view.findViewById(R.id.textTitle)).setText("---");
+        }
+        if (trigger.getDescription() != null) {
+            ((TextView) view.findViewById(R.id.textDescription)).setText(trigger.getDescription());
+        } else {
+            ((TextView) view.findViewById(R.id.textDescription)).setText("---");
+        }
+        if (trigger.getMetadata() != null) {
+            ((TextView) view.findViewById(R.id.textMetadata)).setText(trigger.getMetadata().toString());
+        } else {
+            ((TextView) view.findViewById(R.id.textMetadata)).setText("---");
+        }
 
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

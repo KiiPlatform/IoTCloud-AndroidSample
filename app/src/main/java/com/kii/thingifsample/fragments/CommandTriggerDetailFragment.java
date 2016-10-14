@@ -26,6 +26,7 @@ import com.kii.thingif.command.ActionResult;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.Trigger;
+import com.kii.thingif.trigger.TriggerOptions;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
@@ -135,9 +136,9 @@ public class CommandTriggerDetailFragment extends DialogFragment {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<Trigger>() {
+                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
                                     @Override
-                                    public void onDone(Trigger result) {
+                                    public void onDone(String result) {
                                         Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
                                         getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                                         dismiss();
@@ -190,6 +191,21 @@ public class CommandTriggerDetailFragment extends DialogFragment {
         ViewGroup.LayoutParams lp = listViewActions.getLayoutParams();
         lp.height = height + (listViewActions.getDividerHeight() * (actions.size() - 1));
         listViewActions.setLayoutParams(lp);
+        if (command.getTitle() != null) {
+            ((TextView) view.findViewById(R.id.textCommandTitle)).setText(command.getTitle());
+        } else {
+            ((TextView) view.findViewById(R.id.textCommandTitle)).setText("---");
+        }
+        if (command.getDescription() != null) {
+            ((TextView) view.findViewById(R.id.textCommandDescription)).setText(command.getDescription());
+        } else {
+            ((TextView) view.findViewById(R.id.textCommandDescription)).setText("---");
+        }
+        if (command.getMetadata() != null) {
+            ((TextView) view.findViewById(R.id.textCommandMetadata)).setText(command.getMetadata().toString());
+        } else {
+            ((TextView) view.findViewById(R.id.textCommandMetadata)).setText("---");
+        }
 
         // Show the predicate info
         StatePredicate predicate = (StatePredicate)trigger.getPredicate();
@@ -211,6 +227,23 @@ public class CommandTriggerDetailFragment extends DialogFragment {
         lp = listViewCondition.getLayoutParams();
         lp.height = height + (listViewCondition.getDividerHeight() * (clauses.size() - 1));
         listViewCondition.setLayoutParams(lp);
+
+        // Show options info
+        if (trigger.getTitle() != null) {
+            ((TextView) view.findViewById(R.id.textTitle)).setText(trigger.getTitle());
+        } else {
+            ((TextView) view.findViewById(R.id.textTitle)).setText("---");
+        }
+        if (trigger.getDescription() != null) {
+            ((TextView) view.findViewById(R.id.textDescription)).setText(trigger.getDescription());
+        } else {
+            ((TextView) view.findViewById(R.id.textDescription)).setText("---");
+        }
+        if (trigger.getMetadata() != null) {
+            ((TextView) view.findViewById(R.id.textMetadata)).setText(trigger.getMetadata().toString());
+        } else {
+            ((TextView) view.findViewById(R.id.textMetadata)).setText("---");
+        }
 
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

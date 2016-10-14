@@ -89,17 +89,20 @@ public class CreateTriggersWhenFragment extends WizardFragment {
 
     @Override
     public void onActivate() {
-        TriggersWhen when = this.editingTrigger.getPredicate().getTriggersWhen();
+        TriggersWhen when = this.editingTrigger.getTriggersWhen();
+        if (when == null) {
+            when = TriggersWhen.CONDITION_TRUE;
+        }
         int index = Arrays.binarySearch(TriggersWhen.values(), when);
         this.spinTriggersWhen.setSelection(index);
     }
     @Override
     public void onInactivate(int exitCode) {
-        this.editingTrigger.getPredicate().setTriggersWhen((TriggersWhen)this.spinTriggersWhen.getSelectedItem());
+        this.editingTrigger.setTriggersWhen((TriggersWhen)this.spinTriggersWhen.getSelectedItem());
     }
     @Override
     public String getNextButtonText() {
-        return "Save";
+        return "Next";
     }
     @Override
     public String getPreviousButtonText() {

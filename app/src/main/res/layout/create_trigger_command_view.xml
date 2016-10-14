@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textTitle"
@@ -162,4 +166,54 @@
         android:layout_margin="10dp"
         />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/labelTargetID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Target ID for triggerd command"
+        android:textStyle="bold"
+        android:layout_below="@+id/seekBarColorTemperature"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/layoutTargetID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/labelTargetID"
+        android:layout_alignParentLeft="true"
+        >
+        <TextView
+            android:id="@+id/textTypeThing"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="thing: "
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            />
+        <EditText
+            android:id="@+id/editTextTargetID"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
+            />
+    </LinearLayout>
+
+    <include
+        layout="@layout/common_options"
+        android:id="@+id/includeOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutTargetID"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        />
+
+    </RelativeLayout>
+</ScrollView>
