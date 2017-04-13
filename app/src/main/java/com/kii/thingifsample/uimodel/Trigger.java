@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
+import com.kii.thingif.command.AliasAction;
 import com.kii.thingif.trigger.Condition;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.TriggerOptions;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class Trigger {
     private String triggerID;
-    private List<Action> actions = new ArrayList<Action>();
+    private List<AliasAction> aliasActions = new ArrayList<>();
     private TypedID commandTargetID = null;
     private String commandTitle = null;
     private String commandDescription = null;
@@ -32,8 +33,8 @@ public class Trigger {
     }
     public Trigger(com.kii.thingif.trigger.Trigger trigger) {
         if (trigger.getCommand() != null) {
-            for (Action action : trigger.getCommand().getActions()) {
-                this.actions.add(action);
+            for (AliasAction aliasAction : trigger.getCommand().getAliasActions()) {
+                this.aliasActions.add(aliasAction);
             }
             this.commandTargetID = trigger.getCommand().getTargetID();
         } else {
@@ -50,13 +51,13 @@ public class Trigger {
         return this.triggerID;
     }
     public void clearActions() {
-        this.actions.clear();
+        this.aliasActions.clear();
     }
-    public void addAction(Action action) {
-        this.actions.add(action);
+    public void addAction(AliasAction aliasAction) {
+        this.aliasActions.add(aliasAction);
     }
-    public List<Action> getActions() {
-        return this.actions;
+    public List<AliasAction> getAliasActions() {
+        return this.aliasActions;
     }
     public TypedID getCommandTargetID() { return this.commandTargetID; }
     public void setCommandTargetID(TypedID id) { this.commandTargetID = id; }

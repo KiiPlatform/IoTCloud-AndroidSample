@@ -29,7 +29,7 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     public static CreateTriggersWhenFragment newFragment(ThingIFAPI api) {
         CreateTriggersWhenFragment fragment = new CreateTriggersWhenFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
+        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -40,7 +40,7 @@ public class CreateTriggersWhenFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
+        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override

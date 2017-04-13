@@ -1,10 +1,11 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
 public class NotEquals extends Clause {
 
-    private com.kii.thingif.trigger.clause.NotEquals clause;
+    private com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger clause;
 
     @Override
     public int getIcon() {
@@ -22,11 +23,11 @@ public class NotEquals extends Clause {
         return this.clause.getEquals().getField() + " != " + this.clause.getEquals().getValue().toString();
     }
     @Override
-    public com.kii.thingif.trigger.clause.Clause getClause() {
+    public TriggerClause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
-        this.clause = (com.kii.thingif.trigger.clause.NotEquals)clause;
+    public void setClause(TriggerClause clause) {
+        this.clause = (com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger)clause;
     }
 }

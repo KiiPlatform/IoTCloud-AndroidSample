@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Command;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.CreateCommandActivity;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;
@@ -48,10 +50,9 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
         // Required empty public constructor
     }
 
-    public static CommandsFragment newFragment(ThingIFAPI api) {
+    public static CommandsFragment newFragment() {
         CommandsFragment fragment = new CommandsFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -59,22 +60,26 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = (ThingIFAPI) savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = (ThingIFAPI) arguments.getParcelable("ThingIFAPI");
+
+        String thingID = "---";
+        if (this.api != null && this.api.onboarded() && this.api.getTarget() != null) {
+            thingID = this.api.getTarget().getTypedID().getID();
         }
         View view = inflater.inflate(R.layout.commands_view, null);
         String caption = ((TextView)view.findViewById(R.id.textCommands)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
+        caption = caption.replace ("${thingID}", thingID);
         ((TextView)view.findViewById(R.id.textCommands)).setText(caption);
 
         this.btnNewCommand = (Button) view.findViewById(R.id.buttonNewCommand);
@@ -83,7 +88,7 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateCommandActivity.class);
-                i.putExtra("ThingIFAPI", api);
+                //i.putExtra("ThingIFAPI", api);
                 startActivityForResult(i, 0);
             }
         });
@@ -111,39 +116,42 @@ public class CommandsFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onVisible(boolean visible) {
         if (visible) {
-            this.btnNewCommand.setEnabled(this.api.onboarded());
-            this.btnRefreshCommands.setEnabled(this.api.onboarded());
+            boolean enable = this.api != null && this.api.onboarded();
+            this.btnNewCommand.setEnabled(enable);
+            this.btnRefreshCommands.setEnabled(enable);
             this.loadCommandList();
         }
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Command command = (Command)this.lstCommands.getItemAtPosition(position);
-        CommandDetailFragment dialog = CommandDetailFragment.newFragment(this.api, command, this, 0);
+        CommandDetailFragment dialog = CommandDetailFragment.newFragment(command, this, 0);
         dialog.show(getFragmentManager(), "CommandDetail");
     }
 
     private void loadCommandList() {
-        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-        this.showLoading(true);
-        wp.listCommands().then(new DoneCallback<List<Command>>() {
-            @Override
-            public void onDone(List<Command> commands) {
-                adapter.clear();
-                adapter.addAll(commands);
-                adapter.notifyDataSetChanged();
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Unable to list commands!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }).always(new AlwaysCallback<List<Command>, Throwable>() {
-            @Override
-            public void onAlways(Promise.State state, List<Command> resolved, Throwable rejected) {
-                showLoading(false);
-            }
-        });
+        if (this.api != null) {
+            IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(this.api);
+            this.showLoading(true);
+            wp.listCommands().then(new DoneCallback<List<Command>>() {
+                @Override
+                public void onDone(List<Command> commands) {
+                    adapter.clear();
+                    adapter.addAll(commands);
+                    adapter.notifyDataSetChanged();
+                }
+            }, new FailCallback<Throwable>() {
+                @Override
+                public void onFail(Throwable result) {
+                    Toast.makeText(getContext(), "Unable to list commands!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).always(new AlwaysCallback<List<Command>, Throwable>() {
+                @Override
+                public void onAlways(Promise.State state, List<Command> resolved, Throwable rejected) {
+                    showLoading(false);
+                }
+            });
+        }
     }
     private void showLoading(boolean loading) {
         if (this.progressLoading != null && this.lstCommands != null) {

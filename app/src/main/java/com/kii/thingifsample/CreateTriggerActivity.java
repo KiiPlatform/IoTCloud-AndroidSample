@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.TriggeredCommandForm;
 import com.kii.thingifsample.fragments.wizard.CreateTriggerCommandFragment;
@@ -56,7 +58,13 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_command_trigger);
         Intent i = getIntent();
-        this.api = (ThingIFAPI)i.getParcelableExtra("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
         if (i.hasExtra(INTENT_TRIGGER)) {
             this.editingTrigger = new Trigger((com.kii.thingif.trigger.Trigger)i.getParcelableExtra(INTENT_TRIGGER));
         } else {
@@ -140,9 +148,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                         } else {
                             TriggeredCommandForm.Builder builder =
                                     TriggeredCommandForm.Builder.newBuilder(
-                                            AppConstants.SCHEMA_NAME,
-                                            AppConstants.SCHEMA_VERSION,
-                                            editingTrigger.getActions());
+                                            editingTrigger.getAliasActions());
                             if (editingTrigger.getCommandTargetID() != null) {
                                 builder.setTargetID(editingTrigger.getCommandTargetID());
                             }
@@ -206,9 +212,7 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
                         } else {
                             TriggeredCommandForm.Builder builder =
                                     TriggeredCommandForm.Builder.newBuilder(
-                                            AppConstants.SCHEMA_NAME,
-                                            AppConstants.SCHEMA_VERSION,
-                                            editingTrigger.getActions());
+                                            editingTrigger.getAliasActions());
                             if (editingTrigger.getCommandTargetID() != null) {
                                 builder.setTargetID(editingTrigger.getCommandTargetID());
                             }
@@ -264,12 +268,17 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
     }
     public ThingIFAPI getApi() {
         return this.api;

@@ -18,8 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.cloud.storage.KiiThing;
+import com.kii.cloud.storage.utils.Log;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
@@ -52,10 +55,9 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static OnboardFragment newFragment(ThingIFAPI api) {
+    public static OnboardFragment newFragment() {
         OnboardFragment fragment = new OnboardFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -63,7 +65,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
@@ -74,12 +75,12 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
         View view = inflater.inflate(R.layout.onboard_view, null);
         mOnboardWithIDFormView = view.findViewById(R.id.onboard_with_id_form);
@@ -107,41 +108,43 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         buttonOnboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (api.onboarded()) {
-                }
-                if (aSwitch.isChecked()) {
-                    final String venderThingID = editTextVenderThingID.getText().toString();
-                    final String thingPassword = editTextVenderThingPassword.getText().toString();
-                    final String thingType = editTextThingType.getText().toString();
-                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                    wp.onboard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
-                        @Override
-                        public void onDone(Target result) {
-                            Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
-                            showOnboardedForm(api.onboarded());
-                        }
-                    }, new FailCallback<Throwable>() {
-                        @Override
-                        public void onFail(Throwable result) {
-                            Toast.makeText(getContext(), "On board failed!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    final String thingID = editTextThingID.getText().toString();
-                    final String thingPassword = editTextThingPassword.getText().toString();
-                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                    wp.onboard(thingID, thingPassword).then(new DoneCallback<Target>() {
-                        @Override
-                        public void onDone(Target result) {
-                            Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
-                            showOnboardedForm(api.onboarded());
-                        }
-                    }, new FailCallback<Throwable>() {
-                        @Override
-                        public void onFail(Throwable result) {
-                            Toast.makeText(getContext(), "On board failed!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                if (api != null) {
+                    if (aSwitch.isChecked()) {
+                        final String venderThingID = editTextVenderThingID.getText().toString();
+                        final String thingPassword = editTextVenderThingPassword.getText().toString();
+                        final String thingType = editTextThingType.getText().toString();
+                        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                        wp.onboard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
+                            @Override
+                            public void onDone(Target result) {
+                                Log.d("(ToT;)", "onboard succeeded.");
+                                Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
+                                showOnboardedForm(api.onboarded());
+                            }
+                        }, new FailCallback<Throwable>() {
+                            @Override
+                            public void onFail(Throwable result) {
+                                Log.d("(ToT;)", "onboard failed.");
+                                Toast.makeText(getContext(), "On board failed!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        final String thingID = editTextThingID.getText().toString();
+                        final String thingPassword = editTextThingPassword.getText().toString();
+                        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                        wp.onboard(thingID, thingPassword).then(new DoneCallback<Target>() {
+                            @Override
+                            public void onDone(Target result) {
+                                Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
+                                showOnboardedForm(api.onboarded());
+                            }
+                        }, new FailCallback<Throwable>() {
+                            @Override
+                            public void onFail(Throwable result) {
+                                Toast.makeText(getContext(), "On board failed!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -151,7 +154,7 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                 showVenderThingForm(isChecked);
             }
         });
-        showOnboardedForm(api.onboarded());
+        showOnboardedForm(this.api != null && this.api.onboarded());
         return view;
     }
     @Override

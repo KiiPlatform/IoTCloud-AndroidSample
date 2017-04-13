@@ -1,8 +1,11 @@
 package com.kii.thingifsample.smart_light_demo;
 
-import com.kii.thingif.command.Action;
+import com.google.gson.annotations.SerializedName;
 
-public class SetColor extends Action {
+public class SetColor implements BaseAction {
+    public static String actionName = "setColor";
+
+    @SerializedName("setColor")
     public int[] color = new int[3];
     public SetColor() {
     }
@@ -11,8 +14,6 @@ public class SetColor extends Action {
         this.color[1] = g;
         this.color[2] = b;
     }
-    @Override
-    public String getActionName() {
-        return "setColor";
-    }
+
+    public String getActionName() { return actionName; }
 }

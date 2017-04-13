@@ -2,10 +2,12 @@ package com.kii.thingifsample.promise_api_wrapper;
 
 import android.util.Pair;
 
+import com.kii.thingif.OnboardWithVendorThingIDOptions;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
 import com.kii.thingif.TargetState;
 import com.kii.thingif.command.Action;
+import com.kii.thingif.command.AliasAction;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.command.CommandForm;
 import com.kii.thingif.exception.ThingIFException;
@@ -15,6 +17,7 @@ import com.kii.thingif.trigger.Trigger;
 import com.kii.thingif.trigger.TriggerOptions;
 import com.kii.thingif.trigger.TriggeredCommandForm;
 import com.kii.thingif.trigger.TriggeredServerCodeResult;
+import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.smart_light_demo.LightState;
 
 import org.jdeferred.Promise;
@@ -43,7 +46,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
-                return api.onboard(thingID, thingPassword);
+                return api.onboardWithThingID(thingID, thingPassword);
             }
         });
     }
@@ -51,7 +54,9 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
-                return api.onboard(venderThingID, thingPassword, thingType, null);
+                OnboardWithVendorThingIDOptions.Builder builder = new OnboardWithVendorThingIDOptions.Builder();
+                builder.setThingType(thingType);
+                return api.onboardWithVendorThingID(venderThingID, thingPassword, builder.build());
             }
         });
     }
@@ -74,7 +79,10 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Command>() {
             @Override
             protected Command doInBackgroundSafe(Void... voids) throws Exception {
-                return api.postNewCommand(schemaName, schemaVersion, actions);
+                List<AliasAction> aliasActions = new ArrayList<>();
+                aliasActions.add(new AliasAction(AppConstants.ALIAS, actions));
+                CommandForm.Builder builder = CommandForm.Builder.newBuilder(aliasActions);
+                return api.postNewCommand(builder.build());
             }
         });
     }
@@ -111,7 +119,10 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.postNewTrigger(schemaName, schemaVersion, actions, predicate);
+                List<AliasAction> aliasActions = new ArrayList<>();
+                aliasActions.add(new AliasAction(AppConstants.ALIAS, actions));
+                TriggeredCommandForm.Builder builder = TriggeredCommandForm.Builder.newBuilder(aliasActions);
+                return api.postNewTrigger(builder.build(), predicate);
             }
         });
     }
@@ -157,7 +168,10 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.patchTrigger(triggerID, schemaName, schemaVersion, actions, predicate);
+                List<AliasAction> aliasActions = new ArrayList<>();
+                aliasActions.add(new AliasAction(AppConstants.ALIAS, actions));
+                TriggeredCommandForm.Builder builder = TriggeredCommandForm.Builder.newBuilder(aliasActions);
+                return api.patchCommandTrigger(triggerID, builder.build(), predicate);
             }
         });
     }
@@ -169,7 +183,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.patchTrigger(triggerID, form, predicate, options);
+                return api.patchCommandTrigger(triggerID, form, predicate, options);
             }
         });
     }
@@ -180,7 +194,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.patchTrigger(triggerID, serverCode, predicate);
+                return api.patchServerCodeTrigger(triggerID, serverCode, predicate);
             }
         });
     }
@@ -192,7 +206,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, Trigger>() {
             @Override
             protected Trigger doInBackgroundSafe(Void... voids) throws Exception {
-                return api.patchTrigger(triggerID, serverCode, predicate, options);
+                return api.patchServerCodeTrigger(triggerID, serverCode, predicate, options);
             }
         });
     }
@@ -222,7 +236,7 @@ public class IoTCloudPromiseAPIWrapper {
         return adm.when(new DeferredAsyncTask<Void, Void, LightState>() {
             @Override
             protected LightState doInBackgroundSafe(Void... voids) throws Exception {
-                return api.getTargetState(LightState.class);
+                return api.getTargetState(AppConstants.ALIAS, LightState.class);
             }
         });
     }

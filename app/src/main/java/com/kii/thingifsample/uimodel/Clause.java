@@ -1,5 +1,7 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.trigger.TriggerClause;
+
 public abstract class Clause {
 
     public enum ClauseType {
@@ -34,8 +36,8 @@ public abstract class Clause {
     public abstract int getIcon();
     public abstract ClauseType getType();
     public abstract String getSummary();
-    public abstract void setClause(com.kii.thingif.trigger.clause.Clause clause);
-    public abstract com.kii.thingif.trigger.clause.Clause getClause();
+    public abstract void setClause(TriggerClause clause);
+    public abstract TriggerClause getClause();
     public boolean isContainer() {
         return false;
     }

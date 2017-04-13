@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.MainActivity;
 import com.kii.thingifsample.R;
 
@@ -24,10 +26,9 @@ public class InfoFragment extends Fragment {
     public InfoFragment() {
         // Required empty public constructor
     }
-    public static InfoFragment newFragment(ThingIFAPI api) {
+    public static InfoFragment newFragment() {
         InfoFragment fragment = new InfoFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -35,19 +36,19 @@ public class InfoFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
-        }
+
         View view = inflater.inflate(R.layout.info_view, null);
         Button logoutButton = (Button)view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -60,15 +61,15 @@ public class InfoFragment extends Fragment {
             }
         });
         TextView textOwner = (TextView)view.findViewById(R.id.textOwner);
-        if (this.api.getOwner() != null) {
+        if (this.api != null && this.api.getOwner() != null) {
             textOwner.setText(this.api.getOwner().getTypedID().getID());
         }
         TextView textTarget = (TextView)view.findViewById(R.id.textTarget);
-        if (this.api.getTarget() != null) {
+        if (this.api != null && this.api.getTarget() != null) {
             textTarget.setText(this.api.getTarget().getTypedID().getID());
         }
         TextView textInstallationID = (TextView)view.findViewById(R.id.textInstallationID);
-        if (this.api.getInstallationID() != null) {
+        if (this.api != null && this.api.getInstallationID() != null) {
             textInstallationID.setText(this.api.getInstallationID());
         }
         return view;

@@ -19,8 +19,11 @@ import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
+import com.kii.thingif.command.AliasAction;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.command.CommandForm;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -63,10 +66,9 @@ public class CreateCommandFragment extends Fragment {
     private EditText editTextDescription;
     private EditText editTextMetadata;
 
-    public static CreateCommandFragment newFragment(ThingIFAPI api) {
+    public static CreateCommandFragment newFragment() {
         CreateCommandFragment fragment = new CreateCommandFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -78,19 +80,19 @@ public class CreateCommandFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
-        }
+
         View view = inflater.inflate(R.layout.create_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);
         this.chkPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -202,7 +204,7 @@ public class CreateCommandFragment extends Fragment {
         this.btnSendCommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Action> actions = new ArrayList<Action>();
+                List<Action> actions = new ArrayList<>();
                 if (chkPower.isChecked()) {
                     actions.add(new TurnPower(switchPower.isChecked()));
                 }
@@ -219,40 +221,43 @@ public class CreateCommandFragment extends Fragment {
                     Toast.makeText(getContext(), "Requires at least one action", Toast.LENGTH_LONG).show();
                     return;
                 }
-                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                CommandForm form = new CommandForm(
-                        AppConstants.SCHEMA_NAME, AppConstants.SCHEMA_VERSION, actions);
+                List<AliasAction> aliasActions = new ArrayList<AliasAction>();
+                aliasActions.add(new AliasAction(AppConstants.ALIAS, actions));
+                CommandForm.Builder builder = CommandForm.Builder.newBuilder(aliasActions);
                 String title = editTextTitle.getText().toString();
                 String description = editTextDescription.getText().toString();
                 String metadata = editTextMetadata.getText().toString();
                 if (!TextUtils.isEmpty(title)) {
-                    form.setTitle(title);
+                    builder.setTitle(title);
                 }
                 if (!TextUtils.isEmpty(description)) {
-                    form.setDescription(description);
+                    builder.setDescription(description);
                 }
                 if (!TextUtils.isEmpty(metadata)) {
                     try {
-                        form.setMetadata(new JSONObject(metadata));
+                        builder.setMetadata(new JSONObject(metadata));
                     } catch (JSONException e) {
                         Toast.makeText(getContext(), "Metadata to JSON failed.", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
-                wp.postNewCommand(form).then(new DoneCallback<Command>() {
-                    @Override
-                    public void onDone(Command result) {
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                }, new FailCallback<Throwable>() {
-                    @Override
-                    public void onFail(Throwable result) {
-                        Toast.makeText(getContext(), "Failed to create new command!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
-                    }
-                });
+                if (api != null) {
+                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                    wp.postNewCommand(builder.build()).then(new DoneCallback<Command>() {
+                        @Override
+                        public void onDone(Command result) {
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                        }
+                    }, new FailCallback<Throwable>() {
+                        @Override
+                        public void onFail(Throwable result) {
+                            Toast.makeText(getContext(), "Failed to create new command!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                        }
+                    });
+                }
             }
         });
         return view;

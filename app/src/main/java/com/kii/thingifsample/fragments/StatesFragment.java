@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.smart_light_demo.LightState;
@@ -33,10 +35,9 @@ public class StatesFragment extends Fragment implements PagerFragment {
         // Required empty public constructor
     }
 
-    public static StatesFragment newFragment(ThingIFAPI api) {
+    public static StatesFragment newFragment() {
         StatesFragment fragment = new StatesFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -44,22 +45,26 @@ public class StatesFragment extends Fragment implements PagerFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
+
+        String thingID = "---";
+        if (this.api != null && this.api.onboarded() && this.api.getTarget() != null) {
+            thingID = this.api.getTarget().getTypedID().getID();
         }
         View view = inflater.inflate(R.layout.states_view, null);
         String caption = ((TextView)view.findViewById(R.id.textInformation)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
+        caption = caption.replace ("${thingID}", thingID);
         ((TextView)view.findViewById(R.id.textInformation)).setText(caption);
 
         this.txtPower = (TextView)view.findViewById(R.id.textPower);
@@ -76,27 +81,29 @@ public class StatesFragment extends Fragment implements PagerFragment {
         }
     }
     private void loadLightState() {
-        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-        wp.getLightState().then(new DoneCallback<LightState>() {
-            @Override
-            public void onDone(LightState state) {
-                if (state != null) {
-                    txtPower.setText(state.power ? "ON" : "OFF");
-                    txtBrightness.setText(String.valueOf(state.brightness));
-                    txtColor.setText(Utils.toColorString(state.color));
-                    txtColorTemperature.setText(String.valueOf(state.colorTemperature));
-                } else {
-                    txtPower.setText("---");
-                    txtBrightness.setText("---");
-                    txtColor.setText("---");
-                    txtColorTemperature.setText("---");
+        if (this.api != null) {
+            IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(this.api);
+            wp.getLightState().then(new DoneCallback<LightState>() {
+                @Override
+                public void onDone(LightState state) {
+                    if (state != null) {
+                        txtPower.setText(state.power ? "ON" : "OFF");
+                        txtBrightness.setText(String.valueOf(state.brightness));
+                        txtColor.setText(Utils.toColorString(state.color));
+                        txtColorTemperature.setText(String.valueOf(state.colorTemperature));
+                    } else {
+                        txtPower.setText("---");
+                        txtBrightness.setText("---");
+                        txtColor.setText("---");
+                        txtColorTemperature.setText("---");
+                    }
                 }
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Unable to get the LightState!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+            }, new FailCallback<Throwable>() {
+                @Override
+                public void onFail(Throwable result) {
+                    Toast.makeText(getContext(), "Unable to get the LightState!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

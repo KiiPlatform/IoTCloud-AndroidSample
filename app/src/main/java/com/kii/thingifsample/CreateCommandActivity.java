@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.fragments.CreateCommandFragment;
 
 public class CreateCommandActivity extends AppCompatActivity {
@@ -16,19 +18,30 @@ public class CreateCommandActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_command);
         Intent i = getIntent();
-        this.api = i.getParcelableExtra("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
 
-        CreateCommandFragment fragment = CreateCommandFragment.newFragment(this.api);
+        CreateCommandFragment fragment = CreateCommandFragment.newFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, "CreateCommandFragment").commit();
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = (ThingIFAPI)savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
     }
 }

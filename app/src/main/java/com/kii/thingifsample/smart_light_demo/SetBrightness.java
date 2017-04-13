@@ -1,16 +1,17 @@
 package com.kii.thingifsample.smart_light_demo;
 
-import com.kii.thingif.command.Action;
+import com.google.gson.annotations.SerializedName;
 
-public class SetBrightness extends Action {
+public class SetBrightness implements BaseAction {
+    public static String actionName = "setBrightness";
+
+    @SerializedName("setBrightness")
     public int brightness;
     public SetBrightness() {
     }
     public SetBrightness(int brightness) {
         this.brightness = brightness;
     }
-    @Override
-    public String getActionName() {
-        return "setBrightness";
-    }
+
+    public String getActionName() { return actionName; }
 }

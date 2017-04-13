@@ -23,7 +23,10 @@ import android.widget.Toast;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.ActionResult;
+import com.kii.thingif.command.AliasAction;
 import com.kii.thingif.command.Command;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.Trigger;
 import com.kii.thingif.trigger.TriggerOptions;
@@ -32,6 +35,7 @@ import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ActionArrayAdapter;
 import com.kii.thingifsample.adapter.ClauseAdapter;
+import com.kii.thingifsample.smart_light_demo.BaseAction;
 import com.kii.thingifsample.uimodel.Clause;
 import com.kii.thingifsample.uimodel.ClauseParser;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
@@ -51,10 +55,9 @@ public class CommandTriggerDetailFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static CommandTriggerDetailFragment newFragment(ThingIFAPI api, Trigger trigger, Fragment targetFragment, int requestCode) {
+    public static CommandTriggerDetailFragment newFragment(Trigger trigger, Fragment targetFragment, int requestCode) {
         CommandTriggerDetailFragment fragment = new CommandTriggerDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         arguments.putParcelable("Trigger", trigger);
         fragment.setArguments(arguments);
         fragment.setTargetFragment(targetFragment, requestCode);
@@ -64,19 +67,24 @@ public class CommandTriggerDetailFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
         outState.putParcelable("Trigger", this.trigger);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
+
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
             this.trigger = savedInstanceState.getParcelable("Trigger");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
             this.trigger = arguments.getParcelable("Trigger");
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -88,28 +96,30 @@ public class CommandTriggerDetailFragment extends DialogFragment {
         switchTriggerEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                wp.enableTrigger(trigger.getTriggerID(), isChecked).then(new DoneCallback<Trigger>() {
-                    @Override
-                    public void onDone(Trigger result) {
-                        if (isChecked) {
-                            Toast.makeText(getContext(), "Trigger is enabled!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
+                if (api != null) {
+                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                    wp.enableTrigger(trigger.getTriggerID(), isChecked).then(new DoneCallback<Trigger>() {
+                        @Override
+                        public void onDone(Trigger result) {
+                            if (isChecked) {
+                                Toast.makeText(getContext(), "Trigger is enabled!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
+                            }
+                            getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                         }
-                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
-                    }
-                }, new FailCallback<Throwable>() {
-                    @Override
-                    public void onFail(Throwable result) {
-                        if (isChecked) {
-                            Toast.makeText(getContext(), "Failed to enable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to disable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                    }, new FailCallback<Throwable>() {
+                        @Override
+                        public void onFail(Throwable result) {
+                            if (isChecked) {
+                                Toast.makeText(getContext(), "Failed to enable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), "Failed to disable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            switchTriggerEnabled.setChecked(!isChecked);
                         }
-                        switchTriggerEnabled.setChecked(!isChecked);
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -117,7 +127,7 @@ public class CommandTriggerDetailFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("ThingIFAPI", api);
+                //i.putExtra("ThingIFAPI", api);
                 i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
                 if (trigger.getCommand() != null) {
                     i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.COMMAND);
@@ -135,21 +145,23 @@ public class CommandTriggerDetailFragment extends DialogFragment {
                         .setMessage("Are you sure you want to delete trigger?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
-                                    @Override
-                                    public void onDone(String result) {
-                                        Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
-                                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
-                                        dismiss();
-                                    }
-                                }, new FailCallback<Throwable>() {
-                                    @Override
-                                    public void onFail(Throwable result) {
-                                        Toast.makeText(getContext(), "Failed to delete trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                                        dismiss();
-                                    }
-                                });
+                                if (api != null) {
+                                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                                    wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
+                                        @Override
+                                        public void onDone(String result) {
+                                            Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
+                                            getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
+                                            dismiss();
+                                        }
+                                    }, new FailCallback<Throwable>() {
+                                        @Override
+                                        public void onFail(Throwable result) {
+                                            Toast.makeText(getContext(), "Failed to delete trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                            dismiss();
+                                        }
+                                    });
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -162,8 +174,8 @@ public class CommandTriggerDetailFragment extends DialogFragment {
 
         // Show the command info
         Command command = trigger.getCommand();
-        ((TextView) view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
-        ((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
+        //((TextView) view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
+        //((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
 
         ((TextView)view.findViewById(R.id.textTargetID)).setText(command.getTargetID().getID());
         if (command.getIssuerID() != null) {
@@ -174,9 +186,13 @@ public class CommandTriggerDetailFragment extends DialogFragment {
 
         ListView listViewActions = (ListView)view.findViewById(R.id.listViewActions);
         List<Pair<Action, ActionResult>> actions = new ArrayList<Pair<Action, ActionResult>>();
-        for (Action action : command.getActions()) {
-            ActionResult actionResult = command.getActionResult(action);
-            actions.add(new Pair<Action, ActionResult>(action, actionResult));
+        for (AliasAction aliasAction : command.getAliasActions()) {
+            for (Action action : aliasAction.getActions()) {
+                List<ActionResult> actionResults = command.getActionResult(aliasAction.getAlias(),
+                        ((BaseAction) action).getActionName());
+                // TODO: set ActionResult list
+                actions.add(new Pair<Action, ActionResult>(action, actionResults.get(0)));
+            }
         }
         ActionArrayAdapter actionAdapter = new ActionArrayAdapter(getContext());
         actionAdapter.addAll(actions);

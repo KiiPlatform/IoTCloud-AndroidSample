@@ -16,9 +16,14 @@ import android.widget.TextView;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.ActionResult;
+import com.kii.thingif.command.AliasAction;
+import com.kii.thingif.command.AliasActionResult;
 import com.kii.thingif.command.Command;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ActionArrayAdapter;
+import com.kii.thingifsample.smart_light_demo.BaseAction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,17 +31,15 @@ import java.util.List;
 
 public class CommandDetailFragment extends DialogFragment {
 
-    private ThingIFAPI api;
     private Command command;
 
     public CommandDetailFragment() {
         // Required empty public constructor
     }
 
-    public static CommandDetailFragment newFragment(ThingIFAPI api, Command command, Fragment targetFragment, int requestCode) {
+    public static CommandDetailFragment newFragment(Command command, Fragment targetFragment, int requestCode) {
         CommandDetailFragment fragment = new CommandDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         arguments.putParcelable("Command", command);
         fragment.setArguments(arguments);
         fragment.setTargetFragment(targetFragment, requestCode);
@@ -46,28 +49,24 @@ public class CommandDetailFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
         outState.putParcelable("Command", this.command);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
             this.command = savedInstanceState.getParcelable("Command");
-
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
             this.command = arguments.getParcelable("Command");
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.command_detail_view, null, false);
 
         ((TextView)view.findViewById(R.id.textCommandId)).setText(command.getCommandID());
-        ((TextView)view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
-        ((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
+        //((TextView)view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
+        //((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
 
         ((TextView)view.findViewById(R.id.textTargetID)).setText(command.getTargetID().getID());
         if (command.getIssuerID() != null) {
@@ -89,10 +88,14 @@ public class CommandDetailFragment extends DialogFragment {
         ((TextView)view.findViewById(R.id.textModified)).setText(new Date(command.getModified()).toString());
 
         ListView listViewActions = (ListView)view.findViewById(R.id.listViewActions);
-        List<Pair<Action, ActionResult>> actions = new ArrayList<Pair<Action, ActionResult>>();
-        for (Action action : command.getActions()) {
-            ActionResult actionResult = command.getActionResult(action);
-            actions.add(new Pair<Action, ActionResult>(action, actionResult));
+        List<Pair<Action, ActionResult>> actions = new ArrayList<>();
+        for (AliasAction aliasAction : command.getAliasActions()) {
+            for (Action action : aliasAction.getActions()) {
+                List<ActionResult> actionResults = command.getActionResult(aliasAction.getAlias(),
+                        ((BaseAction) action).getActionName());
+                // TODO: set ActionResult list
+                actions.add(new Pair<Action, ActionResult>(action, actionResults.get(0)));
+            }
         }
         ActionArrayAdapter adapter = new ActionArrayAdapter(getContext());
         adapter.addAll(actions);

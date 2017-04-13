@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.TriggeredServerCodeResult;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ImageViewHolder;
@@ -41,10 +43,9 @@ public class ServerCodeResultsDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static ServerCodeResultsDialogFragment newFragment(ThingIFAPI api, String triggerID) {
+    public static ServerCodeResultsDialogFragment newFragment(String triggerID) {
         ServerCodeResultsDialogFragment fragment = new ServerCodeResultsDialogFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         arguments.putString("triggerID", triggerID);
         fragment.setArguments(arguments);
         return fragment;
@@ -52,24 +53,31 @@ public class ServerCodeResultsDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
+
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
             this.triggerID = arguments.getString("triggerID");
         }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.server_code_results_view, null);
 
+        String thingID = "---";
+        if (this.api != null && this.api.onboarded() && this.api.getTarget() != null) {
+            thingID = this.api.getTarget().getTypedID().getID();
+        }
         String caption = ((TextView)view.findViewById(R.id.textServerCodeResults)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
+        caption = caption.replace ("${thingID}", thingID);
         ((TextView)view.findViewById(R.id.textServerCodeResults)).setText(caption);
 
         this.lstServerCodeResults = (ListView) view.findViewById(R.id.listViewResults);
@@ -88,26 +96,28 @@ public class ServerCodeResultsDialogFragment extends DialogFragment {
     }
 
     private void loadResultList() {
-        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-        this.showLoading(true);
-        wp.listTriggeredServerCodeResults(this.triggerID).then(new DoneCallback<List<TriggeredServerCodeResult>>() {
-            @Override
-            public void onDone(List<TriggeredServerCodeResult> results) {
-                adapter.clear();
-                adapter.addAll(results);
-                adapter.notifyDataSetChanged();
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Unable to list triggers!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }).always(new AlwaysCallback<List<TriggeredServerCodeResult>, Throwable>() {
-            @Override
-            public void onAlways(Promise.State state, List<TriggeredServerCodeResult> resolved, Throwable rejected) {
-                showLoading(false);
-            }
-        });
+        if (this.api != null) {
+            IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(this.api);
+            this.showLoading(true);
+            wp.listTriggeredServerCodeResults(this.triggerID).then(new DoneCallback<List<TriggeredServerCodeResult>>() {
+                @Override
+                public void onDone(List<TriggeredServerCodeResult> results) {
+                    adapter.clear();
+                    adapter.addAll(results);
+                    adapter.notifyDataSetChanged();
+                }
+            }, new FailCallback<Throwable>() {
+                @Override
+                public void onFail(Throwable result) {
+                    Toast.makeText(getContext(), "Unable to list triggers!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).always(new AlwaysCallback<List<TriggeredServerCodeResult>, Throwable>() {
+                @Override
+                public void onAlways(Promise.State state, List<TriggeredServerCodeResult> resolved, Throwable rejected) {
+                    showLoading(false);
+                }
+            });
+        }
     }
     private void showLoading(boolean loading) {
         if (this.progressLoading != null && this.lstServerCodeResults != null) {

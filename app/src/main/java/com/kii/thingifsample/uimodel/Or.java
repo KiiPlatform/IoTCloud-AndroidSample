@@ -1,10 +1,11 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
 public class Or extends ContainerClause {
 
-    private com.kii.thingif.trigger.clause.Or clause;
+    private com.kii.thingif.clause.trigger.OrClauseInTrigger clause;
 
     @Override
     public int getIcon() {
@@ -19,12 +20,12 @@ public class Or extends ContainerClause {
         return this.getType().getCaption();
     }
     @Override
-    public com.kii.thingif.trigger.clause.Clause getClause() {
+    public TriggerClause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
-        this.clause = (com.kii.thingif.trigger.clause.Or)clause;
+    public void setClause(TriggerClause clause) {
+        this.clause = (com.kii.thingif.clause.trigger.OrClauseInTrigger)clause;
     }
 
     public static class OrOpen extends ContainerClause {
@@ -42,11 +43,11 @@ public class Or extends ContainerClause {
             return "";
         }
         @Override
-        public com.kii.thingif.trigger.clause.Clause getClause() {
+        public TriggerClause getClause() {
             return null;
         }
         @Override
-        public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
+        public void setClause(TriggerClause clause) {
         }
         public OrClose getClose() {
             return this.close;
@@ -70,11 +71,11 @@ public class Or extends ContainerClause {
             return "";
         }
         @Override
-        public com.kii.thingif.trigger.clause.Clause getClause() {
+        public TriggerClause getClause() {
             return null;
         }
         @Override
-        public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
+        public void setClause(TriggerClause clause) {
         }
         public OrOpen getOpen() {
             return this.open;

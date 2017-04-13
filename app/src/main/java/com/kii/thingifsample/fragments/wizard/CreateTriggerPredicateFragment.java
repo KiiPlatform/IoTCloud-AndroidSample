@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingif.trigger.Condition;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.TriggersWhen;
@@ -71,7 +72,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     public static CreateTriggerPredicateFragment newFragment(ThingIFAPI api) {
         CreateTriggerPredicateFragment fragment = new CreateTriggerPredicateFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
+        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -81,7 +82,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
+        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
@@ -142,29 +143,30 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
             }
         } else if (requestCode == REQUEST_CODE_EDIT_CLAUSE) {
              if (resultCode == Activity.RESULT_OK) {
-                 com.kii.thingif.trigger.clause.Clause clause = data.getParcelableExtra(EditClauseDialogFragment.EXTRA_CLAUSE);
+                 TriggerClause clause = data.getParcelableExtra(EditClauseDialogFragment.EXTRA_CLAUSE);
                  int editingListPosition = data.getIntExtra(EditClauseDialogFragment.EXTRA_EDITING_LIST_POSITION, -1);
                  if (editingListPosition >= 0) {
                      this.adapter.getItem(editingListPosition).setClause(clause);
                  } else {
-                     if (clause instanceof com.kii.thingif.trigger.clause.And) {
+                     if (clause instanceof com.kii.thingif.clause.trigger.AndClauseInTrigger) {
                          And and = new And();
                          and.setClause(clause);
                          this.adapter.add(and);
-                     } else if (clause instanceof com.kii.thingif.trigger.clause.Or) {
+                     } else if (clause instanceof com.kii.thingif.clause.trigger.OrClauseInTrigger) {
                          Or or = new Or();
                          or.setClause(clause);
                          this.adapter.add(or);
-                     } else if (clause instanceof com.kii.thingif.trigger.clause.Equals) {
+                     } else if (clause instanceof com.kii.thingif.clause.trigger.EqualsClauseInTrigger) {
                          Equals equals = new Equals();
                          equals.setClause(clause);
                          this.adapter.add(equals);
-                     } else if (clause instanceof com.kii.thingif.trigger.clause.NotEquals) {
+                     } else if (clause instanceof com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger) {
                          NotEquals notEquals = new NotEquals();
                          notEquals.setClause(clause);
                          this.adapter.add(notEquals);
-                     } else if (clause instanceof com.kii.thingif.trigger.clause.Range) {
-                         com.kii.thingif.trigger.clause.Range range = (com.kii.thingif.trigger.clause.Range)clause;
+                     } else if (clause instanceof com.kii.thingif.clause.trigger.RangeClauseInTrigger) {
+                         com.kii.thingif.clause.trigger.RangeClauseInTrigger range =
+                                 (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
                          if (range.getLowerLimit() != null) {
                              if (range.getLowerIncluded() == Boolean.TRUE) {
                                  Range.GreaterThanEquals greaterThanEquals = new Range.GreaterThanEquals();
@@ -214,7 +216,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     }
     @Override
     public void onInactivate(int exitCode) {
-        com.kii.thingif.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
+        TriggerClause clause = ClauseParser.parseClause(this.adapter.getItems());
         this.editingTrigger.setCondition(new Condition(clause));
     }
     @Override
@@ -245,13 +247,15 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     }
     private void validateClauses() {
         if (this.adapter != null) {
-            com.kii.thingif.trigger.clause.Clause clause = ClauseParser.parseClause(this.adapter.getItems());
+            TriggerClause clause = ClauseParser.parseClause(this.adapter.getItems());
             if (clause != null) {
-                if (clause instanceof com.kii.thingif.trigger.clause.ContainerClause) {
-                    if (!((com.kii.thingif.trigger.clause.ContainerClause)clause).hasClause()) {
-                        this.setNextButtonEnabled(false);
-                        return;
-                    }
+                if ((clause instanceof com.kii.thingif.clause.trigger.AndClauseInTrigger) &&
+                        (((com.kii.thingif.clause.trigger.AndClauseInTrigger)clause).getClauses().isEmpty()) ||
+                   ((clause instanceof com.kii.thingif.clause.trigger.OrClauseInTrigger) &&
+                        (((com.kii.thingif.clause.trigger.OrClauseInTrigger)clause).getClauses().isEmpty())))
+                {
+                    this.setNextButtonEnabled(false);
+                    return;
                 }
                 this.setNextButtonEnabled(true);
                 return;

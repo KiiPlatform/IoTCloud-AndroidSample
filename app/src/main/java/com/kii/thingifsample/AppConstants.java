@@ -8,5 +8,6 @@ public class AppConstants {
     public static final String SENDER_ID = "";
     public static final String THING_TYPE = "SmartLight-Demo";
     public static final String SCHEMA_NAME = "Smart-Light-Demo";
+    public static final String ALIAS = "Dummy-Alias";
     public static final int SCHEMA_VERSION = 1;
 }

@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.Trigger;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
@@ -51,10 +53,9 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
         // Required empty public constructor
     }
 
-    public static TriggersFragment newFragment(ThingIFAPI api) {
+    public static TriggersFragment newFragment() {
         TriggersFragment fragment = new TriggersFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -62,21 +63,25 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
+
+        String thingID = "---";
+        if (this.api != null && this.api.onboarded() && this.api.getTarget() != null) {
+            thingID = this.api.getTarget().getTypedID().getID();
         }
         View view = inflater.inflate(R.layout.triggers_view, null);
         String caption = ((TextView)view.findViewById(R.id.textTriggers)).getText().toString();
-        caption = caption.replace ("${thingID}", this.api.onboarded() ? this.api.getTarget().getTypedID().getID() : "---");
+        caption = caption.replace ("${thingID}", thingID);
         ((TextView)view.findViewById(R.id.textTriggers)).setText(caption);
 
         this.btnNewTrigger = (Button) view.findViewById(R.id.buttonNewTrigger);
@@ -91,7 +96,7 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent i = new Intent();
                                 i.setClass(getContext(), CreateTriggerActivity.class);
-                                i.putExtra("ThingIFAPI", api);
+                                //i.putExtra("ThingIFAPI", api);
                                 if (which == 0) {
                                     i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, TriggerType.COMMAND);
                                 } else if (which == 1) {
@@ -128,8 +133,9 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     @Override
     public void onVisible(boolean visible) {
         if (visible) {
-            this.btnNewTrigger.setEnabled(this.api.onboarded());
-            this.btnRefreshTriggers.setEnabled(this.api.onboarded());
+            boolean enable = this.api != null && this.api.onboarded();
+            this.btnNewTrigger.setEnabled(enable);
+            this.btnRefreshTriggers.setEnabled(enable);
             this.loadTriggerList();
         }
     }
@@ -137,35 +143,37 @@ public class TriggersFragment extends Fragment implements PagerFragment, Adapter
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Trigger trigger = (Trigger)this.lstTriggers.getItemAtPosition(position);
         if (trigger.getCommand() != null) {
-            CommandTriggerDetailFragment dialog = CommandTriggerDetailFragment.newFragment(this.api, trigger, this, 0);
+            CommandTriggerDetailFragment dialog = CommandTriggerDetailFragment.newFragment(trigger, this, 0);
             dialog.show(getFragmentManager(), "CommandTriggerDetail");
         } else {
-            ServerCodeTriggerDetailFragment dialog = ServerCodeTriggerDetailFragment.newFragment(this.api, trigger, this, 0);
+            ServerCodeTriggerDetailFragment dialog = ServerCodeTriggerDetailFragment.newFragment(trigger, this, 0);
             dialog.show(getFragmentManager(), "ServerCodeTriggerDetail");
         }
     }
 
     private void loadTriggerList() {
-        IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-        this.showLoading(true);
-        wp.listTriggers().then(new DoneCallback<List<Trigger>>() {
-            @Override
-            public void onDone(List<Trigger> triggers) {
-                adapter.clear();
-                adapter.addAll(triggers);
-                adapter.notifyDataSetChanged();
-            }
-        }, new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                Toast.makeText(getContext(), "Unable to list triggers!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }).always(new AlwaysCallback<List<Trigger>, Throwable>() {
-            @Override
-            public void onAlways(Promise.State state, List<Trigger> resolved, Throwable rejected) {
-                showLoading(false);
-            }
-        });
+        if (this.api != null) {
+            IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(this.api);
+            this.showLoading(true);
+            wp.listTriggers().then(new DoneCallback<List<Trigger>>() {
+                @Override
+                public void onDone(List<Trigger> triggers) {
+                    adapter.clear();
+                    adapter.addAll(triggers);
+                    adapter.notifyDataSetChanged();
+                }
+            }, new FailCallback<Throwable>() {
+                @Override
+                public void onFail(Throwable result) {
+                    Toast.makeText(getContext(), "Unable to list triggers!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).always(new AlwaysCallback<List<Trigger>, Throwable>() {
+                @Override
+                public void onAlways(Promise.State state, List<Trigger> resolved, Throwable rejected) {
+                    showLoading(false);
+                }
+            });
+        }
     }
     private void showLoading(boolean loading) {
         if (this.progressLoading != null && this.lstTriggers != null) {

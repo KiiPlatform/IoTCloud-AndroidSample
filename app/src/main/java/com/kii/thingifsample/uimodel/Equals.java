@@ -1,9 +1,10 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
 public class Equals extends Clause {
-    private com.kii.thingif.trigger.clause.Equals clause;
+    private com.kii.thingif.clause.trigger.EqualsClauseInTrigger clause;
     @Override
     public int getIcon() {
         return R.drawable.ic_code_equal_black_36dp;
@@ -20,11 +21,11 @@ public class Equals extends Clause {
         return this.clause.getField() + " == " + this.clause.getValue().toString();
     }
     @Override
-    public com.kii.thingif.trigger.clause.Clause getClause() {
+    public TriggerClause getClause() {
         return this.clause;
     }
     @Override
-    public void setClause(com.kii.thingif.trigger.clause.Clause clause) {
-        this.clause = (com.kii.thingif.trigger.clause.Equals)clause;
+    public void setClause(TriggerClause clause) {
+        this.clause = (com.kii.thingif.clause.trigger.EqualsClauseInTrigger)clause;
     }
 }

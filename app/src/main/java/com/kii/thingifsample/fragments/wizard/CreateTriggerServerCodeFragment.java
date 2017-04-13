@@ -41,7 +41,7 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
     public static CreateTriggerServerCodeFragment newFragment(ThingIFAPI api) {
         CreateTriggerServerCodeFragment fragment = new CreateTriggerServerCodeFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
+        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -52,7 +52,7 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
+        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override

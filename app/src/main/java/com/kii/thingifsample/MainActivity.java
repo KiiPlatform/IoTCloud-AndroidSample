@@ -23,8 +23,9 @@ import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Owner;
 import com.kii.thingif.PushBackend;
 import com.kii.thingif.TypedID;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
 import com.kii.thingif.exception.ThingIFException;
-import com.kii.thingif.exception.StoredThingIFAPIInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.fragments.PagerFragment;
 import com.kii.thingifsample.fragments.ProgressDialogFragment;
 import com.kii.thingifsample.sliding_tab.SlidingTabLayout;
@@ -72,10 +73,12 @@ public class MainActivity extends AppCompatActivity {
             this.api = ThingIFAPI.loadFromStoredInstance(this);
             new GCMRegisterTask(this.api).execute();
             pdf.dismiss();
-        } catch (StoredThingIFAPIInstanceNotFoundException e) {
+        } catch (StoredInstanceNotFoundException e) {
             Intent i = new Intent();
             i.setClass(getApplicationContext(), LoginActivity.class);
             startActivityForResult(i, 0);
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
     }
 
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0 && KiiUser.getCurrentUser() != null) {
             Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
-            this.api = ApiBuilder.buildApi(getApplicationContext(), owner);
+            this.api = ApiBuilder.buildApi(getApplicationContext(), owner, AppConstants.ALIAS);
             new GCMRegisterTask(this.api).execute();
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag
                     (ProgressDialogFragment.TAG);
@@ -97,12 +100,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
     }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        this.api = (ThingIFAPI)savedInstanceState.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this);
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
     }
 
     public class GCMRegisterTask extends AsyncTask<Void, Void, Exception> {
@@ -187,15 +195,15 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
                         switch (position) {
                 case 0:
-                    return OnboardFragment.newFragment(api);
+                    return OnboardFragment.newFragment();
                 case 1:
-                    return CommandsFragment.newFragment(api);
+                    return CommandsFragment.newFragment();
                 case 2:
-                    return TriggersFragment.newFragment(api);
+                    return TriggersFragment.newFragment();
                 case 3:
-                    return StatesFragment.newFragment(api);
+                    return StatesFragment.newFragment();
                 case 4:
-                    return InfoFragment.newFragment(api);
+                    return InfoFragment.newFragment();
                 default:
                     throw new RuntimeException("Unknown flow");
             }

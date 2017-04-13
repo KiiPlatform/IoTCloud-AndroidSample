@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.Trigger;
@@ -50,10 +52,9 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static ServerCodeTriggerDetailFragment newFragment(ThingIFAPI api, Trigger trigger, Fragment targetFragment, int requestCode) {
+    public static ServerCodeTriggerDetailFragment newFragment(Trigger trigger, Fragment targetFragment, int requestCode) {
         ServerCodeTriggerDetailFragment fragment = new ServerCodeTriggerDetailFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
         arguments.putParcelable("Trigger", trigger);
         fragment.setArguments(arguments);
         fragment.setTargetFragment(targetFragment, requestCode);
@@ -63,19 +64,24 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
         outState.putParcelable("Trigger", this.trigger);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
+        }
+
         if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
             this.trigger = savedInstanceState.getParcelable("Trigger");
         }
         Bundle arguments = getArguments();
         if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
             this.trigger = arguments.getParcelable("Trigger");
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -87,28 +93,30 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         switchTriggerEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                wp.enableTrigger(trigger.getTriggerID(), isChecked).then(new DoneCallback<Trigger>() {
-                    @Override
-                    public void onDone(Trigger result) {
-                        if (isChecked) {
-                            Toast.makeText(getContext(), "Trigger is enabled!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
+                if (api != null) {
+                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                    wp.enableTrigger(trigger.getTriggerID(), isChecked).then(new DoneCallback<Trigger>() {
+                        @Override
+                        public void onDone(Trigger result) {
+                            if (isChecked) {
+                                Toast.makeText(getContext(), "Trigger is enabled!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), "Trigger is disabled!", Toast.LENGTH_LONG).show();
+                            }
+                            getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
                         }
-                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
-                    }
-                }, new FailCallback<Throwable>() {
-                    @Override
-                    public void onFail(Throwable result) {
-                        if (isChecked) {
-                            Toast.makeText(getContext(), "Failed to enable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to disable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                    }, new FailCallback<Throwable>() {
+                        @Override
+                        public void onFail(Throwable result) {
+                            if (isChecked) {
+                                Toast.makeText(getContext(), "Failed to enable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), "Failed to disable this trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            switchTriggerEnabled.setChecked(!isChecked);
                         }
-                        switchTriggerEnabled.setChecked(!isChecked);
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -116,7 +124,7 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent i = new Intent();
                 i.setClass(getContext(), CreateTriggerActivity.class);
-                i.putExtra("ThingIFAPI", api);
+                //i.putExtra("ThingIFAPI", api);
                 i.putExtra(CreateTriggerActivity.INTENT_TRIGGER, trigger);
                 if (trigger.getCommand() != null) {
                     i.putExtra(CreateTriggerActivity.INTENT_TRIGGER_TYPE, CreateTriggerActivity.TriggerType.COMMAND);
@@ -134,21 +142,23 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
                         .setMessage("Are you sure you want to delete trigger?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                                wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
-                                    @Override
-                                    public void onDone(String result) {
-                                        Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
-                                        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
-                                        dismiss();
-                                    }
-                                }, new FailCallback<Throwable>() {
-                                    @Override
-                                    public void onFail(Throwable result) {
-                                        Toast.makeText(getContext(), "Failed to delete trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
-                                        dismiss();
-                                    }
-                                });
+                                if (api != null) {
+                                    IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
+                                    wp.deleteTrigger(trigger.getTriggerID()).then(new DoneCallback<String>() {
+                                        @Override
+                                        public void onDone(String result) {
+                                            Toast.makeText(getContext(), "Trigger is deleted!", Toast.LENGTH_LONG).show();
+                                            getTargetFragment().onActivityResult(0, Activity.RESULT_OK, null);
+                                            dismiss();
+                                        }
+                                    }, new FailCallback<Throwable>() {
+                                        @Override
+                                        public void onFail(Throwable result) {
+                                            Toast.makeText(getContext(), "Failed to delete trigger!: " + result.getMessage(), Toast.LENGTH_LONG).show();
+                                            dismiss();
+                                        }
+                                    });
+                                }
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -160,7 +170,7 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         });
         ((FloatingActionButton)view.findViewById(R.id.fabShowResult)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ServerCodeResultsDialogFragment dialog = ServerCodeResultsDialogFragment.newFragment(api, trigger.getTriggerID());
+                ServerCodeResultsDialogFragment dialog = ServerCodeResultsDialogFragment.newFragment(trigger.getTriggerID());
                 dialog.show(getFragmentManager(), "serverCodeResultsDialogFragment");
             }
         });

@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
+import com.kii.thingif.command.AliasAction;
+import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.smart_light_demo.SetBrightness;
 import com.kii.thingifsample.smart_light_demo.SetColor;
@@ -24,6 +26,9 @@ import com.kii.thingifsample.smart_light_demo.TurnPower;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateTriggerCommandFragment extends WizardFragment {
 
@@ -51,7 +56,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     public static CreateTriggerCommandFragment newFragment(ThingIFAPI api) {
         CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
+        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -62,7 +67,7 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
+        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
@@ -217,21 +222,23 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     @Override
     public void onActivate() {
         this.clearEditingTrigger();
-        for (Action action : this.editingTrigger.getActions()) {
-            if (action instanceof TurnPower) {
-                this.chkPower.setChecked(true);
-                this.switchPower.setChecked(((TurnPower)action).power);
-            } else if (action instanceof SetBrightness) {
-                this.chkBrightness.setChecked(true);
-                this.seekBrightness.setProgress(((SetBrightness)action).brightness);
-            } else if (action instanceof SetColor) {
-                this.chkColor.setChecked(true);
-                this.seekR.setProgress(((SetColor) action).color[0]);
-                this.seekG.setProgress(((SetColor) action).color[1]);
-                this.seekB.setProgress(((SetColor) action).color[2]);
-            } else if (action instanceof SetColorTemperature) {
-                this.chkColorTemperature.setChecked(true);
-                this.seekColorTemperature.setProgress(((SetColorTemperature) action).colorTemperature);
+        for (AliasAction aliasAction : this.editingTrigger.getAliasActions()) {
+            for (Action action : aliasAction.getActions()) {
+                if (action instanceof TurnPower) {
+                    this.chkPower.setChecked(true);
+                    this.switchPower.setChecked(((TurnPower) action).power);
+                } else if (action instanceof SetBrightness) {
+                    this.chkBrightness.setChecked(true);
+                    this.seekBrightness.setProgress(((SetBrightness) action).brightness);
+                } else if (action instanceof SetColor) {
+                    this.chkColor.setChecked(true);
+                    this.seekR.setProgress(((SetColor) action).color[0]);
+                    this.seekG.setProgress(((SetColor) action).color[1]);
+                    this.seekB.setProgress(((SetColor) action).color[2]);
+                } else if (action instanceof SetColorTemperature) {
+                    this.chkColorTemperature.setChecked(true);
+                    this.seekColorTemperature.setProgress(((SetColorTemperature) action).colorTemperature);
+                }
             }
         }
         if (this.editingTrigger.getCommandTargetID() != null) {
@@ -252,18 +259,20 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     public void onInactivate(int exitCode) {
         if (exitCode == EXIT_NEXT) {
             this.editingTrigger.clearActions();
+            List<Action> actions = new ArrayList<>();
             if (this.chkPower.isChecked()) {
-                this.editingTrigger.addAction(new TurnPower(this.switchPower.isChecked()));
+                actions.add(new TurnPower(this.switchPower.isChecked()));
             }
             if (this.chkBrightness.isChecked()) {
-                this.editingTrigger.addAction(new SetBrightness(this.seekBrightness.getProgress()));
+                actions.add(new SetBrightness(this.seekBrightness.getProgress()));
             }
             if (this.chkColor.isChecked()) {
-                this.editingTrigger.addAction(new SetColor(this.seekR.getProgress(), this.seekG.getProgress(), this.seekB.getProgress()));
+                actions.add(new SetColor(this.seekR.getProgress(), this.seekG.getProgress(), this.seekB.getProgress()));
             }
             if (this.chkColorTemperature.isChecked()) {
-                this.editingTrigger.addAction(new SetColorTemperature(this.seekColorTemperature.getProgress()));
+                actions.add(new SetColorTemperature(this.seekColorTemperature.getProgress()));
             }
+            this.editingTrigger.addAction(new AliasAction(AppConstants.ALIAS, actions));
             if (!TextUtils.isEmpty(this.editTextTargetID.getText().toString())) {
                 this.editingTrigger.setCommandTargetID(
                         new TypedID(TypedID.Types.THING, this.editTextTargetID.getText().toString()));

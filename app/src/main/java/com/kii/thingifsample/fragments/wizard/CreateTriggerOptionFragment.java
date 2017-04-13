@@ -25,7 +25,7 @@ public class CreateTriggerOptionFragment extends WizardFragment {
     public static CreateTriggerOptionFragment newFragment(ThingIFAPI api) {
         CreateTriggerOptionFragment fragment = new CreateTriggerOptionFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable("ThingIFAPI", api);
+        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -36,7 +36,7 @@ public class CreateTriggerOptionFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ThingIFAPI", this.api);
+        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override

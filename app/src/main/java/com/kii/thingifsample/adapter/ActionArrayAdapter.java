@@ -43,11 +43,11 @@ public class ActionArrayAdapter extends ArrayAdapter<Pair<Action, ActionResult>>
             holder = (ActionViewHolder) convertView.getTag();
         }
         Pair<Action, ActionResult> item = this.getItem(position);
-        holder.textActionName.setText(item.first.getActionName());
+        holder.textActionName.setText(item.first.getClass().getName());
         if (item.second == null) {
             holder.textResult.setText("unfinished");
         } else {
-            if (item.second.succeeded) {
+            if (item.second.isSucceeded()) {
                 holder.textResult.setText("succeeded");
             } else {
                 holder.textResult.setText("failed");
