@@ -50,12 +50,18 @@ public class IoTCloudPromiseAPIWrapper {
             }
         });
     }
-    public Promise<Target, Throwable, Void> onboard(final String venderThingID, final String thingPassword, final String thingType) {
+    public Promise<Target, Throwable, Void> onboard(
+            final String venderThingID,
+            final String thingPassword,
+            final String thingType,
+            final String firmwareVerssion)
+    {
         return adm.when(new DeferredAsyncTask<Void, Void, Target>() {
             @Override
             protected Target doInBackgroundSafe(Void... voids) throws Exception {
                 OnboardWithVendorThingIDOptions.Builder builder = new OnboardWithVendorThingIDOptions.Builder();
                 builder.setThingType(thingType);
+                builder.setFirmwareVersion(firmwareVerssion);
                 return api.onboardWithVendorThingID(venderThingID, thingPassword, builder.build());
             }
         });

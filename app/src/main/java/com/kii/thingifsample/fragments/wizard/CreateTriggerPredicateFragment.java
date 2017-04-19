@@ -9,11 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingif.trigger.Condition;
-import com.kii.thingif.trigger.StatePredicate;
-import com.kii.thingif.trigger.TriggersWhen;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ClauseAdapter;
 import com.kii.thingifsample.fragments.EditClauseDialogFragment;
@@ -35,7 +32,6 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     private static final int REQUEST_CODE_ADD_CLAUSE = 100;
     private static final int REQUEST_CODE_EDIT_CLAUSE = 101;
 
-    private ThingIFAPI api;
     private DragSortListView listView;
     private DragSortController controller;
     private ClauseAdapter adapter;
@@ -69,10 +65,9 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
         }
     };
 
-    public static CreateTriggerPredicateFragment newFragment(ThingIFAPI api) {
+    public static CreateTriggerPredicateFragment newFragment() {
         CreateTriggerPredicateFragment fragment = new CreateTriggerPredicateFragment();
         Bundle arguments = new Bundle();
-        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -82,19 +77,11 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
-        }
         View view = inflater.inflate(R.layout.create_trigger_predicate_view, null);
         ((FloatingActionButton)view.findViewById(R.id.fabAddClause)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

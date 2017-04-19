@@ -303,16 +303,16 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
             WizardFragment fragment = null;
             switch (position) {
                 case PAGE_COMMAND_SETTING:
-                    fragment = CreateTriggerCommandFragment.newFragment(api);
+                    fragment = CreateTriggerCommandFragment.newFragment();
                     break;
                 case PAGE_PREDICATE_SETTING:
-                    fragment = CreateTriggerPredicateFragment.newFragment(api);
+                    fragment = CreateTriggerPredicateFragment.newFragment();
                     break;
                 case PAGE_TRIGGER_WHEN_SETTING:
-                    fragment = CreateTriggersWhenFragment.newFragment(api);
+                    fragment = CreateTriggersWhenFragment.newFragment();
                     break;
                 case PAGE_OPTION_SETTING:
-                    fragment = CreateTriggerOptionFragment.newFragment(api);
+                    fragment = CreateTriggerOptionFragment.newFragment();
                     break;
             }
             fragment.setController(CreateTriggerActivity.this);
@@ -338,16 +338,16 @@ public class CreateTriggerActivity extends AppCompatActivity implements WizardFr
             WizardFragment fragment = null;
             switch (position) {
                 case PAGE_SERVER_CODE_SETTING:
-                    fragment = CreateTriggerServerCodeFragment.newFragment(api);
+                    fragment = CreateTriggerServerCodeFragment.newFragment();
                     break;
                 case PAGE_PREDICATE_SETTING:
-                    fragment = CreateTriggerPredicateFragment.newFragment(api);
+                    fragment = CreateTriggerPredicateFragment.newFragment();
                     break;
                 case PAGE_TRIGGER_WHEN_SETTING:
-                    fragment = CreateTriggersWhenFragment.newFragment(api);
+                    fragment = CreateTriggersWhenFragment.newFragment();
                     break;
                 case PAGE_OPTION_SETTING:
-                    fragment = CreateTriggerOptionFragment.newFragment(api);
+                    fragment = CreateTriggerOptionFragment.newFragment();
                     break;
             }
             fragment.setController(CreateTriggerActivity.this);

@@ -13,7 +13,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.TypedID;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.AliasAction;
@@ -34,7 +33,6 @@ public class CreateTriggerCommandFragment extends WizardFragment {
 
     public static final String TAG = CreateTriggerCommandFragment.class.getSimpleName();
 
-    private ThingIFAPI api;
     private CheckBox chkPower;
     private Switch switchPower;
     private CheckBox chkBrightness;
@@ -53,10 +51,9 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     private EditText editTextDescription;
     private EditText editTextMetadata;
 
-    public static CreateTriggerCommandFragment newFragment(ThingIFAPI api) {
+    public static CreateTriggerCommandFragment newFragment() {
         CreateTriggerCommandFragment fragment = new CreateTriggerCommandFragment();
         Bundle arguments = new Bundle();
-        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -67,19 +64,11 @@ public class CreateTriggerCommandFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
-        }
         View view = inflater.inflate(R.layout.create_trigger_command_view, null);
         this.chkPower = (CheckBox)view.findViewById(R.id.checkboxPower);
         this.chkPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

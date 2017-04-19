@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0 && KiiUser.getCurrentUser() != null) {
             Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
                     .user().getAccessToken());
-            this.api = ApiBuilder.buildApi(getApplicationContext(), owner, AppConstants.ALIAS);
+            this.api = ApiBuilder.buildApi(getApplicationContext(), owner);
             new GCMRegisterTask(this.api).execute();
             ProgressDialogFragment pdf = (ProgressDialogFragment) getSupportFragmentManager().findFragmentByTag
                     (ProgressDialogFragment.TAG);

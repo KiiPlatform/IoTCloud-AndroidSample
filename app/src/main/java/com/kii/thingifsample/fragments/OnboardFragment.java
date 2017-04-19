@@ -17,15 +17,21 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kii.cloud.storage.Kii;
 import com.kii.cloud.storage.KiiThing;
+import com.kii.cloud.storage.KiiUser;
 import com.kii.cloud.storage.utils.Log;
+import com.kii.thingif.Owner;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
+import com.kii.thingif.TypedID;
 import com.kii.thingif.exception.StoredInstanceNotFoundException;
 import com.kii.thingif.exception.UnloadableInstanceVersionException;
+import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.promise_api_wrapper.IoTCloudPromiseAPIWrapper;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.promise_api_wrapper.KiiCloudPromiseAPIWrapper;
+import com.kii.thingifsample.smart_light_demo.ApiBuilder;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
@@ -39,7 +45,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
     private View mOnboardWithVenderIDFormView;
     private View mOnboardFormView;
     private View mOnboardedFormView;
-    private View mOnboardOperationFormView;
 
     private TextView txtThingId;
     private TextView txtVenderThingId;
@@ -78,7 +83,11 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         try {
             this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
         } catch (StoredInstanceNotFoundException e) {
-            e.printStackTrace();
+            if (KiiUser.getCurrentUser() != null) {
+                Owner owner = new Owner(new TypedID(TypedID.Types.USER, KiiUser.getCurrentUser().getID()), Kii
+                        .user().getAccessToken());
+                this.api = ApiBuilder.buildApi(this.getContext().getApplicationContext(), owner);
+            }
         } catch (UnloadableInstanceVersionException e) {
             e.printStackTrace();
         }
@@ -87,14 +96,17 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         mOnboardWithVenderIDFormView = view.findViewById(R.id.onboard_with_vender_id_form);
         mOnboardFormView = view.findViewById(R.id.onboard_form);
         mOnboardedFormView = view.findViewById(R.id.onboarded_form);
-        mOnboardOperationFormView = view.findViewById(R.id.onboard_operation_form);
         final Button buttonOnboard = (Button) view.findViewById(R.id.buttonOnboard);
         final EditText editTextThingID = (EditText) view.findViewById(R.id.editTextThingId);
         final EditText editTextThingPassword = (EditText) view.findViewById(R.id.editTextThingPassword);
         final EditText editTextVenderThingID = (EditText) view.findViewById(R.id.editTextVenderThingId);
         final EditText editTextVenderThingPassword = (EditText) view.findViewById(R.id.editTextVenderThingPassword);
         final EditText editTextThingType = (EditText) view.findViewById(R.id.editTextThingType);
+        final EditText editTextFirmwareVersion = (EditText) view.findViewById(R.id.editTextFirmwareVersion);
         final Switch aSwitch = (Switch) view.findViewById(R.id.switchThingIDType);
+
+        editTextThingType.setText(AppConstants.DEFAULT_THING_TYPE);
+        editTextFirmwareVersion.setText(AppConstants.DEFAULT_FIRMWARE_VERSION);
 
         txtThingId = (TextView)view.findViewById(R.id.textThingId);
         txtVenderThingId = (TextView)view.findViewById(R.id.textVenderThingId);
@@ -113,18 +125,17 @@ public class OnboardFragment extends Fragment implements PagerFragment {
                         final String venderThingID = editTextVenderThingID.getText().toString();
                         final String thingPassword = editTextVenderThingPassword.getText().toString();
                         final String thingType = editTextThingType.getText().toString();
+                        final String firmwareVersion = editTextFirmwareVersion.getText().toString();
                         IoTCloudPromiseAPIWrapper wp = new IoTCloudPromiseAPIWrapper(api);
-                        wp.onboard(venderThingID, thingPassword, thingType).then(new DoneCallback<Target>() {
+                        wp.onboard(venderThingID, thingPassword, thingType, firmwareVersion).then(new DoneCallback<Target>() {
                             @Override
                             public void onDone(Target result) {
-                                Log.d("(ToT;)", "onboard succeeded.");
                                 Toast.makeText(getContext(), "On board succeeded!", Toast.LENGTH_LONG).show();
                                 showOnboardedForm(api.onboarded());
                             }
                         }, new FailCallback<Throwable>() {
                             @Override
                             public void onFail(Throwable result) {
-                                Log.d("(ToT;)", "onboard failed.");
                                 Toast.makeText(getContext(), "On board failed!: " + result.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
@@ -171,7 +182,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         if (onboarded) {
             mOnboardedFormView.setVisibility(View.VISIBLE);
             mOnboardFormView.setVisibility(View.GONE);
-            mOnboardOperationFormView.setVisibility(View.GONE);
             KiiCloudPromiseAPIWrapper wp = new KiiCloudPromiseAPIWrapper(this.api);
             wp.loadWithThingID(api.getTarget().getTypedID().getID()).then(new DoneCallback<KiiThing>() {
                 @Override
@@ -245,7 +255,6 @@ public class OnboardFragment extends Fragment implements PagerFragment {
         } else {
             mOnboardedFormView.setVisibility(View.GONE);
             mOnboardFormView.setVisibility(View.VISIBLE);
-            mOnboardOperationFormView.setVisibility(View.VISIBLE);
         }
     }
 }

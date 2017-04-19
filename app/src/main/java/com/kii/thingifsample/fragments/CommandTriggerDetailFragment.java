@@ -190,8 +190,14 @@ public class CommandTriggerDetailFragment extends DialogFragment {
             for (Action action : aliasAction.getActions()) {
                 List<ActionResult> actionResults = command.getActionResult(aliasAction.getAlias(),
                         ((BaseAction) action).getActionName());
-                // TODO: set ActionResult list
-                actions.add(new Pair<Action, ActionResult>(action, actionResults.get(0)));
+                if (actionResults.isEmpty()) {
+                    actions.add(new Pair<Action, ActionResult>(action, null));
+                } else {
+                    // Note: actionResults has only one because of UI.
+                    for (ActionResult actionResult : actionResults) {
+                        actions.add(new Pair<Action, ActionResult>(action, actionResult));
+                    }
+                }
             }
         }
         ActionArrayAdapter actionAdapter = new ActionArrayAdapter(getContext());

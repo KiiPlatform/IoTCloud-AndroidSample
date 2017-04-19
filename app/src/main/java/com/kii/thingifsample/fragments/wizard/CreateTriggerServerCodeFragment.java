@@ -19,6 +19,8 @@ import android.widget.ListView;
 
 import com.kii.cloud.storage.KiiUser;
 import com.kii.thingif.ThingIFAPI;
+import com.kii.thingif.exception.StoredInstanceNotFoundException;
+import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ParameterArrayAdapter;
 import com.kii.thingifsample.fragments.EditParameterDialogFragment;
@@ -38,10 +40,9 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
     private ParameterArrayAdapter adapter;
 
 
-    public static CreateTriggerServerCodeFragment newFragment(ThingIFAPI api) {
+    public static CreateTriggerServerCodeFragment newFragment() {
         CreateTriggerServerCodeFragment fragment = new CreateTriggerServerCodeFragment();
         Bundle arguments = new Bundle();
-        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -52,18 +53,17 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
+        try {
+            this.api = ThingIFAPI.loadFromStoredInstance(this.getContext());
+        } catch (StoredInstanceNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnloadableInstanceVersionException e) {
+            e.printStackTrace();
         }
         View view = inflater.inflate(R.layout.create_trigger_servercode_view, null);
 
@@ -206,7 +206,11 @@ public class CreateTriggerServerCodeFragment extends WizardFragment {
             this.editTextEndpoint.setText(this.editingTrigger.getServerCode().endpoint);
         }
         if (TextUtils.isEmpty(this.editingTrigger.getServerCode().executorAccessToken)) {
-            this.editTextExecutorAccessToken.setText(api.getTarget().getAccessToken());
+            if (api.getTarget() != null) {
+                this.editTextExecutorAccessToken.setText(api.getTarget().getAccessToken());
+            } else {
+                this.editTextExecutorAccessToken.setText("");
+            }
         } else {
             this.editTextExecutorAccessToken.setText(this.editingTrigger.getServerCode().executorAccessToken);
         }

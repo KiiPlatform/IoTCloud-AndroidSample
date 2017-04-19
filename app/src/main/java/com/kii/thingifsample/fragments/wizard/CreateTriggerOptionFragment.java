@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.trigger.TriggerOptions;
 import com.kii.thingifsample.R;
 
@@ -17,15 +16,13 @@ import org.json.JSONObject;
 
 public class CreateTriggerOptionFragment extends WizardFragment {
 
-    private ThingIFAPI api;
     private EditText editTextTitle;
     private EditText editTextDescription;
     private EditText editTextMetadata;
 
-    public static CreateTriggerOptionFragment newFragment(ThingIFAPI api) {
+    public static CreateTriggerOptionFragment newFragment() {
         CreateTriggerOptionFragment fragment = new CreateTriggerOptionFragment();
         Bundle arguments = new Bundle();
-        //arguments.putParcelable("ThingIFAPI", api);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -36,19 +33,11 @@ public class CreateTriggerOptionFragment extends WizardFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putParcelable("ThingIFAPI", this.api);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            this.api = savedInstanceState.getParcelable("ThingIFAPI");
-        }
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            this.api = arguments.getParcelable("ThingIFAPI");
-        }
         View view = inflater.inflate(R.layout.common_options, null);
         this.editTextTitle = (EditText)view.findViewById(R.id.editTextTitle);
         this.editTextDescription = (EditText)view.findViewById(R.id.editTextDescription);
