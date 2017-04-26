@@ -1,11 +1,15 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.base.BaseClause;
+import com.kii.thingif.clause.query.AndClauseInQuery;
+import com.kii.thingif.clause.query.QueryClause;
+import com.kii.thingif.clause.trigger.AndClauseInTrigger;
 import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
 public class And extends ContainerClause {
 
-    private com.kii.thingif.clause.trigger.AndClauseInTrigger clause;
+    private BaseClause clause;
 
     @Override
     public int getIcon() {
@@ -20,12 +24,20 @@ public class And extends ContainerClause {
         return this.getType().getCaption();
     }
     @Override
-    public TriggerClause getClause() {
-        return this.clause;
+    public TriggerClause getTriggerClause() {
+        return (AndClauseInTrigger)this.clause;
     }
     @Override
-    public void setClause(TriggerClause clause) {
-        this.clause = (com.kii.thingif.clause.trigger.AndClauseInTrigger)clause;
+    public void setTriggerClause(TriggerClause clause) {
+        this.clause = clause;
+    }
+    @Override
+    public QueryClause getQueryClause() {
+        return (AndClauseInQuery)this.clause;
+    }
+    @Override
+    public void setQueryClause(QueryClause clause) {
+        this.clause = clause;
     }
 
     public static class AndOpen extends ContainerClause {
@@ -43,11 +55,18 @@ public class And extends ContainerClause {
             return "";
         }
         @Override
-        public TriggerClause getClause() {
+        public TriggerClause getTriggerClause() {
             return null;
         }
         @Override
-        public void setClause(TriggerClause clause) {
+        public void setTriggerClause(TriggerClause clause) {
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return null;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
         }
         public AndClose getClose() {
             return this.close;
@@ -71,11 +90,18 @@ public class And extends ContainerClause {
             return "";
         }
         @Override
-        public TriggerClause getClause() {
+        public TriggerClause getTriggerClause() {
             return null;
         }
         @Override
-        public void setClause(TriggerClause clause) {
+        public void setTriggerClause(TriggerClause clause) {
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return null;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
         }
         public AndOpen getOpen() {
             return this.open;

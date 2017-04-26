@@ -5,12 +5,12 @@ import android.util.Pair;
 import com.kii.thingif.OnboardWithVendorThingIDOptions;
 import com.kii.thingif.ThingIFAPI;
 import com.kii.thingif.Target;
-import com.kii.thingif.TargetState;
 import com.kii.thingif.command.Action;
 import com.kii.thingif.command.AliasAction;
 import com.kii.thingif.command.Command;
 import com.kii.thingif.command.CommandForm;
-import com.kii.thingif.exception.ThingIFException;
+import com.kii.thingif.query.HistoryState;
+import com.kii.thingif.query.HistoryStatesQuery;
 import com.kii.thingif.trigger.Predicate;
 import com.kii.thingif.trigger.ServerCode;
 import com.kii.thingif.trigger.Trigger;
@@ -262,4 +262,12 @@ public class IoTCloudPromiseAPIWrapper {
         });
     }
 
+    public Promise<Pair<List<HistoryState<LightState>>, String>, Throwable, Void> query(final HistoryStatesQuery query) {
+        return adm.when(new DeferredAsyncTask<Void, Void, Pair<List<HistoryState<LightState>>, String>>() {
+            @Override
+            protected Pair<List<HistoryState<LightState>>, String> doInBackgroundSafe(Void... voids) throws Exception {
+                return api.query(query, LightState.class);
+            }
+        });
+    }
 }

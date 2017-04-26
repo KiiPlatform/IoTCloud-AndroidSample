@@ -1,20 +1,26 @@
-package com.kii.thingifsample.fragments.wizard;
+package com.kii.thingifsample.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 
-import com.kii.thingif.clause.trigger.TriggerClause;
-import com.kii.thingif.trigger.Condition;
+import com.kii.thingif.clause.query.AllClause;
+import com.kii.thingif.clause.query.AndClauseInQuery;
+import com.kii.thingif.clause.query.EqualsClauseInQuery;
+import com.kii.thingif.clause.query.NotEqualsClauseInQuery;
+import com.kii.thingif.clause.query.OrClauseInQuery;
+import com.kii.thingif.clause.query.QueryClause;
+import com.kii.thingif.clause.query.RangeClauseInQuery;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.adapter.ClauseAdapter;
-import com.kii.thingifsample.fragments.EditTriggerClauseDialogFragment;
-import com.kii.thingifsample.fragments.SelectClauseDialogFragment;
 import com.kii.thingifsample.uimodel.And;
 import com.kii.thingifsample.uimodel.Clause;
 import com.kii.thingifsample.uimodel.ClauseParser;
@@ -25,9 +31,9 @@ import com.kii.thingifsample.uimodel.Range;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 
-import java.util.List;
+public class CreateQueryClauseFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
-public class CreateTriggerPredicateFragment extends WizardFragment implements AdapterView.OnItemClickListener {
+public static final String KEY = "New Query Clause";
 
     private static final int REQUEST_CODE_ADD_CLAUSE = 100;
     private static final int REQUEST_CODE_EDIT_CLAUSE = 101;
@@ -35,6 +41,9 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     private DragSortListView listView;
     private DragSortController controller;
     private ClauseAdapter adapter;
+    private QueryClause clause;
+    private Button buttonCancel;
+    private Button buttonChange;
 
     private DragSortListView.DropListener onDrop = new DragSortListView.DropListener() {
         @Override
@@ -65,13 +74,15 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
         }
     };
 
-    public static CreateTriggerPredicateFragment newFragment() {
-        CreateTriggerPredicateFragment fragment = new CreateTriggerPredicateFragment();
+    public static CreateQueryClauseFragment newFragment(Fragment target, QueryClause clause) {
+        CreateQueryClauseFragment fragment = new CreateQueryClauseFragment();
+        fragment.setTargetFragment(target, 0);
         Bundle arguments = new Bundle();
         fragment.setArguments(arguments);
+        fragment.setQueryClause(clause);
         return fragment;
     }
-    public CreateTriggerPredicateFragment() {
+    public CreateQueryClauseFragment() {
     }
 
     @Override
@@ -82,10 +93,10 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.create_trigger_predicate_view, null);
+        View view = inflater.inflate(R.layout.create_query_clause_view, null);
         ((FloatingActionButton)view.findViewById(R.id.fabAddClause)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                SelectClauseDialogFragment dialog = SelectClauseDialogFragment.newFragment(CreateTriggerPredicateFragment.this, REQUEST_CODE_ADD_CLAUSE);
+                SelectClauseDialogFragment dialog = SelectClauseDialogFragment.newFragment(CreateQueryClauseFragment.this, REQUEST_CODE_ADD_CLAUSE);
                 dialog.show(getFragmentManager(), "SelectClauseDialogFragment");
             }
         });
@@ -99,6 +110,32 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
         this.listView.setDropListener(this.onDrop);
         this.listView.setRemoveListener(this.onRemove);
         this.listView.setAdapter(this.adapter);
+        this.buttonCancel = (Button)view.findViewById(R.id.buttonCancel);
+        this.buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment target = getTargetFragment();
+                if (target != null) {
+                    target.onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
+                }
+                dismiss();
+            }
+        });
+        this.buttonChange = (Button)view.findViewById(R.id.buttonChange);
+        this.buttonChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment target = getTargetFragment();
+                if (target != null && clause != null) {
+                    Intent data = new Intent();
+                    data.putExtra(CreateQueryClauseFragment.KEY, clause);
+                    target.onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+                }
+                dismiss();
+            }
+        });
+        this.adapter.addAll(ClauseParser.parseQueryClause(this.clause));
+        this.adapter.notifyDataSetChanged();
         return view;
     }
     @Override
@@ -130,49 +167,48 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
             }
         } else if (requestCode == REQUEST_CODE_EDIT_CLAUSE) {
              if (resultCode == Activity.RESULT_OK) {
-                 TriggerClause clause = data.getParcelableExtra(EditTriggerClauseDialogFragment.EXTRA_CLAUSE);
-                 int editingListPosition = data.getIntExtra(EditTriggerClauseDialogFragment.EXTRA_EDITING_LIST_POSITION, -1);
+                 QueryClause clause = data.getParcelableExtra(EditQueryClauseDialogFragment.EXTRA_CLAUSE);
+                 int editingListPosition = data.getIntExtra(EditQueryClauseDialogFragment.EXTRA_EDITING_LIST_POSITION, -1);
                  if (editingListPosition >= 0) {
-                     this.adapter.getItem(editingListPosition).setTriggerClause(clause);
+                     this.adapter.getItem(editingListPosition).setQueryClause(clause);
                  } else {
-                     if (clause instanceof com.kii.thingif.clause.trigger.AndClauseInTrigger) {
+                     if (clause instanceof AndClauseInQuery) {
                          And and = new And();
-                         and.setTriggerClause(clause);
+                         and.setQueryClause(clause);
                          this.adapter.add(and);
-                     } else if (clause instanceof com.kii.thingif.clause.trigger.OrClauseInTrigger) {
+                     } else if (clause instanceof OrClauseInQuery) {
                          Or or = new Or();
-                         or.setTriggerClause(clause);
+                         or.setQueryClause(clause);
                          this.adapter.add(or);
-                     } else if (clause instanceof com.kii.thingif.clause.trigger.EqualsClauseInTrigger) {
+                     } else if (clause instanceof EqualsClauseInQuery) {
                          Equals equals = new Equals();
-                         equals.setTriggerClause(clause);
+                         equals.setQueryClause(clause);
                          this.adapter.add(equals);
-                     } else if (clause instanceof com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger) {
+                     } else if (clause instanceof NotEqualsClauseInQuery) {
                          NotEquals notEquals = new NotEquals();
-                         notEquals.setTriggerClause(clause);
+                         notEquals.setQueryClause(clause);
                          this.adapter.add(notEquals);
-                     } else if (clause instanceof com.kii.thingif.clause.trigger.RangeClauseInTrigger) {
-                         com.kii.thingif.clause.trigger.RangeClauseInTrigger range =
-                                 (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
+                     } else if (clause instanceof RangeClauseInQuery) {
+                         RangeClauseInQuery range = (RangeClauseInQuery)clause;
                          if (range.getLowerLimit() != null) {
                              if (range.getLowerIncluded() == Boolean.TRUE) {
                                  Range.GreaterThanEquals greaterThanEquals = new Range.GreaterThanEquals();
-                                 greaterThanEquals.setTriggerClause(range);
+                                 greaterThanEquals.setQueryClause(range);
                                  this.adapter.add(greaterThanEquals);
                              } else {
                                  Range.GreaterThan greaterThan = new Range.GreaterThan();
-                                 greaterThan.setTriggerClause(range);
+                                 greaterThan.setQueryClause(range);
                                  this.adapter.add(greaterThan);
                              }
                          }
                          if (range.getUpperLimit() != null) {
                              if (range.getUpperIncluded() == Boolean.TRUE) {
                                  Range.LessThanEquals lessThanEquals = new Range.LessThanEquals();
-                                 lessThanEquals.setTriggerClause(range);
+                                 lessThanEquals.setQueryClause(range);
                                  this.adapter.add(lessThanEquals);
                              } else {
                                  Range.LessThan lessThan = new Range.LessThan();
-                                 lessThan.setTriggerClause(range);
+                                 lessThan.setQueryClause(range);
                                  this.adapter.add(lessThan);
                              }
                          }
@@ -190,30 +226,7 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
             this.editClause(clause.getType(), clause, position);
         }
     }
-    @Override
-    public void onActivate() {
-        if (this.editingTrigger.getPredicate() != null) {
-            List<Clause> clauses = ClauseParser.parseTriggerClause(this.editingTrigger.getCondition().getClause());
-            this.adapter.clear();
-            for (Clause clause : clauses) {
-                this.adapter.add(clause);
-            }
-        }
-        this.validateClauses();
-    }
-    @Override
-    public void onInactivate(int exitCode) {
-        TriggerClause clause = ClauseParser.parseTriggerClause(this.adapter.getItems());
-        this.editingTrigger.setCondition(new Condition(clause));
-    }
-    @Override
-    public String getNextButtonText() {
-        return "Next";
-    }
-    @Override
-    public String getPreviousButtonText() {
-        return "Previous";
-    }
+
     private DragSortController buildController(DragSortListView dslv) {
         DragSortController controller = new DragSortController(dslv);
         controller.setDragHandleId(R.id.row_icon);
@@ -223,31 +236,39 @@ public class CreateTriggerPredicateFragment extends WizardFragment implements Ad
         controller.setRemoveMode(DragSortController.FLING_REMOVE);
         return controller;
     }
+
+    private void setQueryClause(QueryClause clause) {this.clause = clause;}
+
     private void editClause(Clause.ClauseType type, Clause clause, int editingListPosition) {
-        EditTriggerClauseDialogFragment dialog = EditTriggerClauseDialogFragment.newFragment(
-                CreateTriggerPredicateFragment.this,
+        EditQueryClauseDialogFragment dialog = EditQueryClauseDialogFragment.newFragment(
+                CreateQueryClauseFragment.this,
                 REQUEST_CODE_EDIT_CLAUSE,
                 type,
-                clause == null ? null : clause.getTriggerClause(),
+                clause == null ? null : clause.getQueryClause(),
                 editingListPosition);
-        dialog.show(getFragmentManager(), "EditTriggerClauseDialogFragment");
+        dialog.show(getFragmentManager(), "EditQueryClauseDialogFragment");
     }
     private void validateClauses() {
         if (this.adapter != null) {
-            TriggerClause clause = ClauseParser.parseTriggerClause(this.adapter.getItems());
+            QueryClause clause = ClauseParser.parseQueryClause(this.adapter.getItems());
             if (clause != null) {
-                if ((clause instanceof com.kii.thingif.clause.trigger.AndClauseInTrigger) &&
-                        (((com.kii.thingif.clause.trigger.AndClauseInTrigger)clause).getClauses().isEmpty()) ||
-                   ((clause instanceof com.kii.thingif.clause.trigger.OrClauseInTrigger) &&
-                        (((com.kii.thingif.clause.trigger.OrClauseInTrigger)clause).getClauses().isEmpty())))
+                if ((clause instanceof AndClauseInQuery) &&
+                        (((AndClauseInQuery)clause).getClauses().isEmpty()) ||
+                   ((clause instanceof OrClauseInQuery) &&
+                        (((OrClauseInQuery)clause).getClauses().isEmpty())))
                 {
-                    this.setNextButtonEnabled(false);
+                    this.buttonChange.setEnabled(false);
                     return;
                 }
-                this.setNextButtonEnabled(true);
+                this.buttonChange.setEnabled(true);
+                this.clause = clause;
+                return;
+            } else if (this.adapter.getItems().isEmpty()) {
+                this.buttonChange.setEnabled(true);
+                this.clause = new AllClause();
                 return;
             }
         }
-        this.setNextButtonEnabled(false);
+        this.buttonChange.setEnabled(false);
     }
 }

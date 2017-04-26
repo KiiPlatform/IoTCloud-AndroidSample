@@ -1,5 +1,9 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.base.BaseClause;
+import com.kii.thingif.clause.query.QueryClause;
+import com.kii.thingif.clause.query.RangeClauseInQuery;
+import com.kii.thingif.clause.trigger.RangeClauseInTrigger;
 import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
@@ -18,15 +22,20 @@ public class Range extends Clause {
         return "";
     }
     @Override
-    public TriggerClause getClause() {
+    public TriggerClause getTriggerClause() {
         return null;
     }
-    public void setClause(TriggerClause clause) {
+    public void setTriggerClause(TriggerClause clause) {
+    }
+    public QueryClause getQueryClause() {
+        return null;
+    }
+    public void setQueryClause(QueryClause clause) {
     }
 
 
     public static class GreaterThan extends Clause {
-        private com.kii.thingif.clause.trigger.RangeClauseInTrigger clause;
+        private BaseClause clause;
         @Override
         public int getIcon() {
             return R.drawable.ic_code_greater_than_black_36dp;
@@ -40,19 +49,35 @@ public class Range extends Clause {
             if (this.clause == null) {
                 return this.getType().getCaption();
             }
-            return this.clause.getField() + " > " + this.clause.getLowerLimit();
+            if (this.clause instanceof RangeClauseInTrigger) {
+                RangeClauseInTrigger trigger = (RangeClauseInTrigger)this.clause;
+                return trigger.getAlias() + " : " + trigger.getField() + " > " + trigger.getLowerLimit();
+            } else if (this.clause instanceof RangeClauseInQuery) {
+                RangeClauseInQuery query = (RangeClauseInQuery) this.clause;
+                return query.getField() + " > " + query.getLowerLimit();
+            } else {
+                return "Invalid";
+            }
         }
         @Override
-        public TriggerClause getClause() {
-            return this.clause;
+        public TriggerClause getTriggerClause() {
+            return (RangeClauseInTrigger)this.clause;
         }
         @Override
-        public void setClause(TriggerClause clause) {
-            this.clause = (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
+        public void setTriggerClause(TriggerClause clause) {
+            this.clause = clause;
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return (RangeClauseInQuery)this.clause;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
+            this.clause = clause;
         }
     }
     public static class GreaterThanEquals extends Clause {
-        private com.kii.thingif.clause.trigger.RangeClauseInTrigger clause;
+        private BaseClause clause;
         @Override
         public int getIcon() {
             return R.drawable.ic_code_greater_than_equal_black_36dp;
@@ -66,19 +91,35 @@ public class Range extends Clause {
             if (this.clause == null) {
                 return this.getType().getCaption();
             }
-            return this.clause.getField() + " >= " + this.clause.getLowerLimit();
+            if (this.clause instanceof RangeClauseInTrigger) {
+                RangeClauseInTrigger trigger = (RangeClauseInTrigger)this.clause;
+                return trigger.getAlias() + " : " + trigger.getField() + " >= " + trigger.getLowerLimit();
+            } else if (this.clause instanceof RangeClauseInQuery) {
+                RangeClauseInQuery query = (RangeClauseInQuery) this.clause;
+                return query.getField() + " >= " + query.getLowerLimit();
+            } else {
+                return "Invalid";
+            }
         }
         @Override
-        public TriggerClause getClause() {
-            return this.clause;
+        public TriggerClause getTriggerClause() {
+            return (RangeClauseInTrigger)this.clause;
         }
         @Override
-        public void setClause(TriggerClause clause) {
-            this.clause = (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
+        public void setTriggerClause(TriggerClause clause) {
+            this.clause = clause;
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return (RangeClauseInQuery)this.clause;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
+            this.clause = clause;
         }
     }
     public static class LessThan extends Clause {
-        private com.kii.thingif.clause.trigger.RangeClauseInTrigger clause;
+        private BaseClause clause;
         @Override
         public int getIcon() {
             return R.drawable.ic_code_less_than_black_36dp;
@@ -92,19 +133,35 @@ public class Range extends Clause {
             if (this.clause == null) {
                 return this.getType().getCaption();
             }
-            return this.clause.getField() + " < " + this.clause.getUpperLimit();
+            if (this.clause instanceof RangeClauseInTrigger) {
+                RangeClauseInTrigger trigger = (RangeClauseInTrigger)this.clause;
+                return trigger.getAlias() + " : " + trigger.getField() + " < " + trigger.getUpperLimit();
+            } else if (this.clause instanceof RangeClauseInQuery) {
+                RangeClauseInQuery query = (RangeClauseInQuery) this.clause;
+                return query.getField() + " < " + query.getUpperLimit();
+            } else {
+                return "Invalid";
+            }
         }
         @Override
-        public TriggerClause getClause() {
-            return this.clause;
+        public TriggerClause getTriggerClause() {
+            return (RangeClauseInTrigger)this.clause;
         }
         @Override
-        public void setClause(TriggerClause clause) {
-            this.clause = (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
+        public void setTriggerClause(TriggerClause clause) {
+            this.clause = clause;
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return (RangeClauseInQuery)this.clause;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
+            this.clause = clause;
         }
     }
     public static class LessThanEquals extends Clause {
-        private com.kii.thingif.clause.trigger.RangeClauseInTrigger clause;
+        private BaseClause clause;
         @Override
         public int getIcon() {
             return R.drawable.ic_code_less_than_or_equal_black_36dp;
@@ -118,15 +175,31 @@ public class Range extends Clause {
             if (this.clause == null) {
                 return this.getType().getCaption();
             }
-            return this.clause.getField() + " <= " + this.clause.getUpperLimit();
+            if (this.clause instanceof RangeClauseInTrigger) {
+                RangeClauseInTrigger trigger = (RangeClauseInTrigger)this.clause;
+                return trigger.getAlias() + " : " + trigger.getField() + " <= " + trigger.getUpperLimit();
+            } else if (this.clause instanceof RangeClauseInQuery) {
+                RangeClauseInQuery query = (RangeClauseInQuery) this.clause;
+                return query.getField() + " <= " + query.getUpperLimit();
+            } else {
+                return "Invalid";
+            }
         }
         @Override
-        public TriggerClause getClause() {
-            return this.clause;
+        public TriggerClause getTriggerClause() {
+            return (RangeClauseInTrigger)this.clause;
         }
         @Override
-        public void setClause(TriggerClause clause) {
-            this.clause = (com.kii.thingif.clause.trigger.RangeClauseInTrigger)clause;
+        public void setTriggerClause(TriggerClause clause) {
+            this.clause = clause;
+        }
+        @Override
+        public QueryClause getQueryClause() {
+            return (RangeClauseInQuery)this.clause;
+        }
+        @Override
+        public void setQueryClause(QueryClause clause) {
+            this.clause = clause;
         }
     }
 }

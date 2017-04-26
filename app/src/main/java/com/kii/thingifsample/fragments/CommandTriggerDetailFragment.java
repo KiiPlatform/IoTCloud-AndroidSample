@@ -29,7 +29,6 @@ import com.kii.thingif.exception.StoredInstanceNotFoundException;
 import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingif.trigger.StatePredicate;
 import com.kii.thingif.trigger.Trigger;
-import com.kii.thingif.trigger.TriggerOptions;
 import com.kii.thingifsample.CreateTriggerActivity;
 import com.kii.thingifsample.CreateTriggerActivity.TriggerType;
 import com.kii.thingifsample.R;
@@ -174,8 +173,6 @@ public class CommandTriggerDetailFragment extends DialogFragment {
 
         // Show the command info
         Command command = trigger.getCommand();
-        //((TextView) view.findViewById(R.id.textSchemaName)).setText(command.getSchemaName());
-        //((TextView)view.findViewById(R.id.textSchemaVersion)).setText(String.valueOf(command.getSchemaVersion()));
 
         ((TextView)view.findViewById(R.id.textTargetID)).setText(command.getTargetID().getID());
         if (command.getIssuerID() != null) {
@@ -234,7 +231,7 @@ public class CommandTriggerDetailFragment extends DialogFragment {
         ((TextView) view.findViewById(R.id.textTriggersWhen)).setText(predicate.getTriggersWhen().name());
 
         ListView listViewCondition = (ListView)view.findViewById(R.id.listViewCondition);
-        List<Clause> clauses = ClauseParser.parseClause(predicate.getCondition().getClause());
+        List<Clause> clauses = ClauseParser.parseTriggerClause(predicate.getCondition().getClause());
 
         ClauseAdapter conditionAdapter = new ClauseAdapter(getContext());
         conditionAdapter.addAll(clauses);

@@ -16,21 +16,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.kii.thingif.clause.trigger.EqualsClauseInTrigger;
-import com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger;
-import com.kii.thingif.clause.trigger.RangeClauseInTrigger;
-import com.kii.thingif.clause.trigger.TriggerClause;
+import com.kii.thingif.clause.query.EqualsClauseInQuery;
+import com.kii.thingif.clause.query.NotEqualsClauseInQuery;
+import com.kii.thingif.clause.query.QueryClause;
+import com.kii.thingif.clause.query.RangeClauseInQuery;
 import com.kii.thingifsample.AppConstants;
 import com.kii.thingifsample.R;
 import com.kii.thingifsample.uimodel.Clause;
 
-public class EditClauseDialogFragment extends DialogFragment {
+public class EditQueryClauseDialogFragment extends DialogFragment {
 
     public static final String EXTRA_CLAUSE = "EXTRA_CLAUSE";
     public static final String EXTRA_EDITING_LIST_POSITION = "EXTRA_EDITING_LIST_POSITION";
 
-    public static EditClauseDialogFragment newFragment(Fragment target, int requestCode, Clause.ClauseType clauseType, TriggerClause clause, int editingListPosition) {
-        EditClauseDialogFragment fragment = new EditClauseDialogFragment();
+    public static EditQueryClauseDialogFragment newFragment(Fragment target, int requestCode, Clause.ClauseType clauseType, QueryClause clause, int editingListPosition) {
+        EditQueryClauseDialogFragment fragment = new EditQueryClauseDialogFragment();
         fragment.setTargetFragment(target, requestCode);
 
         Bundle arguments = new Bundle();
@@ -45,10 +45,10 @@ public class EditClauseDialogFragment extends DialogFragment {
     private EditText editTextField;
     private EditText editTextValue;
     private Clause.ClauseType clauseType;
-    private TriggerClause clause;
+    private QueryClause clause;
     private int editingListPosition;
 
-    public EditClauseDialogFragment() {
+    public EditQueryClauseDialogFragment() {
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -93,7 +93,7 @@ public class EditClauseDialogFragment extends DialogFragment {
                         Fragment target = getTargetFragment();
                         if (target != null) {
                             Intent data = new Intent();
-                            TriggerClause clause = createClause();
+                            QueryClause clause = createClause();
                             if (clause == null) {
                                 return;
                             }
@@ -110,7 +110,7 @@ public class EditClauseDialogFragment extends DialogFragment {
         });
         return dialog;
     }
-    private TriggerClause createClause() {
+    private QueryClause createClause() {
         String field = this.editTextField.getText().toString();
         String value = this.editTextValue.getText().toString();
         if (TextUtils.isEmpty(field)) {
@@ -125,42 +125,32 @@ public class EditClauseDialogFragment extends DialogFragment {
             case EQUALS:
                 // FIXME: cannot determine correct type.
                 if (this.isBoolean(value)) {
-                    return new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                            AppConstants.ALIAS, field, Boolean.parseBoolean(value));
+                    return new EqualsClauseInQuery(field, Boolean.parseBoolean(value));
                 } else if (this.isLong(value)) {
-                    return new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                            AppConstants.ALIAS, field, Long.parseLong(value));
+                    return new EqualsClauseInQuery(field, Long.parseLong(value));
                 } else {
-                    return new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                            AppConstants.ALIAS, field, value);
+                    return new EqualsClauseInQuery(field, value);
                 }
             case NOT_EQUALS:
                 // FIXME: cannot determine correct type.
                 if (this.isBoolean(value)) {
-                    return new com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger(
-                            new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                                    AppConstants.ALIAS, field, Boolean.parseBoolean(value)));
+                    return new NotEqualsClauseInQuery(
+                            new EqualsClauseInQuery(field, Boolean.parseBoolean(value)));
                 } else if (this.isLong(value)) {
-                    return new com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger(
-                            new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                                    AppConstants.ALIAS, field, Long.parseLong(value)));
+                    return new NotEqualsClauseInQuery(
+                            new EqualsClauseInQuery(field, Long.parseLong(value)));
                 } else {
-                    return new com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger(
-                            new com.kii.thingif.clause.trigger.EqualsClauseInTrigger(
-                                    AppConstants.ALIAS, field, value));
+                    return new NotEqualsClauseInQuery(
+                            new EqualsClauseInQuery(field, value));
                 }
             case GREATER_THAN:
-                return com.kii.thingif.clause.trigger.RangeClauseInTrigger.greaterThan(
-                        AppConstants.ALIAS, field, Long.valueOf(value));
+                return RangeClauseInQuery.greaterThan(field, Long.valueOf(value));
             case GREATER_THAN_EQUALS:
-                return com.kii.thingif.clause.trigger.RangeClauseInTrigger.greaterThanOrEqualTo(
-                        AppConstants.ALIAS, field, Long.valueOf(value));
+                return RangeClauseInQuery.greaterThanOrEqualTo(field, Long.valueOf(value));
             case LESS_THAN:
-                return com.kii.thingif.clause.trigger.RangeClauseInTrigger.lessThan(
-                        AppConstants.ALIAS, field, Long.valueOf(value));
+                return RangeClauseInQuery.lessThan(field, Long.valueOf(value));
             case LESS_THAN_EQUALS:
-                return com.kii.thingif.clause.trigger.RangeClauseInTrigger.lessThanOrEqualTo(
-                        AppConstants.ALIAS, field, Long.valueOf(value));
+                return RangeClauseInQuery.lessThanOrEqualTo(field, Long.valueOf(value));
             default:
                 return null;
         }
@@ -176,36 +166,36 @@ public class EditClauseDialogFragment extends DialogFragment {
     private boolean isBoolean(String s) {
         return "true".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s);
     }
-    private String getField(TriggerClause clause) {
+    private String getField(QueryClause clause) {
         if (clause != null) {
-            if (clause instanceof EqualsClauseInTrigger) {
-                return ((EqualsClauseInTrigger)clause).getField();
-            } else if (clause instanceof NotEqualsClauseInTrigger) {
-                return ((NotEqualsClauseInTrigger)clause).getEquals().getField();
-            } else if (clause instanceof RangeClauseInTrigger) {
-                return ((RangeClauseInTrigger)clause).getField();
+            if (clause instanceof EqualsClauseInQuery) {
+                return ((EqualsClauseInQuery)clause).getField();
+            } else if (clause instanceof NotEqualsClauseInQuery) {
+                return ((NotEqualsClauseInQuery)clause).getEquals().getField();
+            } else if (clause instanceof RangeClauseInQuery) {
+                return ((RangeClauseInQuery)clause).getField();
             }
         }
         return "";
     }
-    private String getValue(TriggerClause clause) {
+    private String getValue(QueryClause clause) {
         if (clause != null) {
-            if (clause instanceof EqualsClauseInTrigger) {
-                Object value = ((EqualsClauseInTrigger) clause).getValue();
+            if (clause instanceof EqualsClauseInQuery) {
+                Object value = ((EqualsClauseInQuery) clause).getValue();
                 if (value != null) {
                     return value.toString();
                 }
-            } else if (clause instanceof NotEqualsClauseInTrigger) {
-                Object value = ((NotEqualsClauseInTrigger) clause).getEquals().getValue();
+            } else if (clause instanceof NotEqualsClauseInQuery) {
+                Object value = ((NotEqualsClauseInQuery) clause).getEquals().getValue();
                 if (value != null) {
                     return value.toString();
                 }
-            } else if (clause instanceof RangeClauseInTrigger) {
-                Number upperLimit = ((RangeClauseInTrigger) clause).getUpperLimit();
+            } else if (clause instanceof RangeClauseInQuery) {
+                Number upperLimit = ((RangeClauseInQuery) clause).getUpperLimit();
                 if (upperLimit != null) {
                     return upperLimit.toString();
                 }
-                Number lowerLimit = ((RangeClauseInTrigger) clause).getLowerLimit();
+                Number lowerLimit = ((RangeClauseInQuery) clause).getLowerLimit();
                 if (lowerLimit != null) {
                     return lowerLimit.toString();
                 }

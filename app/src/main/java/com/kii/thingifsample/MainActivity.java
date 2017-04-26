@@ -28,6 +28,7 @@ import com.kii.thingif.exception.ThingIFException;
 import com.kii.thingif.exception.UnloadableInstanceVersionException;
 import com.kii.thingifsample.fragments.PagerFragment;
 import com.kii.thingifsample.fragments.ProgressDialogFragment;
+import com.kii.thingifsample.fragments.HistoryStatesFragment;
 import com.kii.thingifsample.sliding_tab.SlidingTabLayout;
 import com.kii.thingifsample.fragments.CommandsFragment;
 import com.kii.thingifsample.fragments.InfoFragment;
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            return 6;
         }
 
         @Override
@@ -185,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     return "States";
                 case 4:
+                    return "History";
+                case 5:
                     return "Info";
                 default:
                     throw new RuntimeException("Unxepected flow.");
@@ -203,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     return StatesFragment.newFragment();
                 case 4:
+                    return HistoryStatesFragment.newFragment();
+                case 5:
                     return InfoFragment.newFragment();
                 default:
                     throw new RuntimeException("Unknown flow");

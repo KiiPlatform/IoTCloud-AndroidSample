@@ -2,6 +2,8 @@ package com.kii.thingifsample.utils;
 
 import android.os.Bundle;
 
+import com.kii.thingifsample.smart_light_demo.LightState;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,5 +75,12 @@ public final class Utils {
         } catch (Exception ignored) {
         }
         return null;
+    }
+
+    public static String lightStateToString(LightState state) {
+        return "{ " + state.power +  ", "
+                + state.brightness + ", "
+                + toColorString(state.color) + ", "
+                + state.colorTemperature +"}";
     }
 }

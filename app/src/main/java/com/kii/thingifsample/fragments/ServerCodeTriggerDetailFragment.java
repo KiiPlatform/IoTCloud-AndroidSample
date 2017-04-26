@@ -201,7 +201,7 @@ public class ServerCodeTriggerDetailFragment extends DialogFragment {
         ((TextView) view.findViewById(R.id.textTriggersWhen)).setText(predicate.getTriggersWhen().name());
 
         ListView listViewCondition = (ListView)view.findViewById(R.id.listViewCondition);
-        List<Clause> clauses = ClauseParser.parseClause(predicate.getCondition().getClause());
+        List<Clause> clauses = ClauseParser.parseTriggerClause(predicate.getCondition().getClause());
 
         ClauseAdapter conditionAdapter = new ClauseAdapter(getContext());
         conditionAdapter.addAll(clauses);

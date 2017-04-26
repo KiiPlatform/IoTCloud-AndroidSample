@@ -1,11 +1,15 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.base.BaseClause;
+import com.kii.thingif.clause.query.NotEqualsClauseInQuery;
+import com.kii.thingif.clause.query.QueryClause;
+import com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger;
 import com.kii.thingif.clause.trigger.TriggerClause;
 import com.kii.thingifsample.R;
 
 public class NotEquals extends Clause {
 
-    private com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger clause;
+    private BaseClause clause;
 
     @Override
     public int getIcon() {
@@ -20,14 +24,30 @@ public class NotEquals extends Clause {
         if (this.clause == null) {
             return "Not Equals";
         }
-        return this.clause.getEquals().getField() + " != " + this.clause.getEquals().getValue().toString();
+        if (this.clause instanceof NotEqualsClauseInTrigger) {
+            NotEqualsClauseInTrigger trigger = (NotEqualsClauseInTrigger)this.clause;
+            return trigger.getEquals().getAlias() + " : " + trigger.getEquals().getField() + " == " + trigger.getEquals().getValue().toString();
+        } else if (this.clause instanceof NotEqualsClauseInQuery) {
+            NotEqualsClauseInQuery query = (NotEqualsClauseInQuery) this.clause;
+            return query.getEquals().getField() + " == " + query.getEquals().getValue().toString();
+        } else {
+            return "Invalid";
+        }
     }
     @Override
-    public TriggerClause getClause() {
-        return this.clause;
+    public TriggerClause getTriggerClause() {
+        return (NotEqualsClauseInTrigger)this.clause;
     }
     @Override
-    public void setClause(TriggerClause clause) {
-        this.clause = (com.kii.thingif.clause.trigger.NotEqualsClauseInTrigger)clause;
+    public void setTriggerClause(TriggerClause clause) {
+        this.clause = clause;
+    }
+    @Override
+    public QueryClause getQueryClause() {
+        return (NotEqualsClauseInQuery)this.clause;
+    }
+    @Override
+    public void setQueryClause(QueryClause clause) {
+        this.clause = clause;
     }
 }

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Query clause"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    />
+                <Button
+                    android:id="@+id/buttonChangeQuery"
+                    android:text="Change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    />
+            </LinearLayout>
+            <ListView
+                android:id="@+id/listViewClause"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/textListViewClauseEmpty"
+                android:text="All clauses"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                />
+
+            <TextView
+                android:id="@+id/textHistoryStates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="History states"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp"
+                />
+            <ListView
+                android:id="@+id/listViewHistoryStates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textHistoryStates"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp"
+                />
+            <ProgressBar
+                android:id="@+id/progressLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textHistoryStates"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyleLarge"/>
+            <TextView
+                android:id="@+id/textListViewHistoryStatesEmpty"
+                android:text="No history states"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

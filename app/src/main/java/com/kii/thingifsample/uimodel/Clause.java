@@ -1,5 +1,6 @@
 package com.kii.thingifsample.uimodel;
 
+import com.kii.thingif.clause.query.QueryClause;
 import com.kii.thingif.clause.trigger.TriggerClause;
 
 public abstract class Clause {
@@ -36,8 +37,10 @@ public abstract class Clause {
     public abstract int getIcon();
     public abstract ClauseType getType();
     public abstract String getSummary();
-    public abstract void setClause(TriggerClause clause);
-    public abstract TriggerClause getClause();
+    public abstract void setTriggerClause(TriggerClause clause);
+    public abstract TriggerClause getTriggerClause();
+    public abstract void setQueryClause(QueryClause clause);
+    public abstract QueryClause getQueryClause();
     public boolean isContainer() {
         return false;
     }
